@@ -1,0 +1,1 @@
+{"name":"exchange-buy-games","version":"0.1.0","private":true,"scripts":{"dev":"next dev","build":"next build","start":"next start"},"dependencies":{"next":"9.2.1","react":"16.12.0","react-dom":"16.12.0"},"readme":"ERROR: No README data found!","_id":"exchange-buy-games@0.1.0"}
