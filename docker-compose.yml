@@ -4,9 +4,17 @@ services:
     build: ./web
     environment:
       PORT: 3000
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/lonesome-moose"
+      NEXT_DEV: 1
     ports:
       - "3000:3000"
     volumes:
-      - ./web:/web
+      - ./web/src:/opt/app/src
     command: npm run dev
-  
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "lonesome-moose"
+
