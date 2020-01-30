@@ -1,7 +1,7 @@
 const next = require("next");
 const yn = require("yn");
 
-const port = "3000";
+const port = process.env.PORT;
 const dev = yn(process.env.NEXT_DEV);
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
