@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json({ type: "application/json" });
 const User = require("../db/models/user");
 const userAuthentication = require("../authentication");
+const { InsertGameInListError, ListDoesNotExistError } = require("./errors");
 
 const validation = require("../validation");
 
@@ -48,9 +49,7 @@ router.post("/user", jsonParser, (req, res) => {
   });
 });
 
-router.post("/session", jsonParser, userAuthentication, (req, res) => {
-  console.log("user session", req.user);
-});
+router.post("/session", jsonParser, userAuthentication);
 
 router.post(
   "/editpass",
@@ -61,7 +60,7 @@ router.post(
     const password = req.body.updatedPassword;
     const salt = bcrypt.genSaltSync(10);
 
-    bcrypt.hash(password, salt, function(err, hash) {
+    bcrypt.hash(password, salt, function (err, hash) {
       knex("users")
         .update({ password: hash })
         .where("id", req.user.id)

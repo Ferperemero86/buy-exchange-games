@@ -18,7 +18,13 @@
         "no-nested-ternary": "off",
         "no-use-before-define": "off",
         "standard/computed-property-even-spacing": "off",
-        "react/prop-types": "error"
+        "react/prop-types": [
+            "enabled",
+            {
+                "ignore": "ignore",
+                "customValidators": "customValidator"
+            }
+        ]
     },
     "settings": {
         "react": {

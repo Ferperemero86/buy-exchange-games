@@ -1,0 +1,64 @@
+.game-details {
+    width: 90%;
+    padding: 0 5% 0 5%;
+    margin: 50px 0 0 0;
+    overflow: hidden;
+}
+@media screen and (min-width: 800px) {
+    .game-details {
+        width: 50%;
+        margin: 50px auto;
+    }
+}
+
+.games-details .header {
+    width: 100%;
+    overflow: hidden;
+    background-color: red;
+}
+
+.game-details .header-link {
+    display: inline-block;
+    text-decoration: underline;
+}
+
+.game-details .left-arrow {
+    margin: 0 1% 0 10%;
+}
+
+.game-details .title {
+    font-size: 1.2em;
+    margin: 30px 0;
+    display: inline-block;
+}
+
+.game-details .cover {
+    margin: 0 2% 0 0;
+    border: 1px solid;
+    max-width: 100%;
+    height: auto;
+    float: left;
+}
+
+.game-details .links {
+    float: left;
+    width: 300px;
+}
+
+.game-details .links .link {
+    background-color: #000;
+    color: #fff;
+    width: 200px;
+    padding: 5px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.game-details .summary {
+    float: left;
+    margin: 40px 0 0 0;
+    line-height: 1.2;
+    font-size: 0.9em;
+    display: block;
+    width: 100%;
+}

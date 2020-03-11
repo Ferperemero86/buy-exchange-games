@@ -4,7 +4,7 @@ services:
     build: ./web
     environment:
       PORT: 3000
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/lonesome-moose"
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/exchange-buy-games"
       NEXT_DEV: 1
     ports:
       - "3000:3000"
@@ -16,5 +16,5 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: "lonesome-moose"
+      POSTGRES_DB: "exchange-buy-games"
 

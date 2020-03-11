@@ -1,0 +1,86 @@
+.main-header {
+    width: 100%;
+    padding: 15px 0 15px 0;
+    overflow: hidden;
+    height: 100px;
+    background-color: #000;
+    border: 1px solid;
+}
+
+.header-logo {
+    float: left;
+    width: 30%;
+}
+
+.header-logo-image {
+    margin: 20px 0 0 5%;
+    width: 150px;
+    height: auto;
+}
+
+.header-main-nav {
+    width: 300px;
+    overflow: hidden;
+    float: left;
+    margin: 30px 0 0 0;
+    color: #fff;
+    font-family: Helvetica;
+}
+
+.header-main-nav ul {
+    width: 100%;
+    float: left;
+}
+
+.header-main-nav ul > li {
+    padding: 0 10px 0 10px;
+    display: inline-block;
+    text-align: center;
+}
+
+.header-main-nav ul > li:hover {
+    cursor: pointer;
+}
+
+.header-account-nav {
+    width: 150px;
+    margin: 30px 0 0 10%;
+    overflow: hidden;
+    float: left;
+    font-weight: bolder;
+    font-family: Helvetica;
+    color: #fff;
+}
+
+.header-account-nav ul {
+    width: 100%;
+    float: right;
+}
+
+.header-account-nav ul > li {
+    float: left;
+    display: block;
+    width: 50%;
+}
+
+.header-navs {
+    width: 70%;
+    overflow: hidden;
+}
+
+.header-search {
+    margin: 25px 5% 0 0;
+    float: right;
+    width: 170px;
+}
+
+.header-search input {
+    border: 2px solid;
+    height: 20px;
+    border-radius: 15px;
+}
+
+.header-search .search-icon {
+    margin-right: 5%;
+    color: #fff;
+}

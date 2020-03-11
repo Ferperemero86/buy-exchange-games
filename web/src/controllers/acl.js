@@ -4,11 +4,11 @@ function middleware(Targetmodel, action) {
   const { allow, can } = cancan;
   const User = require("../db/models/user");
 
-  return function(req, res, next) {
+  return function (req, res, next) {
     const userModelInstance = new User(req.user);
     const targetModelInstance = new Targetmodel(req.user);
 
-    allow(User, ["edit", "delete"], User, (user, target) => {
+    allow(User, ["edit", "delete", "create", "save"], User, (user, target) => {
       if (user.id === target.id && !user.getAdmin(req.user)) {
         return true;
       } else {

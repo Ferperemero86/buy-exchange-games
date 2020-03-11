@@ -7,6 +7,7 @@ const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 const express = require("express");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 
 nextApp.prepare().then(() => {
   const server = express();
@@ -16,15 +17,20 @@ nextApp.prepare().then(() => {
   const bcrypt = require("bcrypt");
   const User = require("./db/models/user");
   const sess = {
-    secret: "keyboard cat",
-    name: "user_cookie",
-    cookie: {},
-    resave: true,
-    saveUninitialized: true,
+    secret: 'W$q4=25*8%v-}UV',
+    secure: false,
+    name: "user_id",
+    resave: false,
+    saveUninitialized: false
   };
 
-  server.use(session(sess));
+  server.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+  });
 
+  server.use(cookieParser('W$q4=25*8%v-}UV'));
+  server.use(session(sess));
   server.use(passport.initialize());
   server.use(passport.session());
 
@@ -56,18 +62,6 @@ nextApp.prepare().then(() => {
       }
     )
   );
-
-  passport.serializeUser(function(user, done) {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser((id, done) => {
-    User.where({ id: id })
-      .fetch()
-      .then(user => {
-        done(null, user);
-      });
-  });
 
   server.use("/api", routes);
 
