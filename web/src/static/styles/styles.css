@@ -1,5 +1,5 @@
 @import "./main-header.css";
-@import "./home.css";
+@import "./home-page.css";
 @import "./resset.css";
 @import "./styles.css";
 @import "./general.css";
@@ -7,4 +7,4 @@
 @import "./details/details.css";
 @import "./forms/user-form.css";
 @import "./account/gameslist.css";
-@import "./messages.css";
+@import "./message.css";
