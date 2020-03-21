@@ -105,7 +105,6 @@ const GamesDisplay = ({ platform, platformTitle, platformId }) => {
         setRecentGamesLink("");
         axiosModule.getPostCall(`/api/games/${platform}`, "POST", `fields name, cover.url; where platforms = {${platformId}};limit 300;`)
             .then(response => {
-                console.log(response);
                 organizeGames(response.data.gamesContent);
                 setGamesIndex(0);
             })

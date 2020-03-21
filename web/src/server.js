@@ -17,15 +17,19 @@ nextApp.prepare().then(() => {
   const bcrypt = require("bcrypt");
   const User = require("./db/models/user");
   const sess = {
-    secret: 'W$q4=25*8%v-}UV',
-    secure: false,
+    secret: 'keyboard cat',
     name: "user_id",
+    cookie: {
+      httpOnly: false,
+      expires: 3600000
+    },
     resave: false,
     saveUninitialized: false
   };
 
   server.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
     next();
   });
 

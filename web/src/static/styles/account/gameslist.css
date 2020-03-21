@@ -1,4 +1,8 @@
-
+.user-list .heading {
+    margin: 50px 0 0 5%;
+    font-size: 1.4em;
+ }
+ 
 .edit-list {
     float: right;
     margin: 20px 15% 0 0;
@@ -65,23 +69,26 @@
 
 .games-list {
     width: 100%;
-}
-
-.games-list .heading {
-    margin: 30px 0 30px 5%;
+    margin: 50px 0 0 0;
+    padding: 0 0 0 4%;
 }
 
 .games-list .game {
     float: left;
     text-align: center;
-    width: 100%;
-    margin: 50px 0 0 0;
+    width: 50%;
+    margin: 50px auto;
 }
 @media screen and (min-width: 800px) {
     .games-list .game {
       width: 264px;
+      height: 264px;
       float: left;
-      margin: 50px 5%;
+      margin: 50px 1%;
+      border: 1px solid;
+      overflow: hidden;
+      background-color: #000;
+      color: #fff;
     }
     .create-list-form .input {
         width: 300px;
@@ -98,4 +105,7 @@
 
 .games-list .game .cover {
     margin: 15px 0 0 0;
+    border: 0;
+    max-width: 70%;
+    height: auto;
 }

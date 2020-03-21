@@ -23,7 +23,18 @@ export default ({ children }) => {
     const [gamesList, setGamesList] = useState([]);
     const [editListMenuActive, setEditListMenuActive] = useState(false);
     const [listCreated, setListCreated] = useState(false);
-    const [listExists, setListExists] = useState(false);
+    const [editList, setEditList] = useState(false);
+    const [editName, setEditName] = useState(false);
+
+    const [inputValidation, setInputValidation] = useState(false);
+
+    const [userLogged, setUserLogged] = useState(false);
+
+    const [messageSuccess, setMessageSuccess] = useState(false);
+
+    const [deleteElement, setDeleteElement] = useState(false);
+    const [askDelete, setAskDelete] = useState(false);
+    const [listName, setListName] = useState(false);
 
 
 
@@ -87,6 +98,38 @@ export default ({ children }) => {
         listCreated: listCreated,
         setListCreated: (value) => {
             setListCreated(value);
+        },
+        editList: editList,
+        setEditList: (value) => {
+            setEditList(value);
+        },
+        editName: editName,
+        setEditName: (value) => {
+            setEditName(value);
+        },
+        inputValidation: inputValidation,
+        setInputValidation: (value) => {
+            setInputValidation(value);
+        },
+        userLogged: userLogged,
+        setUserLogged: (value) => {
+            setUserLogged(value);
+        },
+        messageSuccess: messageSuccess,
+        setMessageSuccess: (value) => {
+            setMessageSuccess(value);
+        },
+        deleteElement: deleteElement,
+        setDeleteElement: (value) => {
+            setDeleteElement(value);
+        },
+        askDelete: askDelete,
+        setAskDelete: (value) => {
+            setAskDelete(value);
+        },
+        listName: listName,
+        setListName: (value) => {
+            setListName(value);
         }
     };
 

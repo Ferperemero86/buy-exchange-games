@@ -5,7 +5,10 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json({ type: "application/json" });
 const User = require("../db/models/user");
 const userAuthentication = require("../authentication");
-const { InsertGameInListError, ListDoesNotExistError, ListAlreadyExistsError } = require("./errors");
+const {
+    GenericError,
+    ListDoesNotExistError,
+    ListAlreadyExistsError } = require("./errors");
 
 const validation = require("../validation");
 
@@ -25,7 +28,6 @@ router.post("/games/xbox", jsonParser, (req, res) => {
 
     axiosModule.apiCall("games", "GET", query)
         .then(response => {
-            console.log(response);
             res.json({ gamesContent: response.data })
         })
 });
@@ -44,7 +46,6 @@ router.post("/games/details", jsonParser, (req, res) => {
 
     axiosModule.apiCall("games", "GET", query)
         .then(response => {
-            console.log(response.data);
             res.json({ gameDetails: response.data })
         })
 })
@@ -61,28 +62,22 @@ router.post("/createlist",
             knex("lists")
                 .where("user_id", userId)
                 .then(result => {
-                    console.log(result);
                     if (result.length > 0) {
-                        reject(ListAlreadyExistsError())
+                        reject(new ListAlreadyExistsError())
                     }
                     resolve()
                 })
         })
             .then(result => {
                 knex("lists")
-                    .insert({ user_id: userId, name: listName })
+                    .insert({ user_id: userId, list_name: listName })
                     .then(result => {
-                        console.log(result)
-                        res.json({ listCreated: true })
+                        res.json({ listCreated: true, listName })
                     })
             })
             .catch(err => {
-                console.log(err);
+                res.json({ err })
             })
-        knex
-            .raw(`INSERT INTO lists (user_id, name) VALUES ('${userId}','${listName}')`)
-            .then(result => res.send(JSON.stringify(result.rows)))
-            .catch(err => console.log(err))
     });
 
 router.post("/addgametolist",
@@ -98,6 +93,8 @@ router.post("/addgametolist",
             .then(response => {
                 const nameString = gameDetails.name;
                 const cover = gameDetails.cover.url;
+                const id = gameDetails.id;
+                const platform = gameDetails.platform;
                 const name = nameString.replace("'", "");
 
                 return new Promise((resolve, reject) => {
@@ -107,22 +104,26 @@ router.post("/addgametolist",
                     const listId = response[0].id;
 
                     knex("games_in_list")
-                        .where("id", gameDetails.id)
+                        .where({
+                            game_id: gameDetails.id,
+                            list_id: listId
+                        })
                         .then(result => {
-                            if (result.length < 1) {
-                                knex("games_in_list")
-                                    .insert({
-                                        "id": gameDetails.id,
-                                        "list_id": listId,
-                                        "name": name,
-                                        "cover": cover
-                                    })
-                                    .then(result => {
-                                        resolve(result);
-                                    })
-                            } else {
-                                reject(new GameAlreadyExistsError())
-                            }
+                            //if (result.length < 1) {
+                            knex("games_in_list")
+                                .insert({
+                                    "game_id": id,
+                                    "list_id": listId,
+                                    "platform": platform,
+                                    "name": name,
+                                    "cover": cover
+                                })
+                                .then(result => {
+                                    resolve(result);
+                                })
+                            // } else {
+                            //reject(new GameAlreadyExistsError())
+                            // }
                         })
                 });
             })
@@ -140,39 +141,37 @@ router.get("/getlist",
     acl(User, "save"),
     (req, res) => {
         const userId = req.user.id;
-        //const gamesListCreated = false;
-        console.log(userId);
 
         knex("lists")
             .where("user_id", userId)
             .then(response => {
-                console.log(response);
                 return new Promise((resolve, reject) => {
                     if (response.length > 0) {
-                        resolve()
-                    } else {
-                        reject()
+                        resolve(response[0])
                     }
+                    reject(new ListDoesNotExistError())
                 })
             })
             .then(result => {
-                console.log("sorted");
+                const listId = result.id;
+                const listName = result.list_name;
+
                 knex
-                    .raw(`SELECT games_in_list.id, games_in_list.list_id, games_in_list.name, games_in_list.cover
-                    FROM games_in_list
-                    JOIN lists ON lists.id = games_in_list.list_id
-                    where user_id = ${userId}`)
+                    .select("lists.list_name", "games_in_list.game_id", "games_in_list.list_id", "games_in_list.platform", "games_in_list.name", "games_in_list.cover")
+                    .from('games_in_list')
+                    .leftJoin('lists', 'lists.id', 'games_in_list.list_id')
+                    .where({ list_id: listId })
                     .then(response => {
-                        console.log(response.rows);
-                        if (!response.rows) {
-                            res.json({ gamesList: "No games in list", listExists: true })
-                        }
-                        res.json({ gamesList: response.rows, listExists: true })
+                        res.json({
+                            gamesList: response,
+                            listCreated: true,
+                            listName
+                        })
                     })
+
             })
             .catch(err => {
-                //res.json({ error })
-                console.log(err);
+                res.json({ err })
             });
     });
 
@@ -181,17 +180,35 @@ router.post("/deletelist",
     userAuthentication,
     acl(User, "save"),
     (req, res) => {
-        console.log("post delete");
         const userId = req.user.id;
 
         knex("lists")
             .where("user_id", userId)
             .del()
             .then(response => {
-                console.log(response);
+                res.json({ listDeleted: true });
             })
             .catch(err => {
-                console.log(err)
+                res.json({ err: new GenericError() })
+            })
+    })
+
+router.post("/editlistname",
+    jsonParser,
+    userAuthentication,
+    acl(User, "save"),
+    (req, res) => {
+        const userId = req.user.id;
+        const name = req.body.dataContent;
+
+        knex("lists")
+            .where("user_id", userId)
+            .update({ list_name: name })
+            .then(response => {
+                res.json({ listNameUpdated: name })
+            })
+            .catch(err => {
+                res.json({ err: new GenericError() })
             })
     })
 

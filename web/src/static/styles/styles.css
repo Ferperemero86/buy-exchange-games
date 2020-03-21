@@ -1,8 +1,10 @@
 @import "./Header.css";
 @import "./Home.css";
-@import "./resset.css";
+@import "./Resset.css";
 @import "./styles.css";
-@import "./general.css";
-@import "./explore.css";
-@import "./details/details.css";
-@import "./account/gameslist.css";
+@import "./General.css";
+@import "./Explore.css";
+@import "./details/Details.css";
+@import "./forms/UserForm.css";
+@import "./account/Gameslist.css";
+@import "./Messages.css";

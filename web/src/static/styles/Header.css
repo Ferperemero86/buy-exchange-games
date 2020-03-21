@@ -1,6 +1,6 @@
 .main-header {
     width: 100%;
-    padding: 15px 0 15px 0;
+    padding: 15px 0 25px 0;
     overflow: hidden;
     height: 100px;
     background-color: #000;
@@ -33,7 +33,7 @@
 }
 
 .header-main-nav ul > li {
-    padding: 0 10px 0 10px;
+    padding: 0 15px 0 15px;
     display: inline-block;
     text-align: center;
 }
@@ -61,6 +61,11 @@
     float: left;
     display: block;
     width: 50%;
+    padding: 2px;
+}
+
+.header-account-nav ul > li:hover {
+    cursor: pointer;
 }
 
 .header-navs {
@@ -69,18 +74,78 @@
 }
 
 .header-search {
-    margin: 25px 5% 0 0;
-    float: right;
-    width: 170px;
+    margin: 30px 25%;
+    width: 50%;
+    border: 2px solid #fff;
+    overflow: hidden;
+}
+@media screen and (min-width: 1200px) {
+    .header-search {
+        width: 30%;
+    }
 }
 
 .header-search input {
-    border: 2px solid;
-    height: 20px;
-    border-radius: 15px;
+    width: 93%;
+    float: right;
+    height: 30px;
+    border: 0;
 }
 
 .header-search .search-icon {
-    margin-right: 5%;
+    float: left;
+    color: #fff;
+    margin: 0 2% 0 0;
+    text-align: center;
+}
+
+.header-search .icon {
+    position: relative;
+    top: 5px;
+    left: 10px;
+}
+
+.account-menu {
+    position: absolute;
+    display: inline-block;
+    color: #fff;
+    top: 45px;
+    margin: 0 0 0 100px;
+}
+
+.account-menu span {
+    background-color: #ffd700;
+    color: #000;
+    padding: 2px 4px;
+}
+  
+.account-menu-list {
+  display: none;
+  position: relative;
+  background-color: #fff;
+  margin: 10px 0 0 0;
+  z-index: 1;
+}
+
+.account-menu-list .list-element {
+  width: 150px;
+  padding: 10px 3px;
+  color: #000;
+  font-size: 0.8em;
+}
+
+.account-menu-list .list-element:hover {
+    background-color: #000;
     color: #fff;
 }
+  
+.account-menu:hover .account-menu-list {
+  display: block;
+}
+
+.account-menu:hover,
+.account-menu-list:hover {
+    cursor: pointer;
+}
+
+

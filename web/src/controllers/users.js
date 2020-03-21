@@ -5,7 +5,8 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json({ type: "application/json" });
 const User = require("../db/models/user");
 const userAuthentication = require("../authentication");
-const { InsertGameInListError, ListDoesNotExistError } = require("./errors");
+const {
+  RegistrationError } = require("./errors");
 
 const validation = require("../validation");
 
@@ -27,7 +28,7 @@ router.post("/user", jsonParser, (req, res) => {
   );
 
   if (valuesValidation) {
-    res.status(400).json({ valuesValidation });
+    return res.json({ inputValidation: valuesValidation });
   }
 
   const salt = bcrypt.genSaltSync(10);
@@ -41,7 +42,7 @@ router.post("/user", jsonParser, (req, res) => {
       .catch(err => {
         res
           .status(500)
-          .json({ error: "Failed to save user, please try again" });
+          .json({ error: new RegistrationError() });
       })
       .then(user => {
         res.json({ user });
@@ -50,6 +51,8 @@ router.post("/user", jsonParser, (req, res) => {
 });
 
 router.post("/session", jsonParser, userAuthentication);
+
+router.post("/header", jsonParser, userAuthentication);
 
 router.post(
   "/editpass",
@@ -68,7 +71,7 @@ router.post(
         .catch(err => {
           res
             .status(500)
-            .json({ error: "Failed to update password, please try again" });
+            .json({ error: "Could not edit pass" });
         });
     });
   }

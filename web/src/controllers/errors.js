@@ -25,8 +25,22 @@ class ListAlreadyExistsError extends CustomError {
     }
 }
 
+class GenericError extends CustomError {
+    constructor() {
+        super(`Something went wrong`);
+    }
+}
+
+class RegistrationError extends CustomError {
+    constructor() {
+        super(`Could not save user`);
+    }
+}
+
 module.exports = {
     GameAlreadyExistsError,
     ListDoesNotExistError,
-    ListAlreadyExistsError
+    ListAlreadyExistsError,
+    RegistrationError,
+    GenericError
 }

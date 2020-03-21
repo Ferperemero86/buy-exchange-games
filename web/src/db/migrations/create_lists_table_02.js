@@ -3,7 +3,7 @@ exports.up = function (knex) {
         .createTable("lists", table => {
             table.increments("id");
             table.integer("user_id");
-            table.string("name");
+            table.string("list_name");
         })
 }
 
