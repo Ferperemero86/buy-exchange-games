@@ -5,18 +5,11 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json({ type: "application/json" });
 const User = require("../db/models/user");
 const userAuthentication = require("../authentication");
-const {
-  RegistrationError } = require("./errors");
 
 const validation = require("../validation");
 
 const acl = require("../controllers/acl");
 
-router.get("/test", (req, res) => {
-  knex
-    .raw("SELECT * from users")
-    .then(result => res.send(JSON.stringify(result.rows)));
-});
 
 router.post("/user", jsonParser, (req, res) => {
   const password = req.body.password;
@@ -50,9 +43,8 @@ router.post("/user", jsonParser, (req, res) => {
   });
 });
 
-router.post("/session", jsonParser, userAuthentication);
+router.post('/session', jsonParser, userAuthentication);
 
-router.post("/header", jsonParser, userAuthentication);
 
 router.post(
   "/editpass",

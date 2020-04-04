@@ -38,7 +38,7 @@ const UserForm = ({ URL }) => {
                 setUserLogged(true);
             })
             .catch(err => {
-                console.log(err);
+                console.log(err.response.data);
             });
     }
 

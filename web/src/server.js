@@ -27,11 +27,6 @@ nextApp.prepare().then(() => {
     saveUninitialized: false
   };
 
-  server.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    next();
-  });
 
   server.use(cookieParser('W$q4=25*8%v-}UV'));
   server.use(session(sess));
@@ -44,34 +39,43 @@ nextApp.prepare().then(() => {
         usernameField: "email",
       },
       (email, password, done) => {
-        User.where({ email })
-          .fetch()
-          .then(
-            user =>
-              new Promise((resolve, reject) => {
-                bcrypt.compare(
-                  password,
-                  user.get("password"),
-                  (err, response) => {
-                    if (err || !response) {
-                      return reject(err);
-                    }
-                    resolve(user);
-                  }
-                );
-              })
-          )
-          .catch(err => done(null, false))
-          .then(user => done(null, user));
-      }
-    )
-  );
+        return User .where("email", email)
+        .fetch({ require: true })
+        .then(user => {
+          return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.get("password"), (err, matched) => {
+              if (err) { 
+                return reject(err)
+              };
+
+              if (!matched) { 
+                return reject(); 
+              }
+
+              resolve(user);
+
+            });
+          })
+      })
+      .then(user => {
+        done(null, user)
+      })
+      .catch(err => {
+        if (err) {
+          return done(err);
+        }
+        return done (null, false);
+      })
+    })
+  )
+  
 
   server.use("/api", routes);
 
   server.get("*", (req, res) => {
     return handle(req, res);
   });
+
 
   server.listen(port, err => {
     if (err) throw err;
