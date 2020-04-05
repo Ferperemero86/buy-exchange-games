@@ -29,6 +29,7 @@ const UserForm = ({ URL }) => {
 
         axios.post(`/api/${URL}`, userData)
             .then(result => {
+                console.log(result.data);
                 const inputValidation = result.data.inputValidation;
 
                 if (inputValidation) {

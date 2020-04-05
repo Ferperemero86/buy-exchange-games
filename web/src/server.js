@@ -39,7 +39,8 @@ nextApp.prepare().then(() => {
         usernameField: "email",
       },
       (email, password, done) => {
-        return User .where("email", email)
+        return User 
+        .where("email", email)
         .fetch({ require: true })
         .then(user => {
           return new Promise((resolve, reject) => {

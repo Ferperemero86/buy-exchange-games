@@ -33,8 +33,10 @@ const HeaderAccountNav = () => {
     const router = useRouter();
 
     useEffect(() => {
-        if (!userLogged && cookie.load("user_id")) {
+        if (cookie.load("user_id")) {
             setUserLogged(true);
+        } else {
+            setUserLogged(false);
         }
     })
 

@@ -26,21 +26,29 @@ router.post("/user", jsonParser, (req, res) => {
 
   const salt = bcrypt.genSaltSync(10);
 
-  bcrypt.hash(password, salt, (err, hash) => {
-    new User({
-      email,
-      password: hash,
+  return User
+    .where("email", email)
+    .fetch()
+    .then ( result => {
+      if (result) {
+        return res.status(400).json({ userExists: true });  
+      }
     })
-      .save()
-      .catch(err => {
-        res
-          .status(500)
-          .json({ error: new RegistrationError() });
-      })
-      .then(user => {
-        res.json({ user });
+    .catch(err => {
+      return bcrypt.hash(password, salt, (err, hash) => {
+        if (err) {
+          return res.status(500).json({ register: "wrong" })
+        }
+        
+        new User({
+          email,
+          password: hash,
+        })
+          .save();
+      
+          return res.json({ register: true });
       });
-  });
+    })
 });
 
 router.post('/session', jsonParser, userAuthentication);
