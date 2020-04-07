@@ -1,0 +1,115 @@
+.create-list {
+    width: 100%;
+    overflow: hidden;
+}
+
+.user-list .heading {
+    margin: 50px 0 0 5%;
+    font-size: 1.4em;
+ }
+ 
+.edit-list {
+    float: right;
+    margin: 20px 15% 0 0;
+    position: relative;
+    right: 0;
+}
+
+.edit-list .span {
+    background-color: #000;
+    color: #fff;
+    padding: 2px 4px 2px 4px;
+}
+
+.edit-list .span:hover,
+.edit-list .list li:hover {
+    cursor: pointer;
+}
+
+.edit-list .list {
+    position: absolute;
+    font-size: 0.8em;
+    width: 100px;
+    top: 20px;
+    border: 1px solid;
+    background-color: #000;
+    color: #fff;
+    border: 0;
+}
+@media screen and (min-width: 800px) {
+    .edit-list .list {
+        left: 70px;
+    }
+}
+
+.edit-list .list li {
+    padding: 5px 3px 5px 3px;
+    border-top: 1px solid #fff;
+}
+
+.create-list-form {
+   width: 100%;
+}
+
+.create-list-form .label {
+    margin: 30px 0 0 5%;
+    display: block; 
+}
+
+.create-list-form .input {
+    width: 70%;
+    height: 20px;
+    border: 2px solid;
+    margin: 5px 0 0 5%;
+}
+
+.create-list-form .button {
+    width: 20%;
+    height: 24px;
+    background-color: #000;
+    border: 0;
+    color: #fff;
+    margin: 0 0 0 5px;
+}
+
+.games-list {
+    width: 100%;
+    margin: 50px 0 0 0;
+    padding: 0 0 0 4%;
+}
+
+.games-list .game {
+    float: left;
+    text-align: center;
+    width: 50%;
+    border: 1px solid #000;
+    margin: 50px auto;
+}
+@media screen and (min-width: 800px) {
+    .games-list .game {
+      width: 264px;
+      height: 264px;
+      float: left;
+      margin: 50px 1%;
+      overflow: hidden; 
+      color: #fff;
+    }
+    .create-list-form .input {
+        width: 300px;
+    }
+
+    .create-list-form .button {
+        width: 100px;
+    }
+}
+
+.games-list .game .name {
+    margin: 5px 0 0 0;
+}
+
+.games-list .game .cover {
+    margin: 15px 0 0 0;
+    border: 0;
+    max-width: 70%;
+    height: auto;
+}

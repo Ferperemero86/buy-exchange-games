@@ -1,0 +1,151 @@
+.main-header {
+    width: 100%;
+    padding: 15px 0 25px 0;
+    overflow: hidden;
+    height: 100px;
+    background-color: #000;
+    border: 1px solid;
+}
+
+.header-logo {
+    float: left;
+    width: 30%;
+}
+
+.header-logo-image {
+    margin: 20px 0 0 5%;
+    width: 150px;
+    height: auto;
+}
+
+.header-main-nav {
+    width: 300px;
+    overflow: hidden;
+    float: left;
+    margin: 30px 0 0 0;
+    color: #fff;
+    font-family: Helvetica;
+}
+
+.header-main-nav ul {
+    width: 100%;
+    float: left;
+}
+
+.header-main-nav ul > li {
+    padding: 0 15px 0 15px;
+    display: inline-block;
+    text-align: center;
+}
+
+.header-main-nav ul > li:hover {
+    cursor: pointer;
+}
+
+.header-account-nav {
+    width: 150px;
+    margin: 30px 0 0 10%;
+    overflow: hidden;
+    float: left;
+    font-weight: bolder;
+    font-family: Helvetica;
+    color: #fff;
+}
+
+.header-account-nav ul {
+    width: 100%;
+    float: right;
+}
+
+.header-account-nav ul > li {
+    float: left;
+    display: block;
+    width: 50%;
+    padding: 2px;
+}
+
+.header-account-nav ul > li:hover {
+    cursor: pointer;
+}
+
+.header-navs {
+    width: 70%;
+    overflow: hidden;
+}
+
+.header-search {
+    margin: 30px 25%;
+    width: 50%;
+    border: 2px solid #fff;
+    overflow: hidden;
+}
+@media screen and (min-width: 1200px) {
+    .header-search {
+        width: 30%;
+    }
+}
+
+.header-search input {
+    width: 93%;
+    float: right;
+    height: 30px;
+    border: 0;
+}
+
+.header-search .search-icon {
+    float: left;
+    color: #fff;
+    margin: 0 2% 0 0;
+    text-align: center;
+}
+
+.header-search .icon {
+    position: relative;
+    top: 5px;
+    left: 10px;
+}
+
+.account-menu {
+    position: absolute;
+    display: inline-block;
+    color: #fff;
+    top: 45px;
+    margin: 0 0 0 100px;
+}
+
+.account-menu span {
+    background-color: #ffd700;
+    color: #000;
+    padding: 2px 4px;
+}
+  
+.account-menu-list {
+  display: none;
+  position: relative;
+  background-color: #fff;
+  margin: 10px 0 0 0;
+  z-index: 1;
+}
+
+.account-menu-list .list-element {
+  width: 150px;
+  padding: 10px 3px;
+  color: #000;
+  font-size: 0.8em;
+}
+
+.account-menu-list .list-element:hover {
+    background-color: #000;
+    color: #fff;
+}
+  
+.account-menu:hover .account-menu-list {
+  display: block;
+}
+
+.account-menu:hover,
+.account-menu-list:hover {
+    cursor: pointer;
+}
+
+
