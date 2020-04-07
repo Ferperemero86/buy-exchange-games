@@ -41,31 +41,36 @@ nextApp.prepare().then(() => {
       (email, password, done) => {
         return User 
         .where("email", email)
-        .fetch({ require: true })
+        .fetch({ require: false })
         .then(user => {
+          console.log(user);
           return new Promise((resolve, reject) => {
+            if (!user) {
+              return reject("userNoExists");
+            }
+  
             bcrypt.compare(password, user.get("password"), (err, matched) => {
               if (err) { 
-                return reject(err)
-              };
-
-              if (!matched) { 
-                return reject(); 
+                return reject();
               }
-
-              resolve(user);
-
+              if (!matched) { 
+                console.log("password do not match");
+                return reject("passwordDoNotMatch"); 
+              }
+              return resolve(user);
             });
-          })
+          
+        })
       })
       .then(user => {
-        done(null, user)
+        return done(null, user);
       })
       .catch(err => {
-        if (err) {
-          return done(err);
+        console.log(err);
+        if (err && (err === "userNoExists" || err === "passwordDoNotMatch") ) {
+          return done(null, false);
         }
-        return done (null, false);
+        return done(err);
       })
     })
   )

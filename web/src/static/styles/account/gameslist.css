@@ -1,3 +1,8 @@
+.create-list {
+    width: 100%;
+    overflow: hidden;
+}
+
 .user-list .heading {
     margin: 50px 0 0 5%;
     font-size: 1.4em;
@@ -77,6 +82,7 @@
     float: left;
     text-align: center;
     width: 50%;
+    border: 1px solid #000;
     margin: 50px auto;
 }
 @media screen and (min-width: 800px) {
@@ -85,9 +91,7 @@
       height: 264px;
       float: left;
       margin: 50px 1%;
-      border: 1px solid;
-      overflow: hidden;
-      background-color: #000;
+      overflow: hidden; 
       color: #fff;
     }
     .create-list-form .input {

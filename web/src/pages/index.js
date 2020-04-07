@@ -1,38 +1,58 @@
-import React from 'react';
+import {useEffect, useContext} from "react";
 import Link from 'next/link';
+import fetchApiData from "../utils/API";
+import {StoreContext} from "../utils/store";
 
-import ExploreGames from "../components/ExploreGames";
+export async function getServerSideProps() {
+  const ps4 = await fetchApiData("games", "POST", `fields platforms.name, cover.url; limit 1; where platforms = {48};`);
+  const xbox = await fetchApiData("games", "POST", `fields platforms.name, cover.url; limit 1; where platforms = {49};`);
+  const pc = await fetchApiData("games", "POST", `fields platforms.name, cover.url; limit 1; where platforms = {6};`);
+  const gamesFromServer = {ps4, xbox, pc};
 
-const PlatformGames = ({ title, platform, platformId }) => {
+  return {props: {gamesFromServer}};
+};
+
+const Games = () => {
+  const {games} = useContext(StoreContext);
+
+  return Object.keys(games).map(index => {   
+    let cover = games[index][0].cover;
+    const gameId = games[index][0].id;
+    const platform = index;
+    const URL = index;
+
+    if(cover) {
+      cover = cover.url;
+    }
+    
+    return(
+      <Link href={{ pathname: `/explore/${URL}`, query: {page: 1} }} key={gameId} >
+        <div className="game-container">
+          <img src={`${cover}`} className="cover" />
+          <p className="title">{platform}</p>
+        </div>
+      </Link>
+    )
+  });
+}
+
+const Home = ({ gamesFromServer }) => {
+  const {setGames} = useContext(StoreContext);
+  const {setMessage} = useContext(StoreContext);
+
+  useEffect(() => {
+    setMessage(false);
+    setGames(gamesFromServer);
+  });
+
   return (
-    <div className="platform-games-container">
-      <ExploreGames
-        title={title}
-        platform={platform}
-        dataContent={`fields name, cover.url, id; where platforms = {${platformId}} & release_dates.date > 1567296000;limit 1;`} />
+  <div id="home">
+    <div className="explore-games">
+      <Games />
     </div>
+  </div>
   )
 }
 
+export default Home;
 
-export default class extends React.Component {
-  render() {
-    return (
-      <div className="home-games-container">
-        <h2 className="home-main-header">Find your Game</h2>
-        <PlatformGames
-          title="PS4 GAMES"
-          platform="ps4"
-          platformId="48" />
-        <PlatformGames
-          title="XBOX GAMES"
-          platform="xbox"
-          platformId="49" />
-        <PlatformGames
-          title="PC GAMES"
-          platform="pc"
-          platformId="6" />
-      </div>
-    )
-  }
-}

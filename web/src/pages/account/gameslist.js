@@ -1,21 +1,20 @@
-import React, { useContext, useEffect } from "react";
-import { StoreContext } from "../../utils/store";
+import React, {useContext, useEffect} from "react";
+import {StoreContext} from "../../utils/store";
 
-import axiosModule from "../../utils/APIcall";
+import axios from "axios";
 
 import DeleteQuestion from "../../components/messages/DeleteQuestion";
-import SuccessMessage from "../../components/messages/Success";
+import Messages from "../../components/messages/Messages";
 
-import { useRouter } from 'next/router';
+const ListInput = () => {
+    const {createListInputValue, setCreateListInputValue} = useContext(StoreContext);
+    const {createListInput, setCreateListInput} = useContext(StoreContext);
+    const {setEditListMenuActive} = useContext(StoreContext);
+    const {setEditName} = useContext(StoreContext);
+    const {setEditList} = useContext(StoreContext);
+    const {setListCreated} = useContext(StoreContext);
+    const {setMessage} = useContext(StoreContext);
 
-
-const ListInput = ({ listURL, title }) => {
-    const { createListInputValue, setCreateListInputValue } = useContext(StoreContext);
-    const { setEditListMenuActive } = useContext(StoreContext);
-    const { setEditName } = useContext(StoreContext);
-    const { setListName } = useContext(StoreContext);
-    const { setListCreated } = useContext(StoreContext);
-    const { setMessageSuccess } = useContext(StoreContext);
 
     const updateInputValue = (e) => {
         setCreateListInputValue(e.target.value)
@@ -24,64 +23,72 @@ const ListInput = ({ listURL, title }) => {
     const sendInputData = (e) => {
         e.preventDefault();
 
-        const inputValue = (createListInputValue);
-
-        axiosModule.getPostCall(`/api/${listURL}`, "POST", inputValue)
-            .then(response => {
-                const listCreated = response.data.listCreated;
-                const listNameUpdated = response.data.listNameUpdated;
-                const name = response.data.listName;
-
+        axios({
+            url: `/api/createlist`,
+            method: "POST",
+            data: {listName: createListInputValue}
+        })
+            .then(result => {
+                console.log(result);
+                const success = result.data;
+                const listCreated = result.data.listCreated;
+                const listNameUpdated = result.data.listNameUpdated;
+                const name = result.data.listName;
+                
                 if (listCreated) {
+                    console.log("list created!");
                     setListCreated(true);
-                    setEditListMenuActive(false);
-                    setListName(name);
+                    setEditListMenuActive(true);
+                    //setListName(name);
+                    setEditList(false);
+                    setCreateListInput(false);
+                    setMessage(success);
                 } else {
                     setListName(false);
                 }
 
                 if (listNameUpdated) {
                     setListName(listNameUpdated);
-                    //setMessageSuccess("List Name updated");
+                    setMessage("List Name updated");
+                    timeOut(setMessageSuccess, false);
                     setEditListMenuActive(false);
                     setEditName(false);
-
-                    const timer = setTimeout(() => {
-                        setMessageSuccess(false);
-                    }, 3000);
-                    return () => clearTimeout(timer);
                 }
             })
             .catch(err => {
-                console.error(err);
+                console.log(err);
+                setMessage(err);
             });
     };
 
     return (
-        <form className="create-list-form">
-            <label className="label">{title}</label>
-            <input
-                type="text"
-                onChange={updateInputValue}
-                value={createListInputValue}
-                className="input" />
-            <button
-                onClick={sendInputData}
-                className="button">Send</button>
-        </form>
-    )
+        <div className="create-list">
+            <form className="create-list-form">
+                <label className="label">New List</label>
+                <input
+                    type="text"
+                    onChange={updateInputValue}
+                    value={createListInputValue}
+                    className="input" />
+                <button
+                    onClick={sendInputData}
+                    className="button">Send</button>
+            </form>
+        </div>
+    )  
 };
 
 const EditList = () => {
     const { editListMenuActive, setEditListMenuActive } = useContext(StoreContext);
     const { setAskDelete } = useContext(StoreContext);
     const { setEditName } = useContext(StoreContext);
+    const {editList, setEditList} = useContext(StoreContext);
 
     const toggleEditMenu = () => {
-        if (!editListMenuActive) {
-            return setEditListMenuActive(true)
+        if (!editList) {
+            return setEditList(true)
         }
-        setEditListMenuActive(false);
+        setEditList(false);
     };
 
     const askForListDelete = () => {
@@ -90,7 +97,6 @@ const EditList = () => {
 
     const editListName = () => {
         setEditName(true);
-
     }
 
     const List = () => {
@@ -102,21 +108,24 @@ const EditList = () => {
         )
     }
 
-    return (
-        <div className="edit-list">
-            <span
-                className="span"
-                onClick={toggleEditMenu}>Edit List</span>
-            {editListMenuActive === true && <List />}
-        </div>
-    )
+    if(editListMenuActive) {
+        return (
+            <div className="edit-list">
+                {console.log(editList)}
+                <span
+                    className="span"
+                    onClick={toggleEditMenu}>Edit List</span>
+                {editList === true && <List />}
+            </div>
+        )
+    }
+    return null;
 }
-
 
 const Games = () => {
     const { gamesList } = useContext(StoreContext);
     let gameId = 0;
-
+    
     return (
         <div className="games-list">
             {
@@ -139,85 +148,101 @@ const Games = () => {
 };
 
 const UserList = () => {
-    const { listCreated } = useContext(StoreContext);
-    const { editName } = useContext(StoreContext);
-    const { gamesList, setGamesList } = useContext(StoreContext);
-    const { askDelete, setAskDelete } = useContext(StoreContext);
-    const { setEditListMenuActive } = useContext(StoreContext);
-    const { setListCreated } = useContext(StoreContext);
-    const { messageSuccess, setMessageSuccess } = useContext(StoreContext);
-    const { listName, setListName } = useContext(StoreContext);
-    const { userLogged, setUserLogged } = useContext(StoreContext);
-    const { createListInputValue, setCreateListInputValue } = useContext(StoreContext);
-    const router = useRouter();
+    const {currentPage, setCurrentPage} = useContext(StoreContext);
+    const {gamesList, setGamesList} = useContext(StoreContext);
+    const {askDelete, setAskDelete} = useContext(StoreContext);
+    const {setEditListMenuActive} = useContext(StoreContext);
+    const {setEditList} = useContext(StoreContext);
+    const {setListCreated} = useContext(StoreContext);
+    const {message, setMessage} = useContext(StoreContext);
+    const {setListName} = useContext(StoreContext);
+    const {setCreateListInput} = useContext(StoreContext);
 
     useEffect(() => {
-        axiosModule.getPostCall("/api/getlist", "GET", "")
-            .then(response => {
-                const gamesListResult = response.data.gamesList;
-                const listName = response.data.listName;
 
-                if (response.data.listCreated) {
+        axios({
+            url: "/api/getlist", 
+            method: "GET"
+        })
+            .then(result => {
+                const gamesListResult = result.data.gamesList;
+                const listName = result.data.listName;
+                const listCreated = result.data.listCreated;
+                console.log(result);
+                if (listCreated) {
                     setListCreated(true);
                     setListName(listName);
+                    setCreateListInput(false);
+                    setEditListMenuActive(true);
+                    setEditList(false);
                 } else {
                     setListCreated(false);
+                    setCreateListInput(true);
+                    setCreateListInputValue("");
                 }
 
                 if (gamesListResult) {
                     setGamesList(gamesListResult);
+                    setCreateListInput(false);
                 }
 
-            })
+            }, [gamesList.length])
             .catch(err => {
-                if (!userLogged) {
-                    router.push({ pathname: `/account/login` });
+                console.log(err.response.data);
+                if (err.response) {
+                    const error = err.response.data;
+    
+                    setMessage(error);
                 }
             });
     }, [gamesList.length]);
 
     const deleteList = () => {
-        axiosModule.getPostCall("/api/deletelist", "POST", "")
-            .then(response => {
-                if (response.data.listDeleted) {
-                    setListCreated(false);
-                    setGamesList([]);
-                    setEditListMenuActive(false);
-                    setMessageSuccess("List Deleted!")
-                    setAskDelete(false);
-                    setListName(false);
-                    setCreateListInputValue("");
+        axios({ 
+            url: "/api/deletelist", 
+            method: "POST" 
+        })
+            .then(result => {
+                console.log(result);
+                if (result) {
+                    const success = result.data;
 
-                    const timer = setTimeout(() => {
-                        setMessageSuccess(false);
-                    }, 3000);
-                    return () => clearTimeout(timer);
+                    if(success.listDeleted) {
+                        console.log("list deleted!");
+                        setListCreated(false);
+                        setGamesList([]);
+                        setEditListMenuActive(false);
+                        setEditList(false);
+                        setMessage(success);
+                        setAskDelete(false);
+                        setListName("");
+                        setCreateListInput(false);
+                    }
                 }
             })
             .catch(err => {
-                console.error(err);
+                console.log(err);
+                setMessage(err);
+                setEditListMenuActive(false);
+                setAskDelete(false);
             });
-    }
+    };
 
     return (
         <div className="user-list">
-            <DeleteQuestion
-                showQuestion={askDelete}
+            {console.log(message)}
+            <Messages 
+                page="gameslist" 
+                message={message} 
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                clearMessage={setMessage}/>
+            <DeleteQuestion 
+                showQuestion={askDelete} 
                 action={deleteList} />
-            <SuccessMessage
-                message={messageSuccess}
-                elementClass="games-list-success" />
-            {!listCreated && <ListInput
-                listURL="createlist"
-                title="Create List" />
-            }
-            {listCreated && <EditList />}
-            {editName && <ListInput
-                listURL="editlistname"
-                title="Edit Name" />
-            }
-            <h1 className="heading">{listName}</h1>
-            {listCreated && <Games />}
+            <ListInput />
+            <EditList />
+            <Games />
         </div>
     )
 }

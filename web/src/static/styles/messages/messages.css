@@ -1,0 +1,84 @@
+/*****SUCCESS MESSAGES*****/
+
+.success-message {
+    border: 2px solid #32cd32;
+    padding: 5px 10px;
+    display: inline-block;
+}
+
+/*GamesList*/
+
+.success-message.games-list-success {
+    right: 30%;
+}
+
+/*Details*/
+
+.success-message.details {
+    float: left;
+}
+
+
+/*****ERROR MESSAGES*****/
+
+.error-message {
+    background-color: #ff5733;
+    color: #e0e0e0;
+    opacity: .8;
+    padding: 2px 3px;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    bottom: 10px;
+}
+
+.error-message.addgame {
+    margin: 0 0 0 5%;
+}
+
+.error-message.gameslist {
+    margin: 20px 0 0 5%;
+}
+
+.error-message.details {
+  float: left;
+  bottom: 5px;
+}
+@media screen and (min-width: 630px) {
+    .error-message.details {
+        margin: 0 0 0 10%;
+        bottom: -20px;
+    }
+    
+}
+
+
+
+
+/*****DELETE QUESTION*****/
+
+.delete-question {
+    position: absolute;
+    border: 1px solid;
+    transform: translate(-50%, -50%);
+    top: 400px;
+    left: 50%;
+    text-align: center;
+    padding: 40px 100px;
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    border: 0;
+    z-index: 1;
+}
+
+.delete-question .heading {
+    margin: 0 0 10px 0;
+}
+
+.delete-question .button {
+    margin: 0 5px;
+    background-color: #fff;
+    border: 0;
+    padding: 3px 6px;
+}

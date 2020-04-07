@@ -2,25 +2,18 @@ import React, { useState } from "react";
 
 export const StoreContext = React.createContext(null);
 
-export default ({ children }) => {
+const Store = ({ children }) => {
 
     const [games, setGames] = useState([]);
-    const [recentGamesLink, setRecentGamesLink] = useState("all-games-link-styles");
-    const [allGamesLink, setAllGamesLink] = useState("");
-    const [content, setContent] = useState("");
-    const [gamesIndex, setGamesIndex] = useState(0);
-
-    const [gameName, setGameName] = useState(null);
-    const [gameDetails, setGameDetails] = useState([]);
-    const [selectedIndexClass, setSelectedIndexClass] = useState("");
+    const [gamesList, setGamesList] = useState([]);
+    const [page, setPage] = useState(1);
+    const [platform, setPlatform] = useState("");
 
     const [createListInputValue, setCreateListInputValue] = useState("");
+    const [createListInput, setCreateListInput] = useState(false);
     const [loginUsernameValue, setLoginUsernameValue] = useState("");
     const [loginPassValue, setLoginPassValue] = useState("");
 
-    const [gameToBeaddedId, setGameToBeAddedId] = useState("");
-
-    const [gamesList, setGamesList] = useState([]);
     const [editListMenuActive, setEditListMenuActive] = useState(false);
     const [listCreated, setListCreated] = useState(false);
     const [editList, setEditList] = useState(false);
@@ -29,109 +22,70 @@ export default ({ children }) => {
     const [inputValidation, setInputValidation] = useState(false);
 
     const [userLogged, setUserLogged] = useState(false);
+    const [userCreated, setUserCreated] = useState(false);
 
-    const [messageSuccess, setMessageSuccess] = useState(false);
+    const [message, setMessage] = useState(false);
+    const [gameListError, setGameListError] = useState(false);
 
     const [deleteElement, setDeleteElement] = useState(false);
     const [askDelete, setAskDelete] = useState(false);
     const [listName, setListName] = useState(false);
 
-
+    const [currentPage, setCurrentPage] = useState(false);
+  
+    //Reusable function to update state
+    const updateState = (updateFunction) => {
+        return (value) => {
+            updateFunction(value)
+        }
+    };
 
     const store = {
+        gameListError: gameListError,
+        setGameListError: updateState(setGameListError),
         games: games,
-        setGames: (value) => {
-            setGames(value)
-        },
-        recentGamesLink: recentGamesLink,
-        setRecentGamesLink: (value) => {
-            setRecentGamesLink(value)
-        },
-        allGamesLink: allGamesLink,
-        setAllGamesLink: (value) => {
-            setAllGamesLink(value)
-        },
-        content: content,
-        setContent: (value) => {
-            setContent(value)
-        },
-        gamesIndex: gamesIndex,
-        setGamesIndex: (value) => {
-            setGamesIndex(value)
-        },
-        gameName: gameName,
-        setGameName: (value) => {
-            setGameName(value)
-        },
-        gameDetails: gameDetails,
-        setGameDetails: (value) => {
-            setGameDetails(value)
-        },
-        selectedIndexClass: selectedIndexClass,
-        setSelectedIndexClass: (value) => {
-            setSelectedIndexClass(value)
-        },
-        createListInputValue: createListInputValue,
-        setCreateListInputValue: (value) => {
-            setCreateListInputValue(value);
-        },
-        loginUsernameValue: loginUsernameValue,
-        setLoginUsernameValue: (value) => {
-            setLoginUsernameValue(value)
-        },
-        loginPassValue: loginPassValue,
-        setLoginPassValue: (value) => {
-            setLoginPassValue(value)
-        },
-        gameToBeaddedId: gameToBeaddedId,
-        setGameToBeAddedId: (value) => {
-            setGameToBeAddedId(value);
-        },
+        setGames: updateState(setGames),
         gamesList: gamesList,
-        setGamesList: (value) => {
-            setGamesList(value);
-        },
+        setGamesList: updateState(setGamesList),
+        page: page,
+        setPage: updateState(setPage),
+        platform: platform,
+        setPlatform: updateState(setPlatform),
+        createListInputValue: createListInputValue,
+        setCreateListInputValue: updateState(setCreateListInputValue),
+        createListInput: createListInput,
+        setCreateListInput: updateState(setCreateListInput),
+        loginUsernameValue: loginUsernameValue,
+        setLoginUsernameValue: updateState(setLoginUsernameValue),
+        loginPassValue: loginPassValue,
+        setLoginPassValue: updateState(setLoginPassValue),
+        userCreated: userCreated,
+        setUserCreated: updateState(setUserCreated),
         editListMenuActive: editListMenuActive,
-        setEditListMenuActive: (value) => {
-            setEditListMenuActive(value);
-        },
+        setEditListMenuActive: updateState(setEditListMenuActive),
         listCreated: listCreated,
-        setListCreated: (value) => {
-            setListCreated(value);
-        },
+        setListCreated: updateState(setListCreated),
         editList: editList,
-        setEditList: (value) => {
-            setEditList(value);
-        },
+        setEditList: updateState(setEditList),
         editName: editName,
-        setEditName: (value) => {
-            setEditName(value);
-        },
+        setEditName: updateState(setEditName),
         inputValidation: inputValidation,
-        setInputValidation: (value) => {
-            setInputValidation(value);
-        },
+        setInputValidation: updateState(setInputValidation),
         userLogged: userLogged,
-        setUserLogged: (value) => {
-            setUserLogged(value);
-        },
-        messageSuccess: messageSuccess,
-        setMessageSuccess: (value) => {
-            setMessageSuccess(value);
-        },
+        setUserLogged: updateState(setUserLogged),
+        message: message,
+        setMessage: updateState(setMessage),
         deleteElement: deleteElement,
-        setDeleteElement: (value) => {
-            setDeleteElement(value);
-        },
+        setDeleteElement: updateState(setDeleteElement),
         askDelete: askDelete,
-        setAskDelete: (value) => {
-            setAskDelete(value);
-        },
+        setAskDelete: updateState(setAskDelete),
         listName: listName,
-        setListName: (value) => {
-            setListName(value);
-        }
+        setListName: updateState(setListName),
+        currentPage: currentPage,
+        setCurrentPage: updateState(setCurrentPage)
     };
 
     return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
 };
+
+export default Store;

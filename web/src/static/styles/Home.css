@@ -1,53 +1,36 @@
-.home-search {
-    text-align: right;
+#home {
+    padding: 50px 0 0 0;
+}
+
+.explore-games {
     width: 90%;
-    margin: 40px 5%;
+    margin: 0 auto;
+}
+@media screen and (min-width: 600px) {
+    .explore-games {
+        width: 50%;
+        margin: 0 auto;
+    }
 }
 
-.home-main-header {
-    font-size: 1.5em;
-}
-
-.home-games-container {
-    width: 400px;
-    margin: 50px auto;
-    overflow: hidden;
-}
-
-.home-games-container .cover {
-    vertical-align: middle;
-}
-
-.home-games-container h2 {
-    margin: 0 0 30px 0;
-}
-
-.platform-games-container {
-    width: 400px;
-    margin: 20px auto;
-}
-
-.platform-games-container .game-container {
+.game-container {
     background-color: #c70039;
     overflow: hidden;
-    position: relative;
     width: 100%;
+    margin: 10px 0 0 0;
+
 }
 
-.platform-games-container .game-container:hover {
+.game-container:hover {
     cursor: pointer;
 }
 
-.platform-games-container .title {
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   margin-left: 40px;
-   transform: translate(-50%, -50%);
-   color: #fff;
+.game-container .title {
+   float: none;
+   text-align: center;
+   margin: 30px 0 0 0;
 }
 
-.recent-games-container .title {
-    text-align: right;
-    margin: 10px 5% 0 0;
+.game-container .cover {
+    float: left;
 }

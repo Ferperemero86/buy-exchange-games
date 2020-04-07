@@ -1,8 +1,9 @@
 .game-details {
     width: 90%;
-    padding: 0 5% 0 5%;
-    margin: 50px 0 0 0;
+    padding: 10px 5% 10px 5%;
+    margin: 50px 0 50px 0;
     overflow: hidden;
+    text-align: center;
 }
 @media screen and (min-width: 800px) {
     .game-details {
@@ -11,15 +12,19 @@
     }
 }
 
-.games-details .header {
+.game-details .header {
     width: 100%;
     overflow: hidden;
-    background-color: red;
+}
+
+.go-back-link {
+    width: 100%;
+    text-align: right;
 }
 
 .game-details .header-link {
-    display: inline-block;
     text-decoration: underline;
+    display: inline-block;
 }
 
 .game-details .left-arrow {
@@ -29,20 +34,18 @@
 .game-details .title {
     font-size: 1.2em;
     margin: 50px 0;
-    display: inline-block;
+    display: block;
 }
 
 .game-details .cover {
     margin: 0 2% 0 0;
     border: 1px solid;
     max-width: 100%;
-    height: auto;
-    float: left;
 }
 
 .game-details .links {
     float: left;
-    width: 300px;
+    width: 100%;
 }
 
 .game-details .links .link {
@@ -56,6 +59,7 @@
 
 .game-details .summary {
     float: left;
+    text-align: justify;
     margin: 40px 0 0 0;
     line-height: 1.2;
     font-size: 0.9em;

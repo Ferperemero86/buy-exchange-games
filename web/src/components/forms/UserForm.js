@@ -1,15 +1,21 @@
 import React, { useContext } from "react";
 import { StoreContext } from "../../utils/store";
 import axios from "axios";
-import ValidationError from "../messages/errors/ValidationError";
-import cookie from "react-cookies";
+import ValidationError from "../messages/ValidationError";
+import Messages from "../messages/Messages";
+
+const Heading = ({ url }) => {
+    if (url === "session") { return <h1>Login</h1> }
+    return <h1>Register</h1>
+};
 
 const UserForm = ({ URL }) => {
-
     const { loginUsernameValue, setLoginUsernameValue } = useContext(StoreContext);
     const { loginPassValue, setLoginPassValue } = useContext(StoreContext);
     const { inputValidation, setInputValidation } = useContext(StoreContext);
-    const { userLogged, setUserLogged } = useContext(StoreContext);
+    const { setUserLogged } = useContext(StoreContext);
+    const { message, setMessage } = useContext(StoreContext);
+    const { currentPage, setCurrentPage} = useContext(StoreContext);
 
     const updateUsernameValue = (e) => {
         setLoginUsernameValue(e.target.value);
@@ -29,23 +35,30 @@ const UserForm = ({ URL }) => {
 
         axios.post(`/api/${URL}`, userData)
             .then(result => {
-                console.log(result.data);
                 const inputValidation = result.data.inputValidation;
+                const message = result.data;
 
                 if (inputValidation) {
                     return setInputValidation(inputValidation);
                 }
-
                 setUserLogged(true);
+                setMessage(message);
             })
             .catch(err => {
-                console.log(err.response.data);
+                setMessage(err.response.data);
             });
     }
 
     return (
-        <form>
+        <form id="user-form">
             <ValidationError inputValidation={inputValidation} />
+            <Messages 
+                message={message} 
+                page={URL} 
+                currentPage={currentPage}
+                clearMessage={setMessage}
+                setCurrentPage={setCurrentPage} /> 
+            <Heading url={URL} />
             <div className="form-section">
                 <label>Name</label>
                 <input

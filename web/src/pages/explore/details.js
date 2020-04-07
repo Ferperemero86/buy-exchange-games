@@ -1,87 +1,85 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons';
 
-import axiosModule from "../../utils/APIcall";
 import { StoreContext } from "../../utils/store";
 
-import SuccessMessage from "../../components/messages/Success";
+import Messages from "../../components/messages/Messages";
 
-const Details = ({ name, platform }) => {
-    const { gameDetails, setGameDetails } = useContext(StoreContext);
-     const { messageSuccess, setMessageSuccess } = useContext(StoreContext);
-    const dataContent = `fields name, summary, cover.url ; where name="${name}"; limit 1;`;
+export async function getServerSideProps ({query}) {
+    return {props: {query}}
+}
 
-    useEffect(() => {
-        if(SuccessMessage !== "") {
-            setMessageSuccess(false);
-        }
-
-        axiosModule.getPostCall(`/api/games/details`, "POST", dataContent)
-            .then(response => {
-                setGameDetails(response.data.gameDetails);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }, [gameDetails.length]);
+const Details = ({query}) => {
+    const { message, setMessage } = useContext(StoreContext);
+    const { currentPage, setCurrentPage } = useContext(StoreContext);
+    const id = query.id;
+    const platform = query.platform;
+    const page = query.page;
+    const name = query.name;
+    const coverString = query.cover;
+    const cover = coverString.replace("t_thumb", "t_screenshot_med");
+    const summary = query.summary;
+    
 
     const addToList = (e) => {
-        gameDetails[0].platform = platform;
+        const game = query;
 
         axios({
             url: "/api/addgametolist",
             method: "POST",
-            data: { gameDetails }
+            data: { game }
         })
-        .then(result => {
-            setMessageSuccess("Game added to the list");
-
-            const timer = setTimeout(() => {
-                setMessageSuccess(false);
-            }, 3000);
-            return () => clearTimeout(timer);
-        })
+            .then(result => {
+                console.log(result.data);
+                const success = result.data;
+                setMessage(success);
+            })
+            .catch(err => {
+                if(err.response) {
+                    const error = err.response.data;
+                    console.log(error);
+                
+                    setMessage(error);
+                }
+            })
     }
 
-    return gameDetails.map(game => {
-        const gameCoverString = game.cover.url;
-        const coverURL = gameCoverString.replace("t_thumb", "t_logo_med");
-
-        return (
-            <div className="game-details" key={game.id}>
-                <div className="header">
-                    <SuccessMessage message={messageSuccess} />
-                    <h2 className="title">{game.name}</h2>
+    return (
+        <div className="game-details" key={id}>
+            <Messages 
+                page="details"
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+                clearMessage={setMessage}
+                message={message} />
+            <div className="header">
+                <div className="go-back-link">
                     <FontAwesomeIcon icon={faArrowCircleLeft} className="left-arrow" />
-                    <Link href={`/explore/${platform}`}>
+                    <Link href={{ pathname: `/explore/${platform}`, query: {page} }}>
                         <span className="header-link link">Back To Games</span>
                     </Link>
                 </div>
-                <img src={`${coverURL}`} className="cover" />
-                <div className="links">
-                    <ul>
-                        <li
-                            className="link"
-                            onClick={addToList}>Add to list</li>
-                        <li className="link">Find a seller</li>
-                    </ul>
-                </div>
-                <p className="summary">{game.summary}</p>
+                <h2 className="title">{name}</h2>
             </div>
-        )
-    })
+            <img src={`${cover}`} className="cover" />
+            <div className="links">
+                <ul className="links-list">
+                    <li
+                        className="link"
+                        onClick={addToList}>Add to list</li>
+                    <li className="link">Find a seller</li>
+                </ul>
+            </div>
+            <p className="summary">{summary}</p>
+        </div>
+    )
+
 };
 
-Details.getInitialProps = ({ query }) => {
-    return {
-        name: query.name,
-        platform: query.platform
-    }
-}
 
 export default Details;
 
