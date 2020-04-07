@@ -1,2 +1,4 @@
 web/src/components/ExploreGames.js
 web/src/components/layout.js
+web/node_modules
+node_modules
