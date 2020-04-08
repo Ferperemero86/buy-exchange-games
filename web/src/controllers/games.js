@@ -1,16 +1,16 @@
-const router = require("express").Router();
-const knex = require("../db/knex");
-const bodyParser = require("body-parser");
-const jsonParser = bodyParser.json({ type: "application/json" });
-const userAuthentication = require("../authentication");
+import router from "router";
+import knex from "../db/knex";
+import json from "body-parser";
+import userAuthentication from "../authentication";
 
-const validation = require("../validation");
+import acl from "../controllers/acl";
 
-const acl = require("../controllers/acl");
+import User from "../db/models/user";
+import Lists from "../db/models/lists";
+import Games from "../db/models/games";
 
-const User = require("../db/models/user");
-const Lists = require("../db/models/lists");
-const Games = require("../db/models/games");
+const route = router.Router();
+const jsonParser = json({ type: "application/json" });
 
 router.post("/createlist",
     jsonParser,
@@ -21,7 +21,7 @@ router.post("/createlist",
         const userId = req.user.id;
 
         return new Promise((resolve, reject) => {
-            Lists(user_id, userId)
+            Lists("user_id", userId)
                 .fetch()
                 .then(result => {
                     console.log(result);
@@ -31,7 +31,7 @@ router.post("/createlist",
                     resolve();
                 })
         })
-            .then(result => {
+            .then(() => {
                 Lists({ user_id: userId, list_name: listName })
                     .save();
                     
@@ -58,96 +58,91 @@ router.post("/addgametolist",
         const id = gameDetails.id;
         const platform = gameDetails.platform;
         const name = nameString.replace("'", "");
+        const user_id = "user_id";
 
-        Lists
-            .where({ user_id: userId })
+        Games
+            .where(user_id, userId )
             .fetch({ require: false })
             .then(result => {
                 return new Promise((resolve, reject) => {
                     if (!result) {
-                        return reject({ listExists: true });
+                        return reject({ listExists: false });
                     }
-
                     const listId = result.id;
-
+                
                     Games
-                        .where({
-                            game_id: gameDetails.id,
-                            list_id: listId
+                        .forge({
+                            game_id: id
                         })
                         .save({
-                            game_id: id,
                             list_id: listId,
                             platform: platform,
                             name: name,
                             cover: cover
                         })
-                            .then( result => { 
+                            .then(() => { 
                                 return resolve({ gameAddedToList: true })
                             });
-
                             return reject();
-
                 });
             })
-            .then(result => {
-                return res.json(result);
-            })
-            .catch(err => {
-                if(err && err.listExists === false) {
-                    return res.status(400).json(err);
-                }
-                return res.status(500).json({ internalError: true });
-            })
+                .then(result => {
+                    return res.json(result);
+                })
+                .catch(err => {
+                    if(err && err.listExists === false) {
+                        return res.status(400).json(err);
+                    }
+                    return res.status(500).json({ internalError: true });
+                })
     });
 
-router.get("/getlist",
-    jsonParser,
-    userAuthentication,
-    acl(User, "save"),
-    (req, res) => {
-        const userId = req.user.id;
-
-        //Check if the list exists.
-        knex("lists")
-            .where("user_id", userId)
-            .then(response => {
-                return new Promise((resolve, reject) => {
-                    if (response.length < 1) {
-                        //return resolve(response[0])
-                        const listId = result.id;
-                        const listName = result.list_name; 
-
-                        knex
-                            .select("lists.list_name", "games_in_list.game_id", "games_in_list.list_id", "games_in_list.platform", "games_in_list.name", "games_in_list.cover")
-                            .from('games_in_list')
-                            .leftJoin('lists', 'lists.id', 'games_in_list.list_id')
-                            .where({ list_id: listId })
-                            .then(response => {
-                                return resolve({
-                                    gamesList: response,
-                                    listCreated: true,
-                                    listName,
-                                    action: "createList",
-                                    type: "success"
-                                })
-                            })  
-                    }
-                    return reject({listExists: false, action: "getList", type: "error"});
-                })//End promess.
-            })
-            .then(result => {
-                res.json(result);
-           })
-           .catch(err => {
-               if(err.listExists === false) {
-                   return res.status(400).json(err);
-               }
-               return res.status(500).json({gotList: false, action: "getList",type: "error" });
-           });
-                
-               
-})
+//router.get("/getlist",
+//    jsonParser,
+//    userAuthentication,
+//    acl(User, "save"),
+//    (req, res) => {
+//        const userId = req.user.id;
+//
+//        //Check if the list exists.
+//        knex("lists")
+//            .where("user_id", userId)
+//            .then(result => {
+//                return new Promise((resolve, reject) => {
+//                    if (response.length < 1) {
+//                        //return resolve(response[0])
+//                        const listId = result.id;
+//                        const listName = result.list_name; 
+//
+//                        select("lists.list_name", "games_in_list.game_id", "games_in_list.list_id", "games_in_list.platform", "games_in_list.name", "games_in_list.cover")
+//                            .from('games_in_list')
+//                            .leftJoin('lists', 'lists.id', 'games_in_list.list_id')
+//                            .where({ list_id: listId })
+//                            .then(response => {
+//                                return resolve({
+//                                    gamesList: response,
+//                                    listCreated: true,
+//                                    listName,
+//                                    action: "createList",
+//                                    type: "success"
+//                                })
+//                            })  
+//                    }
+//                    return reject({listExists: false, action: "getList", type: "error"});
+//                })//End promess.
+//            })
+//            .then(result => {
+//                res.json(result);
+//           })
+//           .catch(err => {
+//               if(err.listExists === false) {
+//                   return res.status(400).json(err);
+//               }
+//               return res.status(500).json({gotList: false, action: "getList",type: "error" });
+//           });
+//                
+//               
+//})
 
 router.post("/deletelist",
     jsonParser,
@@ -193,13 +188,13 @@ router.post("/editlistname",
         knex("lists")
             .where("user_id", userId)
             .update({ list_name: name })
-            .then(response => {
+            .then(() => {
                 res.json({ listNameUpdated: name })
             })
-            .catch(err => {
+            .catch(() => {
                 res.json({ listNameUpdated: false})
             })
     })
 
 
-module.exports = router;
+export default route;
