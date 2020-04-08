@@ -1,13 +1,13 @@
-import router from "router";
-import knex from "../db/knex";
-import json from "body-parser";
-import userAuthentication from "../authentication";
+const router = require("router");
+const knex = require("../db/knex");
+const json = require("body-parser");
+const userAuthentication = require("../authentication");
 
-import acl from "../controllers/acl";
+const acl = require("../controllers/acl");
 
-import User from "../db/models/user";
-import Lists from "../db/models/lists";
-import Games from "../db/models/games";
+const User = require("../db/models/user");
+const Lists = require("../db/models/lists");
+const Games = require("../db/models/games");
 
 const route = router.Router();
 const jsonParser = json({ type: "application/json" });
@@ -58,43 +58,45 @@ router.post("/addgametolist",
         const id = gameDetails.id;
         const platform = gameDetails.platform;
         const name = nameString.replace("'", "");
-        const user_id = "user_id";
 
         Games
-            .where(user_id, userId )
-            .fetch({ require: false })
-            .then(result => {
-                return new Promise((resolve, reject) => {
-                    if (!result) {
-                        return reject({ listExists: false });
-                    }
-                    const listId = result.id;
-                
-                    Games
-                        .forge({
-                            game_id: id
-                        })
-                        .save({
-                            list_id: listId,
-                            platform: platform,
-                            name: name,
-                            cover: cover
-                        })
-                            .then(() => { 
-                                return resolve({ gameAddedToList: true })
-                            });
-                            return reject();
-                });
-            })
+            .where({ "user_id": userId })
+                .fetch({ require: false })
                 .then(result => {
-                    return res.json(result);
+                    return new Promise((resolve, reject) => {
+                        if (!result) {
+                            return reject({ listExists: false });
+                        }
+
+                        const listId = result.id;
+                    
+                        Games
+                            .forge({
+                                game_id: id
+                            })
+                            .save({
+                                list_id: listId,
+                                platform: platform,
+                                name: name,
+                                cover: cover
+                            })
+                                .then(() => { 
+                                    return resolve({ gameAddedToList: true })
+                                });
+
+                                return reject();
+
+                    });
                 })
-                .catch(err => {
-                    if(err && err.listExists === false) {
-                        return res.status(400).json(err);
-                    }
-                    return res.status(500).json({ internalError: true });
-                })
+                    .then(result => {
+                        return res.json(result);
+                    })
+                    .catch(err => {
+                        if(err && err.listExists === false) {
+                            return res.status(400).json(err);
+                        }
+                        return res.status(500).json({ internalError: true });
+                    })
     });
 
 //router.get("/getlist",
@@ -197,4 +199,4 @@ router.post("/editlistname",
     })
 
 
-export default route;
+module.exports = route;
