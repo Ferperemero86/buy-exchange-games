@@ -1,6 +1,7 @@
-const router = require("router");
+const router = require("express").Router();
 const knex = require("../db/knex");
-const json = require("body-parser");
+const bodyParser = require("body-parser");
+const jsonParser = bodyParser.json({ type: "application/json" });
 const userAuthentication = require("../authentication");
 
 const acl = require("../controllers/acl");
@@ -8,9 +9,6 @@ const acl = require("../controllers/acl");
 const User = require("../db/models/user");
 const Lists = require("../db/models/lists");
 const Games = require("../db/models/games");
-
-const route = router.Router();
-const jsonParser = json({ type: "application/json" });
 
 router.post("/createlist",
     jsonParser,
@@ -199,4 +197,4 @@ router.post("/editlistname",
     })
 
 
-module.exports = route;
+module.exports = router;
