@@ -40,15 +40,22 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
 
     if (message.listExists) {
         console.log(page);
-        switch (page) {
-            case "details":
-                msg = <p className="error-message details">Please create a List first.</p>
-
-                break;
-
+        switch(page) {
             case "gameslist":
                 msg = <p className="error-message gameslist">List already exists</p>
 
+                break;
+
+        }
+    }
+
+    if (message.listExists === false) {
+
+        switch(page) {
+            case "details":
+            msg = <p className="error-message details">Please create a List first.</p>
+
+            break;
         }
     }
 
