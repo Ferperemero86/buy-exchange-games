@@ -1,4 +1,5 @@
-import { useRouter } from "next/router";
+import React, {useEffect} from "react";
+import {useRouter} from "next/router";
 import timeOut from "../../controllers/helpers";
 
 const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) => {
@@ -6,9 +7,13 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
     const router = useRouter();
     console.log(message);
    
-    if (currentPage !== page) {
-        clearMessage(false);
-    }
+    useEffect(() => {
+        if (currentPage !== page) {
+            clearMessage(false);
+        }
+
+        setCurrentPage(page);
+    });
 
     /*****ERROR*****/
 
@@ -84,8 +89,6 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
         msg = <p className="success-message">Game Added to List</p>;
         timeOut(clearMessage, false, "3000");
     }
-
-    setCurrentPage(page);
 
     return msg;
 };

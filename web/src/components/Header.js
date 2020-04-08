@@ -29,7 +29,8 @@ const HeaderMainNav = () => (
 );
 
 const HeaderAccountNav = () => {
-    const { userLogged, setUserLogged } = useContext(StoreContext);
+    const {userLogged, setUserLogged} = useContext(StoreContext);
+    const {setDisabledButton} = useContext(StoreContext);
     const router = useRouter();
 
     useEffect(() => {
@@ -43,6 +44,8 @@ const HeaderAccountNav = () => {
     const logOut = () => {
         cookie.remove("user_id", { path: "/" });
         setUserLogged(false);
+        setDisabledButton("");
+
         router.push({ pathname: `/account/login` });
     }
 

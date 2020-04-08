@@ -10,12 +10,13 @@ const Heading = ({ url }) => {
 };
 
 const UserForm = ({ URL }) => {
-    const { loginUsernameValue, setLoginUsernameValue } = useContext(StoreContext);
-    const { loginPassValue, setLoginPassValue } = useContext(StoreContext);
-    const { inputValidation, setInputValidation } = useContext(StoreContext);
-    const { setUserLogged } = useContext(StoreContext);
-    const { message, setMessage } = useContext(StoreContext);
-    const { currentPage, setCurrentPage} = useContext(StoreContext);
+    const {loginUsernameValue, setLoginUsernameValue} = useContext(StoreContext);
+    const {loginPassValue, setLoginPassValue} = useContext(StoreContext);
+    const {inputValidation, setInputValidation} = useContext(StoreContext);
+    const {setUserLogged} = useContext(StoreContext);
+    const {message, setMessage} = useContext(StoreContext);
+    const {currentPage, setCurrentPage} = useContext(StoreContext);
+    const {disabledButton, setDisabledButton} = useContext(StoreContext);
 
     const updateUsernameValue = (e) => {
         setLoginUsernameValue(e.target.value);
@@ -43,9 +44,12 @@ const UserForm = ({ URL }) => {
                 }
                 setUserLogged(true);
                 setMessage(message);
+                setDisabledButton("disabled");
             })
             .catch(err => {
-                setMessage(err.response.data);
+                if(err.response) {
+                    setMessage(err.response.data);
+                }
             });
     }
 
@@ -73,7 +77,9 @@ const UserForm = ({ URL }) => {
                     value={loginPassValue}
                     onChange={updatePassValue} />
             </div>
-            <button onClick={sendInputData}>Send</button>
+            <button 
+                onClick={sendInputData}
+                disabled={disabledButton}>Send</button>
         </form>
     )
 }

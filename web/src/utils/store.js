@@ -32,6 +32,7 @@ const Store = ({ children }) => {
     const [listName, setListName] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(false);
+    const [disabledButton, setDisabledButton] = useState("");
   
     //Reusable function to update state
     const updateState = (updateFunction) => {
@@ -82,7 +83,9 @@ const Store = ({ children }) => {
         listName: listName,
         setListName: updateState(setListName),
         currentPage: currentPage,
-        setCurrentPage: updateState(setCurrentPage)
+        setCurrentPage: updateState(setCurrentPage),
+        disabledButton: disabledButton,
+        setDisabledButton: setDisabledButton
     };
 
     return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
