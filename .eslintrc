@@ -1,8 +1,8 @@
 {
     "extends": [
-        "standard",
-        "react",
-        "prettier"
+        "prettier",
+        "eslint:recommended",
+        "plugin:react/recommended"
     ],
     "parser": "babel-eslint",
     "env": {
@@ -19,10 +19,10 @@
         "no-use-before-define": "off",
         "standard/computed-property-even-spacing": "off",
         "react/prop-types": [
-            "enabled",
+            0,
             {
-                "ignore": "ignore",
-                "customValidators": "customValidator"
+                "ignore": [],
+                "customValidators": []
             }
         ]
     },
