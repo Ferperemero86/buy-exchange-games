@@ -147,104 +147,115 @@ const Games = () => {
 
 };
 
-const UserList = () => {
-    const {currentPage, setCurrentPage} = useContext(StoreContext);
-    const {gamesList, setGamesList} = useContext(StoreContext);
-    const {askDelete, setAskDelete} = useContext(StoreContext);
-    const {setEditListMenuActive} = useContext(StoreContext);
-    const {setEditList} = useContext(StoreContext);
-    const {setListCreated} = useContext(StoreContext);
-    const {message, setMessage} = useContext(StoreContext);
-    const {setListName} = useContext(StoreContext);
-    const {setCreateListInput} = useContext(StoreContext);
+//const UserList = () => {
+//    const {currentPage, setCurrentPage} = useContext(StoreContext);
+//    const {gamesList, setGamesList} = useContext(StoreContext);
+//    const {askDelete, setAskDelete} = useContext(StoreContext);
+//    const {setEditListMenuActive} = useContext(StoreContext);
+//    const {setEditList} = useContext(StoreContext);
+//    const {setListCreated} = useContext(StoreContext);
+//    const {message, setMessage} = useContext(StoreContext);
+//    const {setListName} = useContext(StoreContext);
+//    const {setCreateListInput} = useContext(StoreContext);
+//
+//    useEffect(() => {
+//
+//        axios({
+//            url: "/api/getlist", 
+//            method: "GET"
+//        })
+//            .then(result => {
+//                const gamesListResult = result.data.gamesList;
+//                const listName = result.data.listName;
+//                const listCreated = result.data.listCreated;
+//                console.log(result);
+//                if (listCreated) {
+//                    setListCreated(true);
+//                    setListName(listName);
+//                    setCreateListInput(false);
+//                    setEditListMenuActive(true);
+//                    setEditList(false);
+//                } else {
+//                    setListCreated(false);
+//                    setCreateListInput(true);
+//                    setCreateListInputValue("");
+//                }
+//
+//                if (gamesListResult) {
+//                    setGamesList(gamesListResult);
+//                    setCreateListInput(false);
+//                }
+//
+//            }, [gamesList.length])
+//            .catch(err => {
+//                console.log(err.response.data);
+//                if (err.response) {
+//                    const error = err.response.data;
+//    
+//                    setMessage(error);
+//                }
+//            });
+//    }, [gamesList.length]);
+//
+//    const deleteList = () => {
+//        axios({ 
+//            url: "/api/deletelist", 
+//            method: "POST" 
+//        })
+//            .then(result => {
+//                console.log(result);
+//                if (result) {
+//                    const success = result.data;
+//
+//                    if(success.listDeleted) {
+//                        console.log("list deleted!");
+//                        setListCreated(false);
+//                        setGamesList([]);
+//                        setEditListMenuActive(false);
+//                        setEditList(false);
+//                        setMessage(success);
+//                        setAskDelete(false);
+//                        setListName("");
+//                        setCreateListInput(false);
+//                    }
+//                }
+//            })
+//            .catch(err => {
+//                console.log(err);
+//                setMessage(err);
+//                setEditListMenuActive(false);
+//                setAskDelete(false);
+//            });
+//    };
+//
+//    return (
+//        <div className="user-list">
+//            {console.log(message)}
+//            <Messages 
+//                page="gameslist" 
+//                message={message} 
+//                currentPage={currentPage}
+//                setCurrentPage={setCurrentPage}
+//                clearMessage={setMessage}/>
+//            <DeleteQuestion 
+//                showQuestion={askDelete} 
+//                action={deleteList} />
+//            <ListInput />
+//            <EditList />
+//            <Games />
+//        </div>
+//    )
+//}
 
-    useEffect(() => {
+export async function getServerSideProps () {
+    const games = await axios.get("/api/getlist");
+    console.log("games", games);
+    return { props: {games} };
+};
 
-        axios({
-            url: "/api/getlist", 
-            method: "GET"
-        })
-            .then(result => {
-                const gamesListResult = result.data.gamesList;
-                const listName = result.data.listName;
-                const listCreated = result.data.listCreated;
-                console.log(result);
-                if (listCreated) {
-                    setListCreated(true);
-                    setListName(listName);
-                    setCreateListInput(false);
-                    setEditListMenuActive(true);
-                    setEditList(false);
-                } else {
-                    setListCreated(false);
-                    setCreateListInput(true);
-                    setCreateListInputValue("");
-                }
-
-                if (gamesListResult) {
-                    setGamesList(gamesListResult);
-                    setCreateListInput(false);
-                }
-
-            }, [gamesList.length])
-            .catch(err => {
-                console.log(err.response.data);
-                if (err.response) {
-                    const error = err.response.data;
-    
-                    setMessage(error);
-                }
-            });
-    }, [gamesList.length]);
-
-    const deleteList = () => {
-        axios({ 
-            url: "/api/deletelist", 
-            method: "POST" 
-        })
-            .then(result => {
-                console.log(result);
-                if (result) {
-                    const success = result.data;
-
-                    if(success.listDeleted) {
-                        console.log("list deleted!");
-                        setListCreated(false);
-                        setGamesList([]);
-                        setEditListMenuActive(false);
-                        setEditList(false);
-                        setMessage(success);
-                        setAskDelete(false);
-                        setListName("");
-                        setCreateListInput(false);
-                    }
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                setMessage(err);
-                setEditListMenuActive(false);
-                setAskDelete(false);
-            });
-    };
-
-    return (
-        <div className="user-list">
-            {console.log(message)}
-            <Messages 
-                page="gameslist" 
-                message={message} 
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                clearMessage={setMessage}/>
-            <DeleteQuestion 
-                showQuestion={askDelete} 
-                action={deleteList} />
-            <ListInput />
-            <EditList />
-            <Games />
-        </div>
-    )
-}
+const UserList = ({games}) => {
+    console.log(games);
+    return null;
+};
 
 export default UserList;
