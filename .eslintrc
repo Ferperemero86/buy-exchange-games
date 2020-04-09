@@ -1,9 +1,14 @@
 {
     "extends": [
-        "prettier",
-        "eslint:recommended",
         "plugin:react/recommended"
     ],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
     "env": {
         "browser": true,
         "node": true,
@@ -13,8 +18,7 @@
         "_": false
     },
     "plugins": [
-        "standard",
-        "prettier"
+        "react"
     ],
     "rules": {
         "react/jsx-uses-react": "error",

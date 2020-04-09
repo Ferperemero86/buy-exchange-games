@@ -1,22 +1,24 @@
-import React, { useContext } from "react";
-import { StoreContext } from "../../utils/store";
+import React, {useContext, useEffect} from "react";
+import {StoreContext} from "../../utils/store";
 import axios from "axios";
 import ValidationError from "../messages/ValidationError";
 import Messages from "../messages/Messages";
+import {useRouter} from "next/router";
 
-const Heading = ({ url }) => {
-    if (url === "session") { return <h1>Login</h1> }
+const Heading = ({url}) => {
+    if (url === "session") {return <h1>Login</h1>}
     return <h1>Register</h1>
 };
 
-const UserForm = ({ URL }) => {
+const UserForm = ({URL}) => {
     const {loginUsernameValue, setLoginUsernameValue} = useContext(StoreContext);
     const {loginPassValue, setLoginPassValue} = useContext(StoreContext);
     const {inputValidation, setInputValidation} = useContext(StoreContext);
-    const {setUserLogged} = useContext(StoreContext);
+    const {userLogged, setUserLogged} = useContext(StoreContext);
     const {message, setMessage} = useContext(StoreContext);
     const {currentPage, setCurrentPage} = useContext(StoreContext);
     const {disabledButton, setDisabledButton} = useContext(StoreContext);
+    const router = useRouter();
 
     const updateUsernameValue = (e) => {
         setLoginUsernameValue(e.target.value);
@@ -37,13 +39,11 @@ const UserForm = ({ URL }) => {
         axios.post(`/api/${URL}`, userData)
             .then(result => {
                 const inputValidation = result.data.inputValidation;
-                const message = result.data;
 
                 if (inputValidation) {
                     return setInputValidation(inputValidation);
                 }
                 setUserLogged(true);
-                setMessage(message);
                 setDisabledButton("disabled");
             })
             .catch(err => {
@@ -52,6 +52,12 @@ const UserForm = ({ URL }) => {
                 }
             });
     }
+
+    useEffect(() => {
+        if (userLogged) {
+            router.push("/");
+        }
+    });
 
     return (
         <form id="user-form">
