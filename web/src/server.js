@@ -43,7 +43,7 @@ nextApp.prepare().then(() => {
         .where("email", email)
         .fetch({ require: false })
         .then(user => {
-          console.log(user);
+  
           return new Promise((resolve, reject) => {
             if (!user) {
               return reject("userNoExists");
@@ -54,26 +54,24 @@ nextApp.prepare().then(() => {
                 return reject();
               }
               if (!matched) { 
-                console.log("password do not match");
                 return reject("passwordDoNotMatch"); 
               }
               return resolve(user);
-            });
-          
+            });  
         })
+
       })
       .then(user => {
         return done(null, user);
       })
       .catch(err => {
-        console.log(err);
         if (err && (err === "userNoExists" || err === "passwordDoNotMatch") ) {
           return done(null, false);
         }
         return done(err);
       })
     })
-  )
+  );
   
 
   server.use("/api", routes);
