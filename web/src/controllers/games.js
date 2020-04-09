@@ -20,7 +20,7 @@ router.post("/createlist",
 
         return new Promise((resolve, reject) => {
             Lists("user_id", userId)
-                .fetch()
+                .fetch({ require: false })
                 .then(result => {
                     console.log(result);
                     if (result.length > 0) {
@@ -48,7 +48,6 @@ router.post("/addgametolist",
     userAuthentication,
     acl(User, "save"),
     (req, res) => {
-        console.log(req.user.id);
         const userId = req.user.id;
         const gameDetails = req.body.game;
         const nameString = gameDetails.longName;
@@ -56,45 +55,23 @@ router.post("/addgametolist",
         const id = gameDetails.id;
         const platform = gameDetails.platform;
         const name = nameString.replace("'", "");
-
-        Games
-            .where({ "user_id": userId })
-                .fetch({ require: false })
-                .then(result => {
-                    return new Promise((resolve, reject) => {
-                        if (!result) {
-                            return reject({ listExists: false });
-                        }
-
-                        const listId = result.id;
-                    
-                        Games
-                            .forge({
-                                game_id: id
-                            })
-                            .save({
-                                list_id: listId,
-                                platform: platform,
-                                name: name,
-                                cover: cover
-                            })
-                                .then(() => { 
-                                    return resolve({ gameAddedToList: true })
-                                });
-
-                                return reject();
-
-                    });
+         
+        return Games
+            .forge({
+                game_id: id,
+                list_id: userId,
+                platform: platform,
+                name: name,
+                cover: cover
+            })
+            .save()
+                
+                .then(()=> { 
+                    return res.json({ gameAddedToList: true });
+                })         
+                .catch(() => {
+                    return res.status(500).json({ internalError: true });
                 })
-                    .then(result => {
-                        return res.json(result);
-                    })
-                    .catch(err => {
-                        if(err && err.listExists === false) {
-                            return res.status(400).json(err);
-                        }
-                        return res.status(500).json({ internalError: true });
-                    })
     });
 
 //router.get("/getlist",
