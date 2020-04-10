@@ -29,7 +29,7 @@ router.post("/createlist",
                     resolve();
                 })
         })
-            .then(() => {
+            .then((hello) => {
                 Lists({ user_id: userId, list_name: listName })
                     .save();
                     
@@ -55,23 +55,48 @@ router.post("/addgametolist",
         const id = gameDetails.id;
         const platform = gameDetails.platform;
         const name = nameString.replace("'", "");
-         
-        return Games
-            .forge({
-                game_id: id,
-                list_id: userId,
-                platform: platform,
-                name: name,
-                cover: cover
-            })
-            .save()
-                
-                .then(()=> { 
-                    return res.json({ gameAddedToList: true });
-                })         
-                .catch(() => {
-                    return res.status(500).json({ internalError: true });
+
+            return Lists
+                .where({user_id: userId})
+                .fetch({require: false})
+                .then(result => {
+                    return new Promise((resolve, reject) => {
+                        if (result) {
+                            return resolve("list exists");
+                        }
+                        return reject({listExists: false});
+                    })
                 })
+                .then(() => {
+                    return Games
+                       .forge({
+                           game_id: id,
+                           list_id: userId,
+                           platform: platform,
+                           name: name,
+                           cover: cover
+                       })
+                       .save()
+                            .then(result => {
+                                return new Promise((resolve, reject) => {
+                                    if (result) {
+                                        return resolve({gameAddedToList: true});
+                                    }
+                                    return reject();
+                                })
+                            })
+
+                })
+                    .then(result => {
+                        return res.json(result);
+                    })
+                    .catch(err => {
+                        if(err.listExists === false) {
+                            return res.status(404).json(err);
+                        }
+                        return res.status(500).json({internalError: true}); 
+                    })
+       
     });
 
 //router.get("/getlist",
