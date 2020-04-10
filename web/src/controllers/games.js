@@ -31,7 +31,7 @@ router.post("/createlist",
             .then(() => {
                 Lists({ user_id: userId, list_name: listName })
                     .save();
-                    
+
                     return res.json({ listCreated: true })
             })
             .catch(err => {
@@ -86,15 +86,15 @@ router.post("/addgametolist",
                             })
 
                 })
-                    .then(result => {
-                        return res.json(result);
-                    })
-                    .catch(err => {
-                        if(err.listExists === false) {
-                            return res.status(404).json(err);
-                        }
-                        return res.status(500).json({internalError: true}); 
-                    })
+                .then(result => {
+                    return res.json(result);
+                })
+                .catch(err => {
+                    if(err.listExists === false) {
+                        return res.status(404).json(err);
+                    }
+                    return res.status(500).json({internalError: true}); 
+                })
        
     });
 
