@@ -86,7 +86,7 @@ router.post("/addgametolist",
                             })
 
                 })
-                    .then(hola => {
+                    .then(() => {
                         return res.json(result);
                     })
                     .catch(err => {
