@@ -16,7 +16,7 @@ function authenticateUser(req, res, next) {
       req.logIn(user, function(err) {
         if (err) { return res.status(500).json({ internalError: true }) };
        
-        return res.json({ login: true });
+        next();
       });
    } else {
       next();
