@@ -29,7 +29,7 @@ router.post("/createlist",
                     resolve();
                 })
         })
-            .then((hello) => {
+            .then(() => {
                 Lists({ user_id: userId, list_name: listName })
                     .save();
                     
