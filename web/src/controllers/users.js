@@ -51,7 +51,9 @@ router.post("/user", jsonParser, (req, res) => {
     })
 });
 
-router.post('/session', jsonParser, userAuthentication);
+router.post('/session', jsonParser, userAuthentication, (req, res) => {
+  res.json({login: true});
+});
 
 
 router.post(
