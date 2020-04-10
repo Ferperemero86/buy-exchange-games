@@ -22,7 +22,6 @@ router.post("/createlist",
             Lists("user_id", userId)
                 .fetch({ require: false })
                 .then(result => {
-                    console.log(result);
                     if (result.length > 0) {
                         reject({ listExists: true })
                     }
