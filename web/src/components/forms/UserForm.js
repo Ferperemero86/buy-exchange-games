@@ -44,7 +44,6 @@ const UserForm = ({URL}) => {
                     return setInputValidation(inputValidation);
                 }
                 setUserLogged(true);
-                setDisabledButton("disabled");
             })
             .catch(err => {
                 if(err.response) {
@@ -54,8 +53,12 @@ const UserForm = ({URL}) => {
     }
 
     useEffect(() => {
-        if (userLogged) {
+        if (URL === "session" && userLogged) {
+            setDisabledButton("disabled");
             router.push("/");
+        }
+        if (URL === "user") {
+            setDisabledButton("");
         }
     });
 
