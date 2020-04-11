@@ -98,52 +98,43 @@ router.post("/addgametolist",
        
     });
 
-//router.get("/getlist",
-//    jsonParser,
-//    userAuthentication,
-//    acl(User, "save"),
-//    (req, res) => {
-//        const userId = req.user.id;
-//
-//        //Check if the list exists.
-//        knex("lists")
-//            .where("user_id", userId)
-//            .then(result => {
-//                return new Promise((resolve, reject) => {
-//                    if (response.length < 1) {
-//                        //return resolve(response[0])
-//                        const listId = result.id;
-//                        const listName = result.list_name; 
-//
-//                        select("lists.list_name", "games_in_list.game_id", "games_in_list.list_id", "games_in_list.platform", "games_in_list.name", "games_in_list.cover")
-//                            .from('games_in_list')
-//                            .leftJoin('lists', 'lists.id', 'games_in_list.list_id')
-//                            .where({ list_id: listId })
-//                            .then(response => {
-//                                return resolve({
-//                                    gamesList: response,
-//                                    listCreated: true,
-//                                    listName,
-//                                    action: "createList",
-//                                    type: "success"
-//                                })
-//                            })  
-//                    }
-//                    return reject({listExists: false, action: "getList", type: "error"});
-//                })//End promess.
-//            })
-//            .then(result => {
-//                res.json(result);
-//           })
-//           .catch(err => {
-//               if(err.listExists === false) {
-//                   return res.status(400).json(err);
-//               }
-//               return res.status(500).json({gotList: false, action: "getList",type: "error" });
-//           });
-//                
-//               
-//})
+router.post("/getlist",
+    jsonParser,
+    (req, res) => {
+        const userId = req.body.userId;
+
+        return Lists
+                .where({"user_id": userId})
+                .fetch({require: false})
+                .then(result => {
+                    return new Promise((resolve, reject) => {
+                        if (result) {
+                            return resolve()
+                        }                        
+                        return reject({listExists: false})
+                    })
+                })
+                .then(()=> {
+                    return Games
+                            .where({"list_id": userId})
+                            .fetchAll({require:false})
+                            .then(result => {                                
+                                return new Promise((resolve) => {                                
+                                    return resolve({gamesList:result});
+                                })
+                            })
+                })
+                .then(result => {
+                    return res.json(result);
+                })
+                .catch(err => {
+                    if (err.listExists === false) {
+                        return res.status(404).json(err);
+                    }
+                    return res.status(500).json({internalError: true});
+                })
+               
+})
 
 router.post("/deletelist",
     jsonParser,
