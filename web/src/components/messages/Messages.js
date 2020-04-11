@@ -22,27 +22,30 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
         switch (page) {
 
             case "session":
-                msg = <p className="error-message login">User/Password do not match.</p>;
+                msg = <p className={`error-message ${page}`}>User/Password do not match.</p>;
 
                 break;
             
             case "details":
-                msg = <p className="error-message details">Please Login first.</p>
+                msg = <p className={`error-message ${page}`}>Please Login first.</p>
 
                 break;
-    
+
+            case "gameslist":
+                router.push("/account/login");
+            
+                break;
         }
     }
 
     if (message.userExists) {
-        msg = <p className="error-message">Please choose other username.</p>;
+        msg = <p className={`error-message ${page}`}>Please choose other username.</p>;
     }
 
     if (message.listExists) {
-        console.log(page);
         switch(page) {
             case "gameslist":
-                msg = <p className="error-message gameslist">List already exists</p>
+                msg = <p className={`error-message ${page}`}>List already exists</p>
 
                 break;
 
@@ -53,7 +56,7 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
 
         switch(page) {
             case "details":
-            msg = <p className="error-message details">Please create a List first.</p>
+            msg = <p className={`error-message ${page}`}>Please create a List first.</p>
 
             break;
         }
@@ -63,7 +66,7 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
 
         switch(page) {
             case "details":
-                msg = <p className="error-message">Could not add game to the List.</p>
+                msg = <p className={`error-message ${page}`}>Could not add game to the List.</p>
 
                 break;
         }
@@ -89,12 +92,16 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
     }
 
     if (message.register) {
-        msg = <p className="success-message">Account created</p>
+        msg = <p className={`success-message ${page}`}>Account created</p>
     } 
 
     if (message.gameAddedToList) {
-        msg = <p className="success-message">Game Added to List</p>;
+        msg = <p className={`success-message ${page}`}>Game Added to List</p>;
         timeOut(clearMessage, false, "3000");
+    }
+
+    if (message.listDeleted) {
+        msg = <p className={`success-message ${page}`}>List Deleted</p>
     }
 
     return msg;
