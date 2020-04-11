@@ -156,28 +156,39 @@ router.post("/deletelist",
     (req, res) => {
         const userId = req.user.id;
         //Locate and delete list.
-        knex("lists")
-            .where("user_id", userId)
-            .del()
+        return Lists
+            .where({user_id: userId})
+            .fetch({require: false})
             .then(response => {
                 return new Promise((resolve, reject) => {
                     //If there is no list send error.
-                    if(response < 1) {
-                        return reject({listExists: false, action: "listDeleted", type: "error"});
+                    if(response) {
+                        return resolve();
                     }
-                    resolve({listDeleted: true, action: "listDeleted", type: "error"});
+                
+                    return reject({listExists: false});
                 });
             })
+            .then(() => {
+                return Lists
+                        .where({user_id: userId})
+                        .destroy()
+                        .then(() => {
+                            return new Promise((resolve) => {
+                                return resolve({listDeleted: true});
+                            })                            
+                        })
+            })
             .then(response => {
+                console.log("sending response");
                 return res.json(response);
             })
             .catch(err => {
                  //List to delete does not exist.
                 if (err.listExists === false ) {
-                    res.status(400).json(err);
+                    return res.status(404).json(err);
                 }
-                //Could not delete List generic error.
-                res.status(400).json({listDeleted: false, action: "listDeleted" ,type: "error"});
+                return res.status(500).json({internalError: true});
             })
             
 })
