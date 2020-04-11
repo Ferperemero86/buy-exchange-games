@@ -17,29 +17,42 @@ router.post("/createlist",
     (req, res) => {
         const listName = req.body.listName;
         const userId = req.user.id;
-
-        return new Promise((resolve, reject) => {
-            Lists("user_id", userId)
-                .fetch({ require: false })
+        
+        return Lists
+                .where({user_id: userId})
+                .fetch({require: false})
                 .then(result => {
-                    if (result.length > 0) {
-                        reject({ listExists: true })
-                    }
-                    resolve();
+                    return new Promise((resolve, reject) => {
+                        if (!result) {
+                            return resolve();
+                        }
+                        return reject({listExists: true})
+                    })
                 })
-        })
-            .then(() => {
-                Lists({ user_id: userId, list_name: listName })
-                    .save();
-
-                    return res.json({ listCreated: true })
-            })
-            .catch(err => {
-                if(err.listExists) {
-                    return res.status(400).json(err);
-                }
-                return res.status(400).json({ listExists: false });
-            })
+                .then(() => {
+                    return Lists
+                        .forge({ 
+                            user_id: userId, 
+                            list_name: listName 
+                        })
+                        .save()
+                        .then(result => {
+                            return new Promise((resolve) => {
+                                if (result) {
+                                    resolve({listCreated: true})
+                                }
+                            })
+                        })
+                })
+                .then(result => {
+                    return res.json(result);
+                })
+                .catch(err => {
+                    if(err.listExists) {
+                        return res.status(400).json(err);
+                    }
+                    return res.status(500).json({internalError: true});
+                })
 });
 
 router.post("/addgametolist",
