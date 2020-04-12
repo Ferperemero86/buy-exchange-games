@@ -17,11 +17,11 @@ router.post("/user", jsonParser, (req, res) => {
 
   const valuesValidation = validation.validate(
     { email: req.body.email, password: req.body.password },
-    validation.constraints
+    validation.register
   );
 
   if (valuesValidation) {
-    return res.json({ inputValidation: valuesValidation });
+    return res.status(400).json({ inputValidation: valuesValidation });
   }
 
   const salt = bcrypt.genSaltSync(10);
@@ -34,7 +34,7 @@ router.post("/user", jsonParser, (req, res) => {
         return res.status(400).json({ userExists: true });  
       }
     })
-    .catch(err => {
+    .catch(()=> {
       return bcrypt.hash(password, salt, (err, hash) => {
         if (err) {
           return res.status(500).json({ register: "wrong" })
@@ -69,8 +69,8 @@ router.post(
       knex("users")
         .update({ password: hash })
         .where("id", req.user.id)
-        .then(result => res.json({ updatedPassword: true }))
-        .catch(err => {
+        .then(() => res.json({ updatedPassword: true }))
+        .catch(() => {
           res
             .status(500)
             .json({ error: "Could not edit pass" });
