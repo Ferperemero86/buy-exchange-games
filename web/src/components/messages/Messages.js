@@ -1,6 +1,8 @@
 import React, {useEffect} from "react";
 import {useRouter} from "next/router";
 import timeOut from "../../controllers/helpers";
+import ValidationError from "../messages/ValidationError";
+
 
 const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) => {
     let msg = null;
@@ -16,6 +18,10 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
     });
 
     /*****ERROR*****/
+
+    if (message.inputValidation) {
+        return <ValidationError inputValidation={message.inputValidation} />;
+    }
 
     if (message.login === false) {
 
