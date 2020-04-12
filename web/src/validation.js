@@ -1,6 +1,6 @@
 const validate = require("validate.js");
 
-const constraints = {
+const register = {
   password: {
     presence: true,
     format: {
@@ -33,6 +33,6 @@ const createList = {
   }
 };
 
-module.exports = { constraints, 
+module.exports = { register, 
                    createList, 
                    validate };
