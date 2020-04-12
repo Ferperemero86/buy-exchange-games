@@ -58,7 +58,7 @@ router.post("/createlist",
                         return res.status(400).json(err);
                     }
                     if(err.inputValidation) {
-                        return res.status(404).json(err);
+                        return res.status(400).json(err);
                     }
                     return res.status(500).json({internalError: true});
                 })
@@ -113,7 +113,7 @@ router.post("/addgametolist",
                 })
                 .catch(err => {
                     if(err.listExists === false) {
-                        return res.status(404).json(err);
+                        return res.status(400).json(err);
                     }
                     return res.status(500).json({internalError: true}); 
                 })
@@ -151,7 +151,7 @@ router.post("/getlist",
                 })
                 .catch(err => {
                     if (err.listExists === false) {
-                        return res.status(404).json(err);
+                        return res.status(400).json(err);
                     }
                     return res.status(500).json({internalError: true});
                 })
@@ -195,7 +195,7 @@ router.post("/deletelist",
             .catch(err => {
                  //List to delete does not exist.
                 if (err.listExists === false ) {
-                    return res.status(404).json(err);
+                    return res.status(400).json(err);
                 }
                 return res.status(500).json({internalError: true});
             })
