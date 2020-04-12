@@ -29,7 +29,7 @@ router.post("/user", jsonParser, (req, res) => {
   return User
     .where("email", email)
     .fetch()
-    .then ( result => {
+    .then(result => {
       if (result) {
         return res.status(400).json({ userExists: true });  
       }
