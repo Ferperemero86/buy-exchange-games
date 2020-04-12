@@ -32,9 +32,9 @@ router.post("/createlist",
                     })
                 })
                 .then(() => {
-                    return new Promise((resolve) => {
+                    return new Promise((resolve, reject) => {
                         if (valuesValidation) {
-                            return resolve({inputValidation: valuesValidation});
+                            return reject({inputValidation: valuesValidation});
                         }
                     
                         return Lists
@@ -56,6 +56,9 @@ router.post("/createlist",
                 .catch(err => {
                     if(err.listExists) {
                         return res.status(400).json(err);
+                    }
+                    if(err.inputValidation) {
+                        return res.status(404).json(err);
                     }
                     return res.status(500).json({internalError: true});
                 })
