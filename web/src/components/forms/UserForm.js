@@ -35,8 +35,11 @@ const UserForm = ({URL}) => {
         };
 
         axios.post(`/api/${URL}`, userData)
-            .then(() => {
+            .then((result) => {
+                const success = result.data;
+                
                 setUserLogged(true);
+                setMessage(success);
             })
             .catch(err => {
                 const error = err.response.data;
