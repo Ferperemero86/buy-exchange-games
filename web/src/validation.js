@@ -21,4 +21,18 @@ const constraints = {
   },
 };
 
-module.exports = { constraints, validate };
+const createList = {
+  listName: {
+    presence: true,
+    format: {
+      pattern: /^.{3,20}$/,
+      message: () => {
+        return validate.format("^Please enter minimum 3 and maximum 20 characters");
+      }
+    }
+  }
+};
+
+module.exports = { constraints, 
+                   createList, 
+                   validate };

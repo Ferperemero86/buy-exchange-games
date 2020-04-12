@@ -5,6 +5,7 @@ const jsonParser = bodyParser.json({ type: "application/json" });
 const userAuthentication = require("../authentication");
 
 const acl = require("../controllers/acl");
+const validation = require("../validation");
 
 const User = require("../db/models/user");
 const Lists = require("../db/models/lists");
@@ -17,6 +18,7 @@ router.post("/createlist",
     (req, res) => {
         const listName = req.body.listName;
         const userId = req.user.id;
+        const valuesValidation = validation.validate({listName}, validation.createList);
         
         return Lists
                 .where({user_id: userId})
@@ -30,19 +32,23 @@ router.post("/createlist",
                     })
                 })
                 .then(() => {
-                    return Lists
-                        .forge({ 
-                            user_id: userId, 
-                            list_name: listName 
-                        })
-                        .save()
-                        .then(result => {
-                            return new Promise((resolve) => {
+                    return new Promise((resolve) => {
+                        if (valuesValidation) {
+                            return resolve({inputValidation: valuesValidation});
+                        }
+                    
+                        return Lists
+                            .forge({ 
+                                user_id: userId, 
+                                list_name: listName 
+                            })
+                            .save()
+                            .then(result => {
                                 if (result) {
-                                    resolve({listCreated: true})
+                                    return resolve({listCreated: true})
                                 }
                             })
-                        })
+                    })
                 })
                 .then(result => {
                     return res.json(result);
