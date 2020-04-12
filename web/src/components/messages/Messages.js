@@ -98,7 +98,8 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
     }
 
     if (message.register) {
-        msg = <p className={`success-message ${page}`}>Account created</p>
+        msg = <p className={`success-message ${page}`}>Account created</p>;
+        timeOut(clearMessage, false, "3000");
     } 
 
     if (message.gameAddedToList) {
@@ -107,7 +108,13 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
     }
 
     if (message.listDeleted) {
-        msg = <p className={`success-message ${page}`}>List Deleted</p>
+        msg = <p className={`success-message ${page}`}>List Deleted</p>;
+        timeOut(clearMessage, false, "3000");
+    }
+
+    if (message.listCreated) {
+        msg = <p className={`success-message ${page}`}>List created</p>;
+        timeOut(clearMessage, false, "3000");
     }
 
     return msg;
