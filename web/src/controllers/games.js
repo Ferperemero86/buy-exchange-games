@@ -45,7 +45,7 @@ router.post("/createlist",
                             .save()
                             .then(result => {
                                 if (result) {
-                                    return resolve({listCreated: true})
+                                    return resolve({listCreated: true, listName})
                                 }
                             })
                     })
@@ -214,10 +214,10 @@ router.post("/editlistname",
             .where("user_id", userId)
             .update({ list_name: name })
             .then(() => {
-                res.json({ listNameUpdated: name })
+                res.json({listNameUpdated: name})
             })
             .catch(() => {
-                res.json({ listNameUpdated: false})
+                res.json({listNameUpdated: false})
             })
     })
 
