@@ -1,7 +1,6 @@
 import React, {useContext, useEffect} from "react";
 import {StoreContext} from "../../utils/store";
 import axios from "axios";
-import ValidationError from "../messages/ValidationError";
 import Messages from "../messages/Messages";
 import {useRouter} from "next/router";
 
@@ -13,7 +12,6 @@ const Heading = ({url}) => {
 const UserForm = ({URL}) => {
     const {loginUsernameValue, setLoginUsernameValue} = useContext(StoreContext);
     const {loginPassValue, setLoginPassValue} = useContext(StoreContext);
-    const {inputValidation, setInputValidation} = useContext(StoreContext);
     const {userLogged, setUserLogged} = useContext(StoreContext);
     const {message, setMessage} = useContext(StoreContext);
     const {currentPage, setCurrentPage} = useContext(StoreContext);
@@ -37,18 +35,13 @@ const UserForm = ({URL}) => {
         };
 
         axios.post(`/api/${URL}`, userData)
-            .then(result => {
-                const inputValidation = result.data.inputValidation;
-
-                if (inputValidation) {
-                    return setInputValidation(inputValidation);
-                }
+            .then(() => {
                 setUserLogged(true);
             })
             .catch(err => {
-                if(err.response) {
-                    setMessage(err.response.data);
-                }
+                const error = err.response.data;
+                
+                setMessage(error);
             });
     }
 
@@ -64,7 +57,6 @@ const UserForm = ({URL}) => {
 
     return (
         <form id="user-form">
-            <ValidationError inputValidation={inputValidation} />
             <Messages 
                 message={message} 
                 page={URL} 
