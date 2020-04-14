@@ -1,6 +1,7 @@
 import React, {useContext, useEffect} from "react";
 import {StoreContext} from "../../utils/store";
 
+import fetch from "node-fetch";
 import axios from "axios";
 
 import DeleteQuestion from "../../components/messages/DeleteQuestion";
@@ -10,11 +11,11 @@ const ListInput = () => {
     const {createListInputValue, setCreateListInputValue} = useContext(StoreContext);
     const {createListInput, setCreateListInput} = useContext(StoreContext);
     const {setEditListMenuActive} = useContext(StoreContext);
-    const {setEditName} = useContext(StoreContext);
+    //const {setEditName} = useContext(StoreContext);
+    //const {setListName} = useContext(StoreContext);
     const {setEditList} = useContext(StoreContext);
     const {setListCreated} = useContext(StoreContext);
     const {setMessage} = useContext(StoreContext);
-
 
     const updateInputValue = (e) => {
         setCreateListInputValue(e.target.value)
@@ -22,66 +23,54 @@ const ListInput = () => {
 
     const sendInputData = (e) => {
         e.preventDefault();
-
         axios({
             url: `/api/createlist`,
             method: "POST",
             data: {listName: createListInputValue}
         })
             .then(result => {
-                console.log(result);
                 const success = result.data;
-                const listCreated = result.data.listCreated;
-                const listNameUpdated = result.data.listNameUpdated;
-                const name = result.data.listName;
-                
-                if (listCreated) {
-                    console.log("list created!");
-                    setListCreated(true);
-                    setEditListMenuActive(true);
-                    //setListName(name);
-                    setEditList(false);
-                    setCreateListInput(false);
-                    setMessage(success);
-                } else {
-                    setListName(false);
-                }
 
-                if (listNameUpdated) {
-                    setListName(listNameUpdated);
-                    setMessage("List Name updated");
-                    timeOut(setMessageSuccess, false);
-                    setEditListMenuActive(false);
-                    setEditName(false);
+                setMessage(success);
+
+                if (success.listCreated) {
+                    setCreateListInput(false);
+                    setEditListMenuActive(true);
+                    setEditList(false);
+                    setListCreated(true);
                 }
             })
             .catch(err => {
-                console.log(err);
-                setMessage(err);
+                const error = err.response.data;
+
+                setMessage(error);
             });
     };
 
-    return (
-        <div className="create-list">
-            <form className="create-list-form">
-                <label className="label">New List</label>
-                <input
-                    type="text"
-                    onChange={updateInputValue}
-                    value={createListInputValue}
-                    className="input" />
-                <button
-                    onClick={sendInputData}
-                    className="button">Send</button>
-            </form>
-        </div>
-    )  
+    if (createListInput) {
+        return (
+            <div className="create-list">
+                <form className="create-list-form">
+                    <label className="label">New List</label>
+                    <input
+                        type="text"
+                        onChange={updateInputValue}
+                        value={createListInputValue}
+                        className="input" />
+                    <button
+                        onClick={sendInputData}
+                        className="button">Send</button>
+                </form>
+            </div>
+        )  
+    }
+    return null;
 };
 
 const EditList = () => {
-    const { editListMenuActive, setEditListMenuActive } = useContext(StoreContext);
-    const { setAskDelete } = useContext(StoreContext);
-    const { setEditName } = useContext(StoreContext);
+    const {editListMenuActive} = useContext(StoreContext);
+    const {setAskDelete} = useContext(StoreContext);
+    const {setEditName} = useContext(StoreContext);
     const {editList, setEditList} = useContext(StoreContext);
 
     const toggleEditMenu = () => {
@@ -111,7 +100,6 @@ const EditList = () => {
     if(editListMenuActive) {
         return (
             <div className="edit-list">
-                {console.log(editList)}
                 <span
                     className="span"
                     onClick={toggleEditMenu}>Edit List</span>
@@ -123,114 +111,144 @@ const EditList = () => {
 }
 
 const Games = () => {
-    const { gamesList } = useContext(StoreContext);
+    const {gamesList} = useContext(StoreContext);
+    const {setFetchGamesListFromServer} = useContext(StoreContext);
     let gameId = 0;
-    
-    return (
-        <div className="games-list">
-            {
-                gamesList.map(game => {
-                    const gameCoverString = game.cover;
-                    const coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
-                    gameId++;
-                    const id = gameId + 1;
-                    return (
-                        <div className="game" key={id}>
-                            <p className="name">{game.name}</p>
-                            <img src={`${coverURL}`} className="cover" />
-                        </div>
-                    )
-                })
-            }
-        </div>
-    )
+    let platform = null;
+
+    useEffect(() => {
+        if (gamesList.length > 0) {
+            setFetchGamesListFromServer(false);
+        }
+    })
+
+    if (gamesList) {
+
+        return (
+            <div className="games-list">
+                {
+                    gamesList.map(game => {
+                        const gameCoverString = game.cover;
+                        const coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
+                        platform  !== game.platform ? platform : null;
+                        gameId++;
+                        const id = gameId + 1;
+                        return (
+                            <div className="game" key={id}>
+                                <h3>{platform}</h3>
+                                <p className="name">{game.name}</p>
+                                <img src={`${coverURL}`} className="cover" />
+                            </div>
+                        )
+                    })
+                }
+            </div>
+        )
+    } else {
+        return null;
+    }
 
 };
 
-const UserList = () => {
+export async function getServerSideProps(ctx) {
+    const userId = await ctx.req.user ? ctx.req.user.id : null;
+    const URLBase = await ctx.req.headers.host;
+    const Url = new URL("/api/getlist", `http://${URLBase}`).href;
+
+    const result = await fetch(Url, { method: 'POST', 
+                                      body: JSON.stringify({userId}), 
+                                      headers: {'Content-Type': 'application/json'} 
+                                    });
+    const content = await result.json();
+
+    let data;
+
+    if (await userId) {
+        data = content;
+    } else {
+        data = {login: false};
+    }
+    
+    return { props: {data} };
+}
+
+const UserList = ({data}) => {
+    const {userId, setUserId} = useContext(StoreContext);
     const {currentPage, setCurrentPage} = useContext(StoreContext);
     const {gamesList, setGamesList} = useContext(StoreContext);
     const {askDelete, setAskDelete} = useContext(StoreContext);
     const {setEditListMenuActive} = useContext(StoreContext);
-    const {setEditList} = useContext(StoreContext);
-    const {setListCreated} = useContext(StoreContext);
+    //const {setEditList} = useContext(StoreContext);
+    //const {setListCreated} = useContext(StoreContext);
     const {message, setMessage} = useContext(StoreContext);
-    const {setListName} = useContext(StoreContext);
+    const {listName} = useContext(StoreContext);
     const {setCreateListInput} = useContext(StoreContext);
+    //const {listCreated} = useContext(StoreContext);
+    const {setListDeleted} = useContext(StoreContext);
+    const {fetchGamesListFromServer} = useContext(StoreContext);
 
-    useEffect(() => {
-
-        axios({
-            url: "/api/getlist", 
-            method: "GET"
-        })
-            .then(result => {
-                const gamesListResult = result.data.gamesList;
-                const listName = result.data.listName;
-                const listCreated = result.data.listCreated;
-                console.log(result);
-                if (listCreated) {
-                    setListCreated(true);
-                    setListName(listName);
-                    setCreateListInput(false);
-                    setEditListMenuActive(true);
-                    setEditList(false);
-                } else {
-                    setListCreated(false);
-                    setCreateListInput(true);
-                    setCreateListInputValue("");
-                }
-
-                if (gamesListResult) {
-                    setGamesList(gamesListResult);
-                    setCreateListInput(false);
-                }
-
-            }, [gamesList.length])
-            .catch(err => {
-                console.log(err.response.data);
-                if (err.response) {
-                    const error = err.response.data;
-    
-                    setMessage(error);
-                }
-            });
-    }, [gamesList.length]);
 
     const deleteList = () => {
         axios({ 
             url: "/api/deletelist", 
             method: "POST" 
         })
-            .then(result => {
-                console.log(result);
-                if (result) {
-                    const success = result.data;
-
-                    if(success.listDeleted) {
-                        console.log("list deleted!");
-                        setListCreated(false);
-                        setGamesList([]);
-                        setEditListMenuActive(false);
-                        setEditList(false);
-                        setMessage(success);
-                        setAskDelete(false);
-                        setListName("");
-                        setCreateListInput(false);
-                    }
-                }
+            .then(() => {
+                setListDeleted(true);
+                setEditListMenuActive(false);
+                setAskDelete(false);
+                setCreateListInput(true);
+                setGamesList([]);
             })
             .catch(err => {
-                console.log(err);
-                setMessage(err);
+                const error = err.response.data;
+
+                setMessage(error);
                 setEditListMenuActive(false);
                 setAskDelete(false);
             });
     };
 
+    useEffect(() => {
+
+        if (data.login === false) {
+            setMessage(data);
+        }
+
+        if (data.listExists === false) {
+            setCreateListInput(true);
+            setEditListMenuActive(false);
+        }
+        
+        if (data.gamesList && fetchGamesListFromServer) {
+            setGamesList(data.gamesList);
+            setCreateListInput(false);
+            setEditListMenuActive(true);
+            setUserId(data.id);
+        } 
+
+        if (!fetchGamesListFromServer) {
+            setCreateListInput(false);
+            setEditListMenuActive(true);
+            
+            axios("/api/getlist", { method: 'POST', data: {userId} })
+                    .then(result => {
+                        const gamesList = result.data.gamesList;
+
+                        setGamesList(gamesList);
+                        setCreateListInput(false);
+                        setEditListMenuActive(true);
+                    }) 
+                    .catch(()=> {
+                        setCreateListInput(true);
+                        setEditListMenuActive(false);
+                    })
+    
+        }
+    }, [gamesList.length]);
+
     return (
         <div className="user-list">
-            {console.log(message)}
             <Messages 
                 page="gameslist" 
                 message={message} 
@@ -241,6 +259,7 @@ const UserList = () => {
                 showQuestion={askDelete} 
                 action={deleteList} />
             <ListInput />
+            <h3 className="gameslist-heading">{listName}</h3>
             <EditList />
             <Games />
         </div>
