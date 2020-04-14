@@ -3,6 +3,7 @@ import React, { useState } from "react";
 export const StoreContext = React.createContext(null);
 
 const Store = ({ children }) => {
+    const [userId, setUserId] = useState(null);
 
     const [games, setGames] = useState([]);
     const [gamesList, setGamesList] = useState([]);
@@ -16,8 +17,10 @@ const Store = ({ children }) => {
 
     const [editListMenuActive, setEditListMenuActive] = useState(false);
     const [listCreated, setListCreated] = useState(false);
+    const [listDeleted, setListDeleted] = useState(false);
     const [editList, setEditList] = useState(false);
     const [editName, setEditName] = useState(false);
+    const [fetchGamesListFromServer, setFetchGamesListFromServer] = useState(true);
 
     const [inputValidation, setInputValidation] = useState(false);
 
@@ -42,12 +45,16 @@ const Store = ({ children }) => {
     };
 
     const store = {
+        userId: userId,
+        setUserId: updateState(setUserId),
         gameListError: gameListError,
         setGameListError: updateState(setGameListError),
         games: games,
         setGames: updateState(setGames),
         gamesList: gamesList,
         setGamesList: updateState(setGamesList),
+        fetchGamesListFromServer: fetchGamesListFromServer,
+        setFetchGamesListFromServer: updateState(setFetchGamesListFromServer),
         page: page,
         setPage: updateState(setPage),
         platform: platform,
@@ -65,6 +72,8 @@ const Store = ({ children }) => {
         editListMenuActive: editListMenuActive,
         setEditListMenuActive: updateState(setEditListMenuActive),
         listCreated: listCreated,
+        listDeleted: listDeleted,
+        setListDeleted: updateState(setListDeleted),
         setListCreated: updateState(setListCreated),
         editList: editList,
         setEditList: updateState(setEditList),
