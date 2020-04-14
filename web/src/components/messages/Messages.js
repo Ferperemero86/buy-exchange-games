@@ -107,11 +107,6 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
         timeOut(clearMessage, false, "3000");
     }
 
-    if (message.listDeleted) {
-        msg = <p className={`success-message ${page}`}>List Deleted</p>;
-        timeOut(clearMessage, false, "3000");
-    }
-
     if (message.listCreated) {
         msg = <p className={`success-message ${page}`}>List created</p>;
         timeOut(clearMessage, false, "3000");
