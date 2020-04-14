@@ -132,17 +132,18 @@ router.post("/getlist",
                     return new Promise((resolve, reject) => {
                         if (result) {
                             return resolve()
-                        }                        
+                        }                    
                         return reject({listExists: false})
                     })
                 })
-                .then(()=> {
+                .then(()=> {                    
                     return Games
                             .where({"list_id": userId})
+                            .orderBy("platform")
                             .fetchAll({require:false})
-                            .then(result => {                                
-                                return new Promise((resolve) => {                                
-                                    return resolve({gamesList:result});
+                            .then(result => {                           
+                                return new Promise((resolve) => {                                 
+                                    return resolve({gamesList:result, id: userId});
                                 })
                             })
                 })
@@ -189,7 +190,6 @@ router.post("/deletelist",
                         })
             })
             .then(response => {
-                console.log("sending response");
                 return res.json(response);
             })
             .catch(err => {
