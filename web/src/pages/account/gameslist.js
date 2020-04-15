@@ -12,7 +12,7 @@ const ListInput = () => {
     const {createListInput, setCreateListInput} = useContext(StoreContext);
     const {setEditListMenuActive} = useContext(StoreContext);
     //const {setEditName} = useContext(StoreContext);
-    //const {setListName} = useContext(StoreContext);
+    const {setListName} = useContext(StoreContext);
     const {setEditList} = useContext(StoreContext);
     const {setListCreated} = useContext(StoreContext);
     const {setMessage} = useContext(StoreContext);
@@ -38,6 +38,7 @@ const ListInput = () => {
                     setEditListMenuActive(true);
                     setEditList(false);
                     setListCreated(true);
+                    setListName(success.listName)
                 }
             })
             .catch(err => {
@@ -185,6 +186,7 @@ const UserList = ({data}) => {
     const {listName} = useContext(StoreContext);
     const {setCreateListInput} = useContext(StoreContext);
     //const {listCreated} = useContext(StoreContext);
+    const {setListName} = useContext(StoreContext);
     const {setListDeleted} = useContext(StoreContext);
     const {fetchGamesListFromServer} = useContext(StoreContext);
 
@@ -201,6 +203,7 @@ const UserList = ({data}) => {
                 setCreateListInput(true);
                 setGamesList([]);
                 setCreateListInputValue("");
+                setListName("");
             })
             .catch(err => {
                 const error = err.response.data;
