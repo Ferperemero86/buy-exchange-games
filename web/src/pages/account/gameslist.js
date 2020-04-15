@@ -11,11 +11,14 @@ const ListInput = () => {
     const {createListInputValue, setCreateListInputValue} = useContext(StoreContext);
     const {createListInput, setCreateListInput} = useContext(StoreContext);
     const {setEditListMenuActive} = useContext(StoreContext);
-    //const {setEditName} = useContext(StoreContext);
+    const {editName} = useContext(StoreContext);
     const {setListName} = useContext(StoreContext);
     const {setEditList} = useContext(StoreContext);
     const {setListCreated} = useContext(StoreContext);
     const {setMessage} = useContext(StoreContext);
+    const URL = editName ? "editlistname" : "createlist";
+    const label = URL === "editlistname" ? "Edit Name" : "New List";
+
 
     const updateInputValue = (e) => {
         setCreateListInputValue(e.target.value)
@@ -24,7 +27,7 @@ const ListInput = () => {
     const sendInputData = (e) => {
         e.preventDefault();
         axios({
-            url: `/api/createlist`,
+            url: `/api/${URL}`,
             method: "POST",
             data: {listName: createListInputValue}
         })
@@ -40,6 +43,13 @@ const ListInput = () => {
                     setListCreated(true);
                     setListName(success.listName)
                 }
+
+                if (success.listNameUpdated) {
+                    setListName(success.listNameUpdated);
+                    setCreateListInput(false);
+                    setEditList(false);
+                    setCreateListInputValue("");
+                }
             })
             .catch(err => {
                 const error = err.response.data;
@@ -48,11 +58,15 @@ const ListInput = () => {
             });
     };
 
+    const cancelEditName = () => {
+        setCreateListInput(false);
+    };
+
     if (createListInput) {
         return (
             <div className="create-list">
                 <form className="create-list-form">
-                    <label className="label">New List</label>
+                    <label className="label">{label}</label>
                     <input
                         type="text"
                         onChange={updateInputValue}
@@ -61,6 +75,9 @@ const ListInput = () => {
                     <button
                         onClick={sendInputData}
                         className="button">Send</button>
+                        {URL === "editlistname" && <button 
+                                                        onClick={cancelEditName}
+                                                        className="button">Cancel</button>}
                 </form>
             </div>
         )  
@@ -73,6 +90,7 @@ const EditList = () => {
     const {setAskDelete} = useContext(StoreContext);
     const {setEditName} = useContext(StoreContext);
     const {editList, setEditList} = useContext(StoreContext);
+    const {setCreateListInput} = useContext(StoreContext);
 
     const toggleEditMenu = () => {
         if (!editList) {
@@ -87,6 +105,7 @@ const EditList = () => {
 
     const editListName = () => {
         setEditName(true);
+        setCreateListInput(true);
     }
 
     const List = () => {
@@ -123,7 +142,7 @@ const Games = () => {
         }
     })
 
-    if (gamesList) {
+    if (typeof gamesList === Array) {
 
         return (
             <div className="games-list">
@@ -187,6 +206,7 @@ const UserList = ({data}) => {
     const {setCreateListInput} = useContext(StoreContext);
     //const {listCreated} = useContext(StoreContext);
     const {setListName} = useContext(StoreContext);
+    const {setEditName} = useContext(StoreContext);
     const {setListDeleted} = useContext(StoreContext);
     const {fetchGamesListFromServer} = useContext(StoreContext);
 
@@ -204,6 +224,7 @@ const UserList = ({data}) => {
                 setGamesList([]);
                 setCreateListInputValue("");
                 setListName("");
+                setEditName(false);
             })
             .catch(err => {
                 const error = err.response.data;
@@ -215,23 +236,26 @@ const UserList = ({data}) => {
     };
 
     useEffect(() => {
-
+        //If not logged redirect to login page
         if (data.login === false) {
             setMessage(data);
         }
-
+        
         if (data.listExists === false) {
             setCreateListInput(true);
             setEditListMenuActive(false);
         }
-        
+        //Get data from server
         if (data.gamesList && fetchGamesListFromServer) {
+            console.log("getting from server", data.list.list_name);
             setGamesList(data.gamesList);
             setCreateListInput(false);
             setEditListMenuActive(true);
             setUserId(data.id);
+            setListName(data.list.list_name);
         } 
-
+        //Stop getting data from server.
+        //Fetch from client with axios.
         if (!fetchGamesListFromServer) {
             setCreateListInput(false);
             setEditListMenuActive(true);
