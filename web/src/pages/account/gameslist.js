@@ -178,6 +178,7 @@ const UserList = ({data}) => {
     const {gamesList, setGamesList} = useContext(StoreContext);
     const {askDelete, setAskDelete} = useContext(StoreContext);
     const {setEditListMenuActive} = useContext(StoreContext);
+    const {setCreateListInputValue} = useContext(StoreContext);
     //const {setEditList} = useContext(StoreContext);
     //const {setListCreated} = useContext(StoreContext);
     const {message, setMessage} = useContext(StoreContext);
@@ -199,6 +200,7 @@ const UserList = ({data}) => {
                 setAskDelete(false);
                 setCreateListInput(true);
                 setGamesList([]);
+                setCreateListInputValue("");
             })
             .catch(err => {
                 const error = err.response.data;
