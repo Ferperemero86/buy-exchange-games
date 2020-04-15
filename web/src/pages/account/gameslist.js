@@ -141,8 +141,8 @@ const Games = () => {
             setFetchGamesListFromServer(false);
         }
     })
-
-    if (typeof gamesList === Array) {
+    
+    if (typeof gamesList === "object") {
 
         return (
             <div className="games-list">
@@ -188,7 +188,7 @@ export async function getServerSideProps(ctx) {
     } else {
         data = {login: false};
     }
-    
+    console.log(data);
     return { props: {data} };
 }
 
@@ -244,6 +244,10 @@ const UserList = ({data}) => {
         if (data.listExists === false) {
             setCreateListInput(true);
             setEditListMenuActive(false);
+        }
+
+        if (data.internalError) {
+            setMessage(data);
         }
         //Get data from server
         if (data.gamesList && fetchGamesListFromServer) {
