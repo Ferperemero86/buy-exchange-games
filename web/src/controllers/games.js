@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const knex = require("../db/knex");
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json({ type: "application/json" });
 const userAuthentication = require("../authentication");
@@ -20,7 +19,7 @@ router.post("/createlist",
         const userId = req.user.id;
         const valuesValidation = validation.validate({listName}, validation.createList);
         
-        return new Lists
+        return Lists
                 .where({user_id: userId})
                 .fetch({require: false})
                 .then(result => {
@@ -37,7 +36,7 @@ router.post("/createlist",
                             return reject({inputValidation: valuesValidation});
                         }
                     
-                        return new Lists({ user_id: userId, list_name: listName })
+                        return Lists({ user_id: userId, list_name: listName })
                             .save()
                             .then(result => {
                                 if (result) {
@@ -73,7 +72,7 @@ router.post("/addgametolist",
         const platform = gameDetails.platform;
         const name = nameString.replace("'", "");
 
-            return new Lists
+            return Lists
                 .where({user_id: userId})
                 .fetch({require: false})
                 .then(result => {
@@ -85,21 +84,22 @@ router.post("/addgametolist",
                     })
                 })
                 .then(() => {
-                    return new Games({ game_id: id,
-                                        list_id: userId,    
-                                        platform: platform, 
-                                        name: name,    
-                                        cover: cover})
-                                    .save()
-                                         .then(result => {
-                                             return new Promise((resolve, reject) => {
-                                                 if (result) {
-                                                     return resolve({gameAddedToList: true});
-                                                 }
-                                                 return reject();
-                                             })
-                                         })
-                                     
+                    return Games
+                            .forge({ game_id: id,
+                                list_id: userId,    
+                                platform: platform, 
+                                name: name,    
+                                cover: cover})
+                            .save()
+                                 .then(result => {
+                                     return new Promise((resolve, reject) => {
+                                         if (result) {
+                                             return resolve({gameAddedToList: true});
+                                         }
+                                         return reject();
+                                     })
+                                 })
+                                 
                 })
                 .then(result => {
                     return res.json(result);
@@ -118,7 +118,7 @@ router.post("/getlist",
     (req, res) => {
         const userId = req.body.userId;
 
-        return new Lists()
+        return Lists
                 .where({"user_id": userId})
                 .fetch({columns: "list_name", require: false})
                 .then(result => {
@@ -130,7 +130,7 @@ router.post("/getlist",
                     })
                 })
                 .then(list => {   
-                    return new Games
+                    return Games
                             .where({"list_id": userId})
                             .orderBy("platform")
                             .fetchAll({require:false})
@@ -159,7 +159,7 @@ router.post("/deletelist",
     (req, res) => {
         const userId = req.user.id;
         //Locate and delete list.
-        return new Lists
+        return Lists
             .where({user_id: userId})
             .fetch({require: false})
             .then(response => {
@@ -173,7 +173,7 @@ router.post("/deletelist",
                 });
             })
             .then(() => {
-                return new Lists
+                return Lists
                         .where({user_id: userId})
                         .destroy()
                         .then(() => {
@@ -204,7 +204,7 @@ router.post("/editlistname",
         const name = req.body.listName;
         console.log("name", name);
 
-        knex("lists")
+        return Lists
             .where("user_id", userId)
             .update({ list_name: name })
             .then(() => {
