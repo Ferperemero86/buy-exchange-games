@@ -36,7 +36,9 @@ router.post("/createlist",
                             return reject({inputValidation: valuesValidation});
                         }
                     
-                        return Lists({ user_id: userId, list_name: listName })
+                        return Lists
+                            .forge({ user_id: userId, 
+                                     list_name: listName})
                             .save()
                             .then(result => {
                                 if (result) {
@@ -200,20 +202,25 @@ router.post("/editlistname",
     userAuthentication,
     acl(User, "save"),
     (req, res) => {
-        const userId = req.user.id;
-        const name = req.body.listName;
-        console.log("name", name);
+        return new Promise((resolve) => {
+            const userId = req.body.userId;
+            const name = req.body.listName;
+            console.log("userId", userId);
 
-        return Lists
-            .where("user_id", userId)
-            .update({ list_name: name })
-            .then(() => {
-                res.json({listNameUpdated: name})
-            })
-            .catch(() => {
-                res.json({listNameUpdated: false})
-            })
-    })
+            return Lists
+                .where({"user_id": userId})
+                .save({ list_name: name }, {patch: true})
+                .then(() => {
+                    return resolve({listNameUpdated: name});
+                })
+        })
+        .then(result => {
+            return res.json(result);
+        })
+        .catch(()=> {
+            return res.status(500).json({internalError: true});
+        })
+})
 
 
 module.exports = router;
