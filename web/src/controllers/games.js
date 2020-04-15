@@ -205,7 +205,6 @@ router.post("/editlistname",
         return new Promise((resolve) => {
             const userId = req.body.userId;
             const name = req.body.listName;
-            console.log("userId", userId);
 
             return Lists
                 .where({"user_id": userId})
