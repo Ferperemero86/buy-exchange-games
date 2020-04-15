@@ -252,7 +252,6 @@ const UserList = ({data}) => {
         
         //Gets data from server
         if (data.gamesList && fetchGamesListFromServer) {
-            console.log("data from server");
             setGamesList(data.gamesList);
             setCreateListInput(false);
             setEditListMenuActive(true);
