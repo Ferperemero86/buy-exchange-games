@@ -1,11 +1,11 @@
-import { useContext, useEffect } from "react";
+import React, {useContext} from "react";
 import Link from "next/link";
 import axios from "axios";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faArrowCircleLeft} from '@fortawesome/free-solid-svg-icons';
 
-import { StoreContext } from "../../utils/store";
+import {StoreContext} from "../../utils/store";
 
 import Messages from "../../components/messages/Messages";
 
@@ -14,8 +14,8 @@ export async function getServerSideProps ({query}) {
 }
 
 const Details = ({query}) => {
-    const { message, setMessage } = useContext(StoreContext);
-    const { currentPage, setCurrentPage } = useContext(StoreContext);
+    const {message, setMessage} = useContext(StoreContext);
+    const {currentPage, setCurrentPage} = useContext(StoreContext);
     const id = query.id;
     const platform = query.platform;
     const page = query.page;
@@ -25,7 +25,7 @@ const Details = ({query}) => {
     const summary = query.summary;
     
 
-    const addToList = (e) => {
+    const addToList = () => {
         const game = query;
 
         axios({
