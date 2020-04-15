@@ -20,7 +20,7 @@ router.post("/createlist",
         const userId = req.user.id;
         const valuesValidation = validation.validate({listName}, validation.createList);
         
-        return Lists
+        return new Lists
                 .where({user_id: userId})
                 .fetch({require: false})
                 .then(result => {
@@ -37,11 +37,7 @@ router.post("/createlist",
                             return reject({inputValidation: valuesValidation});
                         }
                     
-                        return Lists
-                            .forge({ 
-                                user_id: userId, 
-                                list_name: listName 
-                            })
+                        return new Lists({ user_id: userId, list_name: listName })
                             .save()
                             .then(result => {
                                 if (result) {
@@ -77,7 +73,7 @@ router.post("/addgametolist",
         const platform = gameDetails.platform;
         const name = nameString.replace("'", "");
 
-            return Lists
+            return new Lists
                 .where({user_id: userId})
                 .fetch({require: false})
                 .then(result => {
@@ -89,24 +85,21 @@ router.post("/addgametolist",
                     })
                 })
                 .then(() => {
-                    return Games
-                       .forge({
-                           game_id: id,
-                           list_id: userId,
-                           platform: platform,
-                           name: name,
-                           cover: cover
-                       })
-                       .save()
-                            .then(result => {
-                                return new Promise((resolve, reject) => {
-                                    if (result) {
-                                        return resolve({gameAddedToList: true});
-                                    }
-                                    return reject();
-                                })
-                            })
-
+                    return new Games({ game_id: id,
+                                        list_id: userId,    
+                                        platform: platform, 
+                                        name: name,    
+                                        cover: cover})
+                                    .save()
+                                         .then(result => {
+                                             return new Promise((resolve, reject) => {
+                                                 if (result) {
+                                                     return resolve({gameAddedToList: true});
+                                                 }
+                                                 return reject();
+                                             })
+                                         })
+                                     
                 })
                 .then(result => {
                     return res.json(result);
@@ -118,32 +111,32 @@ router.post("/addgametolist",
                     return res.status(500).json({internalError: true}); 
                 })
        
-    });
+});
 
 router.post("/getlist",
     jsonParser,
     (req, res) => {
         const userId = req.body.userId;
 
-        return Lists
+        return new Lists()
                 .where({"user_id": userId})
-                .fetch({require: false})
+                .fetch({columns: "list_name", require: false})
                 .then(result => {
                     return new Promise((resolve, reject) => {
                         if (result) {
-                            return resolve()
+                            return resolve(result);
                         }                    
                         return reject({listExists: false})
                     })
                 })
-                .then(()=> {                    
-                    return Games
+                .then(list => {   
+                    return new Games
                             .where({"list_id": userId})
                             .orderBy("platform")
                             .fetchAll({require:false})
-                            .then(result => {                           
+                            .then(result => {       
                                 return new Promise((resolve) => {                                 
-                                    return resolve({gamesList:result, id: userId});
+                                    return resolve({gamesList:result, id: userId, list});
                                 })
                             })
                 })
@@ -166,7 +159,7 @@ router.post("/deletelist",
     (req, res) => {
         const userId = req.user.id;
         //Locate and delete list.
-        return Lists
+        return new Lists
             .where({user_id: userId})
             .fetch({require: false})
             .then(response => {
@@ -180,7 +173,7 @@ router.post("/deletelist",
                 });
             })
             .then(() => {
-                return Lists
+                return new Lists
                         .where({user_id: userId})
                         .destroy()
                         .then(() => {
@@ -208,7 +201,8 @@ router.post("/editlistname",
     acl(User, "save"),
     (req, res) => {
         const userId = req.user.id;
-        const name = req.body.dataContent;
+        const name = req.body.listName;
+        console.log("name", name);
 
         knex("lists")
             .where("user_id", userId)
