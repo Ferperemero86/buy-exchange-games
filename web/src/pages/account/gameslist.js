@@ -16,6 +16,7 @@ const ListInput = () => {
     const {setEditList} = useContext(StoreContext);
     const {setListCreated} = useContext(StoreContext);
     const {setMessage} = useContext(StoreContext);
+    const {userId} = useContext(StoreContext);
     const URL = editName ? "editlistname" : "createlist";
     const label = URL === "editlistname" ? "Edit Name" : "New List";
 
@@ -29,7 +30,7 @@ const ListInput = () => {
         axios({
             url: `/api/${URL}`,
             method: "POST",
-            data: {listName: createListInputValue}
+            data: {listName: createListInputValue, userId}
         })
             .then(result => {
                 const success = result.data;
@@ -53,7 +54,6 @@ const ListInput = () => {
             })
             .catch(err => {
                 const error = err.response.data;
-
                 setMessage(error);
             });
     };
@@ -188,7 +188,7 @@ export async function getServerSideProps(ctx) {
     } else {
         data = {login: false};
     }
-    console.log(data);
+    
     return { props: {data} };
 }
 
@@ -249,9 +249,9 @@ const UserList = ({data}) => {
         if (data.internalError) {
             setMessage(data);
         }
+    
         //Get data from server
         if (data.gamesList && fetchGamesListFromServer) {
-            console.log("getting from server", data.list.list_name);
             setGamesList(data.gamesList);
             setCreateListInput(false);
             setEditListMenuActive(true);
@@ -260,17 +260,29 @@ const UserList = ({data}) => {
         } 
         //Stop getting data from server.
         //Fetch from client with axios.
-        if (!fetchGamesListFromServer) {
+        //Update user id hook if different from coming from server.
+        if (!fetchGamesListFromServer || data.id !== userId) {
+            let id;
+            
+            if (data.id !== userId) {
+                id = data.id;
+                setUserId(data.id);
+            } else {
+                id = userId;
+            }
+
             setCreateListInput(false);
             setEditListMenuActive(true);
             
-            axios("/api/getlist", { method: 'POST', data: {userId} })
+            axios("/api/getlist", { method: 'POST', data: {userId: id} })
                     .then(result => {
                         const gamesList = result.data.gamesList;
+                        const listName = result.data.list.list_name;
 
                         setGamesList(gamesList);
                         setCreateListInput(false);
                         setEditListMenuActive(true);
+                        setListName(listName);
                     }) 
                     .catch(()=> {
                         setCreateListInput(true);
