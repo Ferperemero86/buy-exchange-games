@@ -188,7 +188,7 @@ export async function getServerSideProps(ctx) {
     } else {
         data = {login: false};
     }
-    
+
     return { props: {data} };
 }
 
@@ -199,7 +199,7 @@ const UserList = ({data}) => {
     const {askDelete, setAskDelete} = useContext(StoreContext);
     const {setEditListMenuActive} = useContext(StoreContext);
     const {setCreateListInputValue} = useContext(StoreContext);
-    //const {setEditList} = useContext(StoreContext);
+    const {setEditList} = useContext(StoreContext);
     //const {setListCreated} = useContext(StoreContext);
     const {message, setMessage} = useContext(StoreContext);
     const {listName} = useContext(StoreContext);
@@ -236,7 +236,7 @@ const UserList = ({data}) => {
     };
 
     useEffect(() => {
-        //If not logged redirect to login page
+        //If not logged redirects to login page
         if (data.login === false) {
             setMessage(data);
         }
@@ -249,19 +249,22 @@ const UserList = ({data}) => {
         if (data.internalError) {
             setMessage(data);
         }
-    
-        //Get data from server
+        
+        //Gets data from server
         if (data.gamesList && fetchGamesListFromServer) {
+            console.log("data from server");
             setGamesList(data.gamesList);
             setCreateListInput(false);
             setEditListMenuActive(true);
+            setEditList(false);
             setUserId(data.id);
             setListName(data.list.list_name);
         } 
-        //Stop getting data from server.
-        //Fetch from client with axios.
-        //Update user id hook if different from coming from server.
-        if (!fetchGamesListFromServer || data.id !== userId) {
+
+        //Stops getting data from server.
+        //Fetches from client with axios.
+        //Updates user id hook if different from coming from server.
+        if (!fetchGamesListFromServer || (data.id !== userId && userId !== null) ) {
             let id;
             
             if (data.id !== userId) {
@@ -273,7 +276,8 @@ const UserList = ({data}) => {
 
             setCreateListInput(false);
             setEditListMenuActive(true);
-            
+
+            //Fetches games and listName when did not get them previously from server.
             axios("/api/getlist", { method: 'POST', data: {userId: id} })
                     .then(result => {
                         const gamesList = result.data.gamesList;
