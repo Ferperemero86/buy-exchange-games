@@ -72,13 +72,14 @@
     margin: 0 0 0 5px;
 }
 
-.games-list {
+.games-list-section {
     width: 100%;
     margin: 50px 0 0 0;
     padding: 0 0 0 4%;
+    overflow: hidden;
 }
 
-.games-list .game {
+.games-list-section .game {
     float: left;
     text-align: center;
     width: 50%;
@@ -86,11 +87,11 @@
     margin: 50px auto;
 }
 @media screen and (min-width: 800px) {
-    .games-list .game {
+    .games-list-section .game {
       width: 264px;
       height: 264px;
       float: left;
-      margin: 50px 1%;
+      margin: 50px 1% 50px 0;
       overflow: hidden; 
       color: #fff;
     }
@@ -103,11 +104,11 @@
     }
 }
 
-.games-list .game .name {
+.games-list-section .game .name {
     margin: 5px 0 0 0;
 }
 
-.games-list .game .cover {
+.games-list-section .game .cover {
     margin: 15px 0 0 0;
     border: 0;
     max-width: 70%;
