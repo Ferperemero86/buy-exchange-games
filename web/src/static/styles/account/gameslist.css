@@ -6,6 +6,7 @@
 .user-list .gameslist-heading {
     margin: 50px 0 0 5%;
     font-size: 1.4em;
+    color: #fff;
  }
  
 .edit-list {
@@ -77,6 +78,11 @@
     margin: 50px 0 0 0;
     padding: 0 0 0 4%;
     overflow: hidden;
+}
+
+.games-list-section .heading {
+    color: #fff;
+    font-size: 1.2em;
 }
 
 .games-list-section .game {
