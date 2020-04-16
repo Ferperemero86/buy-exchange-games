@@ -128,46 +128,67 @@ const EditList = () => {
         )
     }
     return null;
-}
+};
 
-const Games = () => {
-    const {gamesList} = useContext(StoreContext);
+const Games = ({platformGames}) => {
     const {setFetchGamesListFromServer} = useContext(StoreContext);
     let gameId = 0;
-    let platform = null;
 
     useEffect(() => {
-        if (gamesList.length > 0) {
+        if (platformGames.length > 0) {
             setFetchGamesListFromServer(false);
         }
     })
-    
-    if (typeof gamesList === "object") {
 
-        return (
-            <div className="games-list">
-                {
-                    gamesList.map(game => {
-                        const gameCoverString = game.cover;
-                        const coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
-                        platform  !== game.platform ? platform : null;
-                        gameId++;
-                        const id = gameId + 1;
-                        return (
-                            <div className="game" key={id}>
-                                <h3>{platform}</h3>
-                                <p className="name">{game.name}</p>
-                                <img src={`${coverURL}`} className="cover" />
-                            </div>
-                        )
-                    })
-                }
-            </div>
-        )
-    } else {
-        return null;
+    //Display games per platform
+    if (platformGames) {
+        return platformGames.map(game => {
+            const gameCoverString = game.cover;
+            const coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
+            gameId++;
+            const id = gameId + 1;
+            return (
+                <div className="game" key={id}>
+                    <p className="name">{game.name}</p>
+                    <img src={`${coverURL}`} className="cover" />
+                </div> 
+            )
+        })
     }
+    
+    return null;
+};
 
+const GamesSection = () => {
+    const {gamesList} = useContext(StoreContext);
+    let platform = null;
+    let games = {};
+
+    if (gamesList) {
+        gamesList.map(game => {
+            if(!games[game.platform]) {
+                games[game.platform] = [];
+            }
+            games[game.platform].push(game);
+        });
+        
+        return Object.keys(games).map(index => {
+            return games[index].map(game => {
+                if(game.platform !== platform) {
+                    platform = game.platform;
+
+                    return (
+                        <section className="games-list-section" key={platform}>
+                            <h3>{platform.toUpperCase()}</h3>
+                            <Games platformGames={games[platform]} />
+                        </section>
+                    )
+                }
+
+            })
+        })
+    }
+    return null;
 };
 
 export async function getServerSideProps(ctx) {
@@ -309,7 +330,7 @@ const UserList = ({data}) => {
             <ListInput />
             <h3 className="gameslist-heading">{listName}</h3>
             <EditList />
-            <Games />
+            <GamesSection />
         </div>
     )
 }
