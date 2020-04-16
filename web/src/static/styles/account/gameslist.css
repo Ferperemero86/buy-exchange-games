@@ -83,18 +83,50 @@
     float: left;
     text-align: center;
     width: 50%;
-    border: 1px solid #000;
     margin: 50px auto;
+    background-color: #000;
 }
+
+.games-list-section .game .cover {
+    margin: 15px 0 0 0;
+    border: 0;
+    max-width: 70%;
+    height: auto;
+}
+
 @media screen and (min-width: 800px) {
+
+    .games-list-section .heading {
+        margin: 0 0 15px 0;
+    }
+
     .games-list-section .game {
       width: 264px;
       height: 264px;
       float: left;
-      margin: 50px 1% 50px 0;
+      margin: 5px 1% 50px 0;
       overflow: hidden; 
       color: #fff;
     }
+
+    .games-list-section .game .cover-container {
+        width: 200px;
+        height: 200px;
+        margin: 0 32px 5px 32px;
+        background-color: #000;
+        overflow: hidden;
+    }
+
+    .games-list-section .game .cover {
+        max-width: 100%;
+    }
+
+    .games-list-section .game .title {
+        margin: 20px 0 0 0;
+        font-size: 0.8em;
+        color: #fff;
+    }
+
     .create-list-form .input {
         width: 300px;
     }
@@ -104,13 +136,4 @@
     }
 }
 
-.games-list-section .game .name {
-    margin: 5px 0 0 0;
-}
 
-.games-list-section .game .cover {
-    margin: 15px 0 0 0;
-    border: 0;
-    max-width: 70%;
-    height: auto;
-}
