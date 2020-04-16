@@ -257,7 +257,7 @@ const UserList = ({data}) => {
             setEditListMenuActive(true);
             setEditList(false);
             setUserId(data.id);
-            setListName(data.list.list_name);
+            setListName(data.list.result.list_name);
         } 
 
         //Stops getting data from server.
@@ -278,10 +278,10 @@ const UserList = ({data}) => {
 
             //Fetches games and listName when did not get them previously from server.
             axios("/api/getlist", { method: 'POST', data: {userId: id} })
-                    .then(result => {
+                    .then(result => {                        
                         const gamesList = result.data.gamesList;
-                        const listName = result.data.list.list_name;
-
+                        const listName = result.data.list.result.list_name;
+                
                         setGamesList(gamesList);
                         setCreateListInput(false);
                         setEditListMenuActive(true);
