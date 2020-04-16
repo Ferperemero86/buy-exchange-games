@@ -10,18 +10,21 @@ import {StoreContext} from "../../utils/store";
 import Messages from "../../components/messages/Messages";
 
 export async function getServerSideProps ({query}) {
-    return {props: {query}}
+    const coverString = query.cover;
+    const cover = coverString.replace("t_thumb", "t_screenshot_med");
+
+    return {props: {query, cover}}
 }
 
-const Details = ({query}) => {
+const Details = ({query, cover}) => {
     const {message, setMessage} = useContext(StoreContext);
     const {currentPage, setCurrentPage} = useContext(StoreContext);
     const id = query.id;
     const platform = query.platform;
     const page = query.page;
     const name = query.name;
-    const coverString = query.cover;
-    const cover = coverString.replace("t_thumb", "t_screenshot_med");
+    //const coverString = query.cover;
+    //const cover = coverString.replace("t_thumb", "t_screenshot_med");
     const summary = query.summary;
     
 

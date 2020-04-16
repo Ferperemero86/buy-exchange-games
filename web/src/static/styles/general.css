@@ -1,3 +1,11 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    background-color: #353839;
+}
+
 .layout {
     font-family: Helvetica;
     background-color: #353839;
