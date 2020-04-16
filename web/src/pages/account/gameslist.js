@@ -149,8 +149,10 @@ const Games = ({platformGames}) => {
             const id = gameId + 1;
             return (
                 <div className="game" key={id}>
-                    <p className="name">{game.name}</p>
-                    <img src={`${coverURL}`} className="cover" />
+                    <div className="cover-container">
+                        <img src={`${coverURL}`} className="cover" />
+                    </div>
+                    <p className="title">{game.name}</p>
                 </div> 
             )
         })
@@ -179,7 +181,7 @@ const GamesSection = () => {
 
                     return (
                         <section className="games-list-section" key={platform}>
-                            <h3>{platform.toUpperCase()}</h3>
+                            <h3 className="heading">{platform.toUpperCase()}</h3>
                             <Games platformGames={games[platform]} />
                         </section>
                     )
