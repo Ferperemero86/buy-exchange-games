@@ -21,6 +21,7 @@ const Store = ({ children }) => {
     const [editList, setEditList] = useState(false);
     const [editName, setEditName] = useState(false);
     const [fetchGamesListFromServer, setFetchGamesListFromServer] = useState(true);
+    const [gameID, setGameID] = useState(true);
 
     const [inputValidation, setInputValidation] = useState(false);
 
@@ -31,7 +32,8 @@ const Store = ({ children }) => {
     const [gameListError, setGameListError] = useState(false);
 
     const [deleteElement, setDeleteElement] = useState(false);
-    const [askDelete, setAskDelete] = useState(false);
+    const [askDeleteList, setAskDeleteList] = useState(false);
+    const [askDeleteGame, setAskDeleteGame] = useState(false);
     const [listName, setListName] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(false);
@@ -51,6 +53,8 @@ const Store = ({ children }) => {
         setGameListError: updateState(setGameListError),
         games: games,
         setGames: updateState(setGames),
+        gameID: gameID,
+        setGameID: updateState(setGameID),
         gamesList: gamesList,
         setGamesList: updateState(setGamesList),
         fetchGamesListFromServer: fetchGamesListFromServer,
@@ -87,8 +91,10 @@ const Store = ({ children }) => {
         setMessage: updateState(setMessage),
         deleteElement: deleteElement,
         setDeleteElement: updateState(setDeleteElement),
-        askDelete: askDelete,
-        setAskDelete: updateState(setAskDelete),
+        askDeleteList: askDeleteList,
+        setAskDeleteList: updateState(setAskDeleteList),
+        askDeleteGame: askDeleteGame,
+        setAskDeleteGame: updateState(setAskDeleteGame),
         listName: listName,
         setListName: updateState(setListName),
         currentPage: currentPage,
