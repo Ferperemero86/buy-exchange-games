@@ -1,24 +1,30 @@
-import React, { useContext, useEffect } from "react";
-import { StoreContext } from "../../utils/store";
+import React from "react";
 
-const DeleteQuestion = ({showQuestion, action}) => {
-    const {deleteElement, setDeleteElement} = useContext(StoreContext);
-    const {askDelete, setAskDelete} = useContext(StoreContext);
+const DeleteQuestion = ({showQuestion, action, cancelDelete, element}) => {
+    let title;
+
+    if (element === "list") {
+        title = "Delete List?";
+    }
+
+    if (element === "game") {
+        title = "Delete Game?"
+    }
 
     const deleteItem = () => {
         action();
     }
 
-    const cancelDelete = () => {
-        setAskDelete(false);
+    const stopDelete = () => {
+        cancelDelete(false);
     }
 
     if(showQuestion) {
         return (
-            <div className="delete-question">
-                <h1 className="heading">Are you sure?</h1>
+            <div className={`delete-question ${element}`}>
+                <h1 className="heading">{title}</h1>
                 <button className="button" onClick={deleteItem}>Ok</button>
-                <button className="button" onClick={cancelDelete}>Cancel</button>
+                <button className="button" onClick={stopDelete}>Cancel</button>
             </div>
         )
     }
