@@ -3,10 +3,14 @@
     overflow: hidden;
 }
 
+.create-list .label {
+    color: #8c92ac;
+}
+
 .user-list .gameslist-heading {
     margin: 50px 0 0 5%;
     font-size: 1.4em;
-    color: #fff;
+    color: #8c92ac;
  }
  
 .edit-list {
@@ -91,6 +95,27 @@
     width: 50%;
     margin: 50px auto;
     background-color: #000;
+    position: relative;
+}
+
+.games-list-section .game .game-header {
+    width: 100%;
+    overflow: hidden;
+}
+
+.games-list-section .game .delete-icon {
+    float: left;
+    color: #fff;
+    margin: 5px 5px 0 20px;
+}
+
+.games-list-section .game .icon {
+    display: block;
+    width: 100%;
+}
+
+.games-list-section .game .delete-icon:hover {
+    cursor: pointer;
 }
 
 .games-list-section .game .cover {
