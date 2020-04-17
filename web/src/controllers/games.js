@@ -141,7 +141,7 @@ router.post("/getlist",
                     .fetchAll({require:false})
                     .then(result => {       
                         return new Promise((resolve) => {                                 
-                            return resolve({gamesList:result, id: list.userId, list});
+                            return resolve({gamesList: result, id: list.userId, list});
                         })
                     })
         })
@@ -155,7 +155,7 @@ router.post("/getlist",
             return res.status(500).json({internalError: true});
         })
                
-})
+});
 
 router.post("/deletelist",
     jsonParser,
@@ -199,7 +199,7 @@ router.post("/deletelist",
             return res.status(500).json({internalError: true});
         })
             
-})
+});
 
 router.post("/editlistname",
     jsonParser,
@@ -223,7 +223,46 @@ router.post("/editlistname",
         .catch(()=> {
             return res.status(500).json({internalError: true});
         })
-})
+});
+
+router.post("/deletegame",
+    userAuthentication,
+    jsonParser,
+    async (req, res) => {
+        const gameID = req.body.gameID;
+        const userId = req.user.id;
+        
+        await new Promise((resolve) => {
+            return Games
+                .where({id: gameID })
+                .fetch({require: true})
+                .then(result => {
+                   return resolve(result);
+                })
+        })
+        .then(Game => {
+            return new Promise((resolve) => {
+                Game
+                .destroy()
+                .then(() => {
+                    resolve()
+                })
+
+            })            
+        })
+        .then(() => {
+            Games
+                .where({list_id: userId})
+                .fetchAll({require: false})
+                .then(result => {
+                   res.json({gamesList: result})
+                })
+        })
+        .catch(() => {
+            res.status(500).json({internalError: true});
+        })
+           
+});
 
 
 module.exports = router;
