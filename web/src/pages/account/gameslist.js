@@ -35,8 +35,6 @@ const ListInput = () => {
             .then(result => {
                 const success = result.data;
 
-                setMessage(success);
-
                 if (success.listCreated) {
                     setCreateListInput(false);
                     setEditListMenuActive(true);
@@ -87,7 +85,7 @@ const ListInput = () => {
 
 const EditList = () => {
     const {editListMenuActive} = useContext(StoreContext);
-    const {setAskDelete} = useContext(StoreContext);
+    const {setAskDeleteList} = useContext(StoreContext);
     const {setEditName} = useContext(StoreContext);
     const {editList, setEditList} = useContext(StoreContext);
     const {setCreateListInput} = useContext(StoreContext);
@@ -100,7 +98,7 @@ const EditList = () => {
     };
 
     const askForListDelete = () => {
-        setAskDelete(true);
+        setAskDeleteList(true);
     }
 
     const editListName = () => {
@@ -132,7 +130,37 @@ const EditList = () => {
 
 const Games = ({platformGames}) => {
     const {setFetchGamesListFromServer} = useContext(StoreContext);
+    const {askDeleteGame, setAskDeleteGame} = useContext(StoreContext);
+    const {gameID, setGameID} = useContext(StoreContext);
+    const {setMessage} = useContext(StoreContext);
+    const {setGamesList} = useContext(StoreContext);
     let gameId = 0;
+
+    const deleteGame = () => {
+        axios.post("/api/deletegame", {gameID})
+            .then(result => {
+                const gamesList = result.data.gamesList;
+                
+                setAskDeleteGame(false);
+
+                if (Array.isArray(gamesList)) {
+                    setGamesList(gamesList);
+                } else {
+                    setMessage({internalError: true});
+                }
+            })
+            .catch(err => {
+                setAskDeleteGame(false);
+                setMessage(err.response.data);
+            })
+        
+    };
+
+    const askForListDelete = (e) => {
+        const gameData = e.currentTarget.getAttribute("data-game-id");
+        setAskDeleteGame(true);
+        setGameID(parseInt(gameData));
+    }
 
     useEffect(() => {
         if (platformGames.length > 0) {
@@ -141,24 +169,33 @@ const Games = ({platformGames}) => {
     })
 
     //Display games per platform
-    if (platformGames) {
-        return platformGames.map(game => {
-            const gameCoverString = game.cover;
-            const coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
-            gameId++;
-            const id = gameId + 1;
-            return (
-                <div className="game" key={id}>
-                    <div className="cover-container">
-                        <img src={`${coverURL}`} className="cover" />
+    return platformGames.map(game => {
+        const gameCoverString = game.cover;
+        const coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
+        gameId++;
+        const id = gameId + 1;
+
+        return (
+            <div className="game" key={id}>
+                {gameID === game.id && <DeleteQuestion 
+                    showQuestion={askDeleteGame} 
+                    action={deleteGame} 
+                    cancelDelete={setAskDeleteGame}
+                    element="game" /> }
+                <div className="game-header">
+                    <div className="delete-icon" 
+                         onClick={askForListDelete}
+                         data-game-id={game.id}>
+                        <span className="icon">x</span>
                     </div>
-                    <p className="title">{game.name}</p>
-                </div> 
-            )
-        })
-    }
-    
-    return null;
+                </div>
+                <div className="cover-container">
+                    <img src={`${coverURL}`} className="cover" />
+                </div>
+                <p className="title">{game.name}</p>
+            </div> 
+        )
+    })
 };
 
 const GamesSection = () => {
@@ -219,15 +256,13 @@ const UserList = ({data}) => {
     const {userId, setUserId} = useContext(StoreContext);
     const {currentPage, setCurrentPage} = useContext(StoreContext);
     const {gamesList, setGamesList} = useContext(StoreContext);
-    const {askDelete, setAskDelete} = useContext(StoreContext);
+    const {askDeleteList, setAskDeleteList} = useContext(StoreContext);
     const {setEditListMenuActive} = useContext(StoreContext);
     const {setCreateListInputValue} = useContext(StoreContext);
     const {setEditList} = useContext(StoreContext);
-    //const {setListCreated} = useContext(StoreContext);
     const {message, setMessage} = useContext(StoreContext);
     const {listName} = useContext(StoreContext);
     const {setCreateListInput} = useContext(StoreContext);
-    //const {listCreated} = useContext(StoreContext);
     const {setListName} = useContext(StoreContext);
     const {setEditName} = useContext(StoreContext);
     const {setListDeleted} = useContext(StoreContext);
@@ -242,7 +277,7 @@ const UserList = ({data}) => {
             .then(() => {
                 setListDeleted(true);
                 setEditListMenuActive(false);
-                setAskDelete(false);
+                setAskDeleteList(false);
                 setCreateListInput(true);
                 setGamesList([]);
                 setCreateListInputValue("");
@@ -254,7 +289,7 @@ const UserList = ({data}) => {
 
                 setMessage(error);
                 setEditListMenuActive(false);
-                setAskDelete(false);
+                setAskDeleteList(false);
             });
     };
 
@@ -275,7 +310,13 @@ const UserList = ({data}) => {
         
         //Gets data from server
         if (data.gamesList && fetchGamesListFromServer) {
-            setGamesList(data.gamesList);
+
+            if (Array.isArray(data.gamesList)) {
+                setGamesList(data.gamesList);
+            } else {
+                setMessage({couldNotGetList: true});
+            }
+    
             setCreateListInput(false);
             setEditListMenuActive(true);
             setEditList(false);
@@ -305,7 +346,12 @@ const UserList = ({data}) => {
                         const gamesList = result.data.gamesList;
                         const listName = result.data.list.result.list_name;
                 
-                        setGamesList(gamesList);
+                        if (Array.isArray(gamesList)) {
+                            setGamesList(gamesList);
+                        } else {
+                            setMessage({couldNotGetList: true});
+                        }
+
                         setCreateListInput(false);
                         setEditListMenuActive(true);
                         setListName(listName);
@@ -327,8 +373,10 @@ const UserList = ({data}) => {
                 setCurrentPage={setCurrentPage}
                 clearMessage={setMessage}/>
             <DeleteQuestion 
-                showQuestion={askDelete} 
-                action={deleteList} />
+                showQuestion={askDeleteList} 
+                action={deleteList} 
+                element="list"
+                cancelDelete={setAskDeleteList}/>
             <ListInput />
             <h3 className="gameslist-heading">{listName}</h3>
             <EditList />
