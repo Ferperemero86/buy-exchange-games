@@ -25,10 +25,13 @@
 .game-details .header-link {
     text-decoration: underline;
     display: inline-block;
+    color: #fff;
 }
 
 .game-details .left-arrow {
     margin: 0 1% 0 10%;
+    background-color: #fff;
+    border-radius: 100%;
 }
 
 .game-details .title {
@@ -65,4 +68,5 @@
     font-size: 0.9em;
     display: block;
     width: 100%;
+    color: #fff;
 }
