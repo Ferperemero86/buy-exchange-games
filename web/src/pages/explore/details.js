@@ -10,21 +10,19 @@ import {StoreContext} from "../../utils/store";
 import Messages from "../../components/messages/Messages";
 
 export async function getServerSideProps ({query}) {
-    const coverString = query.cover;
-    const cover = coverString.replace("t_thumb", "t_screenshot_med");
 
-    return {props: {query, cover}}
+    return {props: {query}}
 }
 
-const Details = ({query, cover}) => {
+const Details = ({query}) => {
     const {message, setMessage} = useContext(StoreContext);
     const {currentPage, setCurrentPage} = useContext(StoreContext);
     const id = query.id;
     const platform = query.platform;
     const page = query.page;
     const name = query.name;
-    //const coverString = query.cover;
-    //const cover = coverString.replace("t_thumb", "t_screenshot_med");
+    const coverString = query.cover;
+    const cover = coverString.replace("t_thumb", "t_screenshot_med");
     const summary = query.summary;
     
 
@@ -37,15 +35,14 @@ const Details = ({query, cover}) => {
             data: { game }
         })
             .then(result => {
-                console.log(result.data);
                 const success = result.data;
+
                 setMessage(success);
             })
             .catch(err => {
                 if(err.response) {
                     const error = err.response.data;
-                    console.log(error);
-                
+    
                     setMessage(error);
                 }
             })
