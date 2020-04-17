@@ -7,7 +7,6 @@ import ValidationError from "../messages/ValidationError";
 const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) => {
     let msg = null;
     const router = useRouter();
-    console.log(message);
    
     useEffect(() => {
         if (currentPage !== page) {
@@ -81,6 +80,10 @@ const Messages = ({message, page, clearMessage, currentPage, setCurrentPage}) =>
 
     if (message.internalError) {
         msg = <p className={`error-message ${page}`}>Something wrong happened</p>;
+    }
+
+    if (message.couldNotGetList) {
+        msg = <p className={`error-message ${page}`}>Could not update list, but game is deleted.</p>;
     }
 
     /******SUCCESS*****/
