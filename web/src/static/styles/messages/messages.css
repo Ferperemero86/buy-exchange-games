@@ -1,9 +1,13 @@
 /*****SUCCESS MESSAGES*****/
 
 .success-message {
-    border: 2px solid #32cd32;
+    background-color: #32cd32;
+    opacity: .8;
+    color: #e0e0e0;
     padding: 5px 10px;
     display: inline-block;
+    position: absolute;
+    z-index: 1;
 }
 
 /*GamesList*/
@@ -15,9 +19,8 @@
 /*Details*/
 
 .success-message.details {
-    float: left;
+    left: 25%;
 }
-
 
 /*****ERROR MESSAGES*****/
 
@@ -59,17 +62,10 @@
 
 .delete-question {
     position: absolute;
-    border: 1px solid;
-    transform: translate(-50%, -50%);
-    top: 400px;
-    left: 50%;
-    text-align: center;
-    padding: 40px 100px;
-    display: inline-block;
-    background-color: #000;
-    color: #fff;
-    border: 0;
     z-index: 1;
+    color: #fff;
+    background-color: #000;
+    border: 0;
 }
 
 .delete-question .heading {
@@ -81,4 +77,18 @@
     background-color: #fff;
     border: 0;
     padding: 3px 6px;
+}
+
+.delete-question.list {
+    transform: translate(-50%, -50%);
+    top: 400px;
+    left: 50%;
+    text-align: center;
+    padding: 40px 100px;
+    display: inline-block;
+}
+
+.delete-question.game {
+    top: 0;
+
 }
