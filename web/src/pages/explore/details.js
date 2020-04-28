@@ -20,11 +20,10 @@ const Details = ({query}) => {
     const id = query.id;
     const platform = query.platform;
     const page = query.page;
-    const name = query.name;
+    const title = query.title;
     const coverString = query.cover;
     const cover = coverString.replace("t_thumb", "t_screenshot_med");
     const summary = query.summary;
-    
 
     const addToList = () => {
         const game = query;
@@ -63,15 +62,18 @@ const Details = ({query}) => {
                         <span className="header-link link">Back To Games</span>
                     </Link>
                 </div>
-                <h2 className="title">{name}</h2>
+                <h2 className="title">{title}</h2>
             </div>
             <img src={`${cover}`} className="cover" />
             <div className="links">
                 <ul className="links-list">
-                    <li
-                        className="link"
+                    <li className="link"
                         onClick={addToList}>Add to list</li>
-                    <li className="link">Find a seller</li>
+                    <Link href={{ pathname: `/games/users-selling`, 
+                                  query: { id: query.id} }}>
+                        <li className="link">Buy</li>
+                    </Link>
+                    <li className="link">Exchange</li>
                 </ul>
             </div>
             <p className="summary">{summary}</p>
