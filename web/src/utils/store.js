@@ -22,6 +22,12 @@ const Store = ({ children }) => {
     const [editName, setEditName] = useState(false);
     const [fetchGamesListFromServer, setFetchGamesListFromServer] = useState(true);
     const [gameID, setGameID] = useState(true);
+    const [showGameMenu, setShowGameMenu] = useState(false);
+    const [gamePrice, setGamePrice] = useState("");
+    const [gameDescription, setGameDescription] = useState("");
+    const [gameCondition, setGameCondition] = useState("Grade A");
+    const [showGamePriceInput, setShowGamePriceInput] = useState(false);
+    const [gameCurrency, setGameCurrency] = useState("£");
 
     const [inputValidation, setInputValidation] = useState(false);
 
@@ -79,6 +85,18 @@ const Store = ({ children }) => {
         listDeleted: listDeleted,
         setListDeleted: updateState(setListDeleted),
         setListCreated: updateState(setListCreated),
+        showGameMenu: showGameMenu,
+        setShowGameMenu: updateState(setShowGameMenu),
+        gamePrice: gamePrice,
+        setGamePrice: updateState(setGamePrice),
+        gameCurrency: gameCurrency,
+        setGameCurrency: updateState(setGameCurrency),
+        gameCondition: gameCondition,
+        setGameCondition: updateState(setGameCondition),
+        gameDescription: gameDescription,
+        setGameDescription: updateState(setGameDescription),
+        showGamePriceInput: showGamePriceInput,
+        setShowGamePriceInput: updateState(setShowGamePriceInput),
         editList: editList,
         setEditList: updateState(setEditList),
         editName: editName,
