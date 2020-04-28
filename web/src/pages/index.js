@@ -1,4 +1,4 @@
-import {useEffect, useContext} from "react";
+import React, {useEffect, useContext} from "react";
 import Link from 'next/link';
 import fetchApiData from "../utils/API";
 import {StoreContext} from "../utils/store";
@@ -10,7 +10,7 @@ export async function getServerSideProps() {
   const gamesFromServer = {ps4, xbox, pc};
 
   return {props: {gamesFromServer}};
-};
+}
 
 const Games = () => {
   const {games} = useContext(StoreContext);
