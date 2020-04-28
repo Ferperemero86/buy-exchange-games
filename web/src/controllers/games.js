@@ -9,6 +9,8 @@ const validation = require("../validation");
 const User = require("../db/models/user");
 const Lists = require("../db/models/lists");
 const Games = require("../db/models/games");
+const GamesSelling = require("../db/models/games-selling");
+
 
 router.post("/createlist",
     jsonParser,
@@ -82,7 +84,7 @@ router.post("/addgametolist",
         })
         .then(userId => {
             const gameDetails = req.body.game;
-            const nameString = gameDetails.longName;
+            const nameString = gameDetails.title;
             const cover = gameDetails.cover;
             const id = gameDetails.id;
             const platform = gameDetails.platform;
@@ -251,7 +253,7 @@ router.post("/deletegame",
             })            
         })
         .then(() => {
-            Games
+            return Games
                 .where({list_id: userId})
                 .fetchAll({require: false})
                 .then(result => {
@@ -262,6 +264,91 @@ router.post("/deletegame",
             res.status(500).json({internalError: true});
         })
            
+});
+
+router.post("/finduserwithgame", jsonParser, (req, res) => {
+    console.log("gameId", req.body.gameId);
+    res.json(req.body.gameId);    
+});
+
+router.post("/setgameforsell", 
+              userAuthentication, 
+              jsonParser, 
+              async (req, res) => {
+                await new Promise((resolve, reject) => {
+                    const gameId = req.body.gameId;
+                    const userId = req.user.id;
+
+                    return Games
+                        .where({id: gameId, list_id: userId})
+                        .fetch({require: false})
+                        .then(Game => {
+                            if (Game) { return resolve(Game) }
+                            return reject({gameUpdated: false});                            
+                        })
+                })
+                .then(Game => {
+                    const status = req.body.status;
+                    const gameId = req.body.gameId;
+                    const userId = req.user.id;
+            
+                    return Game
+                        .save({status}, {patch: true})
+                        .then(() => {
+                            return new Promise((resolve, reject) => {
+                                return GamesSelling
+                                        .where({id: gameId, list_id: userId})
+                                        .fetch({require: false})
+                                        .then(Game => {
+                                            if (Game) { 
+                                                return reject({gameAlreadySelling: true})
+                                            }
+                                            return resolve();
+                                        })
+                            })
+                        })
+                
+                })
+                .then(() => {
+                    const gameId = req.body.gameId;
+                    const userId = req.user.id;
+                    const price = req.body.gamePrice;
+                    const currency = req.body.gameCurrency;
+                    const condition = req.body.gameCondition;
+                    const description = req.body.gameDescription;
+
+                    const valuesValidation = validation.validate({price}, validation.gameForSale);
+
+                    if (valuesValidation) {
+                        return res.status(500).json({inputValidation: valuesValidation});
+                    }
+
+                    return GamesSelling
+                            .forge()
+                            .save({
+                                price, 
+                                currency,
+                                condition, 
+                                description, 
+                                id: gameId, 
+                                list_id: userId})
+                            .then(() => { 
+                                console.log("sending info");
+                                return res.json({gameForSellUpdated: true}) 
+                            })
+                })
+                .catch(err => {
+                    if (err.gameUpdated === false) {
+                        return res.status(400).json(err);
+                    }
+                    if (err.updatedGamesList === false) {
+                        return res.status(500).json(err);
+                    }
+                    if (err.gameAlreadySelling) {
+                        return res.status(400).json(err);
+                    }
+                    return res.status(500).json({internalError: true})
+                })
 });
 
 
