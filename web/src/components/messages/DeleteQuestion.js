@@ -1,6 +1,8 @@
-import React from "react";
+import React, {useContext} from "react";
+import {StoreContext} from "../../utils/store";
 
-const DeleteQuestion = ({showQuestion, action, cancelDelete, element}) => {
+const DeleteQuestion = ({showQuestion, action, cancelDelete, element, gameId}) => {
+    const {gameID} = useContext(StoreContext);
     let title;
 
     if (element === "list") {
@@ -19,7 +21,7 @@ const DeleteQuestion = ({showQuestion, action, cancelDelete, element}) => {
         cancelDelete(false);
     }
 
-    if(showQuestion) {
+    if(showQuestion && gameID === gameId) {
         return (
             <div className={`delete-question ${element}`}>
                 <h1 className="heading">{title}</h1>
