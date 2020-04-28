@@ -1,4 +1,5 @@
 import React, {useContext, useEffect} from "react";
+import {useRouter} from "next/router";
 import {StoreContext} from "../../utils/store";
 
 import fetch from "node-fetch";
@@ -128,39 +129,169 @@ const EditList = () => {
     return null;
 };
 
-const Games = ({platformGames}) => {
-    const {setFetchGamesListFromServer} = useContext(StoreContext);
+const GameStatus = ({status}) => {
+    let heading = null;
+
+    if (status === "selling") {
+        heading = "Selling"    
+    }
+
+    if (heading) {
+        return (
+            <div className="game-status">
+                <h3 className="heading">{heading}</h3>
+                <button className="button">Stop Selling</button>
+            </div>
+        )
+    }
+    return null;
+}
+
+const GameMenuIcon = ({displayGameMenu, gameId}) => {
+    return <span className="game-menu-icon"
+                 data-key-game-id={gameId} 
+                 onClick={displayGameMenu}>....</span>;
+}
+
+const GameMenu = ({game, hideGameMenu}) => {
+    const {showGameMenu} = useContext(StoreContext);
+    const {gameID} = useContext(StoreContext);
+    const {setShowGameMenu} = useContext(StoreContext);
+    const gameId = game.id;
+    const router = useRouter();
+
+    const goToSellaGame = () => {
+        setShowGameMenu(false);
+
+        router.push({pathname: "/account/sell-a-game", 
+                     query: {id: game.id, 
+                             status: "selling",
+                             title: game.name, 
+                             platform: game.platform, 
+                             cover: game.cover}})
+    }
+   
+    if (showGameMenu && gameID === gameId) {
+        return (
+            <ul className="game-menu">
+                <li className="list-element">
+                    <span className="close-menu-icon" onClick={hideGameMenu}>X</span>
+                </li>
+                
+                    <li className="list-element" 
+                        data-key-game-id={gameId}
+                        onClick={goToSellaGame}>Sell</li>
+               
+                <li className="list-element">Exchange</li>
+            </ul>
+        )
+    }
+    return null;
+}
+
+const DeleteGameIcon = ({game, askForListDelete}) => {
+    return (
+        <div className="delete-icon" 
+             onClick={askForListDelete}
+             data-key-game-id={game.id}>
+            <span className="icon">x</span>
+        </div>
+    )
+}
+
+const Cover = ({Url}) => {
+    return (
+        <div className="cover-container">
+            <img src={`${Url}`} className="cover" />
+        </div>
+    )
+}
+
+const Title = ({title}) => {
+    return (
+        <p className="title">{title}</p>
+    )
+}
+
+const Game = ({platformGames}) => {
     const {askDeleteGame, setAskDeleteGame} = useContext(StoreContext);
     const {gameID, setGameID} = useContext(StoreContext);
     const {setMessage} = useContext(StoreContext);
     const {setGamesList} = useContext(StoreContext);
+    const {setShowGameMenu} = useContext(StoreContext);
     let gameId = 0;
 
-    const deleteGame = () => {
-        axios.post("/api/deletegame", {gameID})
-            .then(result => {
-                const gamesList = result.data.gamesList;
-                
-                setAskDeleteGame(false);
+    return platformGames.map(game => {
+        const gameCoverString = game.cover;
+        const coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
+        gameId++;
+        const id = gameId + 1;
+    
 
-                if (Array.isArray(gamesList)) {
-                    setGamesList(gamesList);
-                } else {
-                    setMessage({internalError: true});
-                }
-            })
-            .catch(err => {
-                setAskDeleteGame(false);
-                setMessage(err.response.data);
-            })
+        const displayGameMenu = (e) => {
+            const gameId = e.currentTarget.getAttribute("data-key-game-id");
         
-    };
+            setGameID(parseInt(gameId));
+            setShowGameMenu(true);
+        }
 
-    const askForListDelete = (e) => {
-        const gameData = e.currentTarget.getAttribute("data-game-id");
-        setAskDeleteGame(true);
-        setGameID(parseInt(gameData));
-    }
+        const hideGameMenu = () => {
+            setShowGameMenu(false);
+        }
+
+        const deleteGame = () => {
+            axios.post("/api/deletegame", {gameID})
+                .then(result => {
+                    const gamesList = result.data.gamesList;
+                    
+                    setAskDeleteGame(false);
+                
+                    if (Array.isArray(gamesList)) {
+                        setGamesList(gamesList);
+                    } else {
+                        setMessage({internalError: true});
+                    }
+                })
+                .catch(err => {
+                    setAskDeleteGame(false);
+                    setMessage(err.response.data);
+                })
+            
+        };
+
+        const askForListDelete = (e) => {
+            const gameData = e.currentTarget.getAttribute("data-key-game-id");
+
+            setAskDeleteGame(true);
+            setGameID(parseInt(gameData));
+        }
+
+        return (
+            <div className="game" key={id}>
+                <DeleteQuestion 
+                    gameId={game.id}
+                    showQuestion={askDeleteGame} 
+                    action={deleteGame} 
+                    cancelDelete={setAskDeleteGame}
+                    element="game" /> 
+                <GameStatus status={game.status} />
+                <GameMenu hideGameMenu={hideGameMenu} 
+                          game={game} /> 
+                <div className="game-header">
+                    <DeleteGameIcon game={game} askForListDelete={askForListDelete} />
+                    <GameMenuIcon displayGameMenu={displayGameMenu} gameId={game.id}/>
+                </div>
+                <div className="game-info">
+                    <Cover Url={coverURL} />
+                    <Title title={game.name}/>
+                </div>
+            </div> 
+        )
+    })
+}
+
+const Games = ({platformGames}) => {
+    const {setFetchGamesListFromServer} = useContext(StoreContext);
 
     useEffect(() => {
         if (platformGames.length > 0) {
@@ -168,34 +299,11 @@ const Games = ({platformGames}) => {
         }
     })
 
-    //Display games per platform
-    return platformGames.map(game => {
-        const gameCoverString = game.cover;
-        const coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
-        gameId++;
-        const id = gameId + 1;
-
-        return (
-            <div className="game" key={id}>
-                {gameID === game.id && <DeleteQuestion 
-                    showQuestion={askDeleteGame} 
-                    action={deleteGame} 
-                    cancelDelete={setAskDeleteGame}
-                    element="game" /> }
-                <div className="game-header">
-                    <div className="delete-icon" 
-                         onClick={askForListDelete}
-                         data-game-id={game.id}>
-                        <span className="icon">x</span>
-                    </div>
-                </div>
-                <div className="cover-container">
-                    <img src={`${coverURL}`} className="cover" />
-                </div>
-                <p className="title">{game.name}</p>
-            </div> 
-        )
-    })
+    return (
+        <div className="gameslist">
+            <Game platformGames={platformGames} />
+        </div>
+    )
 };
 
 const GamesSection = () => {
@@ -310,7 +418,7 @@ const UserList = ({data}) => {
         
         //Gets data from server
         if (data.gamesList && fetchGamesListFromServer) {
-
+            
             if (Array.isArray(data.gamesList)) {
                 setGamesList(data.gamesList);
             } else {
@@ -339,7 +447,7 @@ const UserList = ({data}) => {
 
             setCreateListInput(false);
             setEditListMenuActive(true);
-
+        
             //Fetches games and listName when did not get them previously from server.
             axios("/api/getlist", { method: 'POST', data: {userId: id} })
                     .then(result => {                        
