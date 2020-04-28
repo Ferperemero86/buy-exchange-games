@@ -30,9 +30,9 @@
     opacity: .8;
     padding: 2px 3px;
     display: inline-block;
-    position: relative;
+    position: absolute;
     z-index: 1;
-    bottom: 10px;
+    padding: 0;
 }
 
 .error-message.addgame {
@@ -44,15 +44,13 @@
 }
 
 .error-message.details {
-  float: left;
-  bottom: 5px;
+  top: 10px;
+  left: 0;
 }
-@media screen and (min-width: 630px) {
-    .error-message.details {
-        margin: 0 0 0 10%;
-        bottom: -20px;
-    }
-    
+
+.error-message.sellagame {
+    top: 50px;
+    left: 5%;
 }
 
 

@@ -4,6 +4,7 @@
     margin: 50px 0 50px 0;
     overflow: hidden;
     text-align: center;
+    position: relative;
 }
 @media screen and (min-width: 800px) {
     .game-details {
@@ -25,6 +26,10 @@
 .game-details .header-link {
     text-decoration: underline;
     display: inline-block;
+    color: #fff;
+}
+
+.game-details .title {
     color: #fff;
 }
 

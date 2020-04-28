@@ -7,5 +7,7 @@
 @import "./details/details.css";
 @import "./forms/user-form.css";
 @import "./account/gameslist.css";
+@import "./account/sell-a-game.css";
 @import "./messages/messages.css";
 @import "./messages/validation.css";
+
