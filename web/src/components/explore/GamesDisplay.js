@@ -1,5 +1,5 @@
 import Link from "next/link";
-import {useEffect, useContext, useRef } from "react";
+import React, {useEffect, useContext, useRef } from "react";
 import { StoreContext } from "../../utils/store";
 
 const Cover = ({cover}) => {
@@ -39,7 +39,7 @@ const Game = ({game}) => {
         <Link 
             href={{ pathname: "/explore/details", 
                     query: {id: gameId, 
-                            longName, 
+                            title: longName, 
                             platform, 
                             cover, 
                             summary,
@@ -115,7 +115,7 @@ const Pagination = () => {
             <div className="pagination">
                 <ul className="pagination-list" ref={listRef}>
                     {
-                        games.map(game => {
+                        games.map(() => {
                             indexNav++;
                            
                             const selected = setFirstPageStyle();
