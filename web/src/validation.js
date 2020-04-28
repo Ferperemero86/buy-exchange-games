@@ -33,6 +33,19 @@ const createList = {
   }
 };
 
+const gameForSale = {
+  price: {
+    presence: true,
+    format: {
+      pattern: /^[0-9]{1,5}$/,
+      message: () => {
+        return validate.format("^Please enter a valid number");
+      }
+    }
+  }
+};
+
 module.exports = { register, 
                    createList, 
+                   gameForSale,
                    validate };
