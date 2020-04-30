@@ -139,7 +139,7 @@ router.post("/getlist",
         .then(list => { 
             return Games
                     .where({"list_id": list.userId})
-                    .orderBy("platform")
+                    .orderBy("id")
                     .fetchAll({require:false})
                     .then(result => {       
                         return new Promise((resolve) => {                                 
@@ -275,10 +275,17 @@ router.post("/setgameforsell",
               userAuthentication, 
               jsonParser, 
               async (req, res) => {
-                await new Promise((resolve, reject) => {
-                    const gameId = req.body.gameId;
-                    const userId = req.user.id;
+                const gameId = req.body.gameId;
+                const userId = req.user.id;
+                const status = req.body.status;
+                const price = req.body.gamePrice;
+                const currency = req.body.gameCurrency;
+                const condition = req.body.gameCondition;
+                const description = req.body.gameDescription;
 
+                const valuesValidation = validation.validate({price}, validation.gameForSale);
+
+                await new Promise((resolve, reject) => {
                     return Games
                         .where({id: gameId, list_id: userId})
                         .fetch({require: false})
@@ -288,10 +295,6 @@ router.post("/setgameforsell",
                         })
                 })
                 .then(Game => {
-                    const status = req.body.status;
-                    const gameId = req.body.gameId;
-                    const userId = req.user.id;
-            
                     return Game
                         .save({status}, {patch: true})
                         .then(() => {
@@ -310,15 +313,6 @@ router.post("/setgameforsell",
                 
                 })
                 .then(() => {
-                    const gameId = req.body.gameId;
-                    const userId = req.user.id;
-                    const price = req.body.gamePrice;
-                    const currency = req.body.gameCurrency;
-                    const condition = req.body.gameCondition;
-                    const description = req.body.gameDescription;
-
-                    const valuesValidation = validation.validate({price}, validation.gameForSale);
-
                     if (valuesValidation) {
                         return res.status(500).json({inputValidation: valuesValidation});
                     }
@@ -350,6 +344,52 @@ router.post("/setgameforsell",
                     return res.status(500).json({internalError: true})
                 })
 });
+
+router.post("/stopselling", jsonParser, userAuthentication, async (req, res) => {
+    const userId = req.user.id;
+    const gameId = req.body.gameId;
+
+    await new Promise((resolve, reject) => {
+        return Games
+            .where({list_id: userId, id: gameId, status: "selling"})
+            .fetch({require: false})
+            .then(Game => {
+                if (Game) {
+                    return Game
+                            .save({status: "inList"}, {patch: true})
+                            .then (() => { return resolve() })
+                }
+                return reject({GameNotForSell: true})
+            })
+    })
+    .then(() => {
+        return new Promise((resolve) => {
+            return GamesSelling
+                    .where({id: gameId, list_id: userId})
+                    .destroy()
+                    .then(() => {
+                        return resolve();
+                    })
+        })
+    })
+    .then(() => {
+        return Games
+                .where({list_id: userId})
+                .orderBy("id")
+                .fetchAll({require: false})
+                .then(gamesList => {
+                    console.log(gamesList);
+                    return res.json({gamesList})
+                })
+    })
+    .catch(err => {
+        if(err.GameNotForSell) {
+            res.status(400).json(err);
+        }
+        return res.status(500).json({internalError: true})
+    })
+
+})
 
 
 module.exports = router;
