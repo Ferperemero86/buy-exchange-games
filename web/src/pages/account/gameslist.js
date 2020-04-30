@@ -129,28 +129,52 @@ const EditList = () => {
     return null;
 };
 
-const GameStatus = ({status}) => {
+const GameStatus = ({status, gameId}) => {
+    const {setGamesList} = useContext(StoreContext);
+    const {setMessage} = useContext(StoreContext);
+    const {setGameStatus} = useContext(StoreContext);
     let heading = null;
-
+   
     if (status === "selling") {
         heading = "Selling"    
     }
 
+    const stopSelling = (e) => {
+        e.preventDefault();
+
+        setGameStatus(true)
+        
+        axios.post("/api/stopselling", {gameId})
+        .then(result => {
+            const gamesList = result.data.gamesList;
+            
+            setGamesList(gamesList);
+        })
+        .catch(err => {
+            setMessage(err.response.data);
+        })
+    }
+   
     if (heading) {
         return (
-            <div className="game-status">
+            <div className="game-status" key={gameId}>
                 <h3 className="heading">{heading}</h3>
-                <button className="button">Stop Selling</button>
+                <button className="button"
+                        onClick={stopSelling}>Stop Selling</button>
             </div>
         )
     }
     return null;
 }
 
-const GameMenuIcon = ({displayGameMenu, gameId}) => {
-    return <span className="game-menu-icon"
-                 data-key-game-id={gameId} 
-                 onClick={displayGameMenu}>....</span>;
+const GameMenuIcon = ({displayGameMenu, gameId, status}) => {
+
+    if(status === "inList") {
+        return <span className="game-menu-icon"
+             data-key-game-id={gameId} 
+             onClick={displayGameMenu}>....</span>;
+    }
+    return null;
 }
 
 const GameMenu = ({game, hideGameMenu}) => {
@@ -274,12 +298,14 @@ const Game = ({platformGames}) => {
                     action={deleteGame} 
                     cancelDelete={setAskDeleteGame}
                     element="game" /> 
-                <GameStatus status={game.status} />
+                <GameStatus status={game.status} gameId={game.id} />
                 <GameMenu hideGameMenu={hideGameMenu} 
                           game={game} /> 
                 <div className="game-header">
                     <DeleteGameIcon game={game} askForListDelete={askForListDelete} />
-                    <GameMenuIcon displayGameMenu={displayGameMenu} gameId={game.id}/>
+                    <GameMenuIcon displayGameMenu={displayGameMenu} 
+                                  gameId={game.id}
+                                  status={game.status} />
                 </div>
                 <div className="game-info">
                     <Cover Url={coverURL} />
@@ -311,7 +337,7 @@ const GamesSection = () => {
     let platform = null;
     let games = {};
 
-    if (gamesList) {
+    if (Array.isArray(gamesList)) {
         gamesList.map(game => {
             if(!games[game.platform]) {
                 games[game.platform] = [];
@@ -361,6 +387,7 @@ export async function getServerSideProps(ctx) {
 }
 
 const UserList = ({data}) => {
+    //{console.log("rendering list.....")}
     const {userId, setUserId} = useContext(StoreContext);
     const {currentPage, setCurrentPage} = useContext(StoreContext);
     const {gamesList, setGamesList} = useContext(StoreContext);
@@ -375,7 +402,7 @@ const UserList = ({data}) => {
     const {setEditName} = useContext(StoreContext);
     const {setListDeleted} = useContext(StoreContext);
     const {fetchGamesListFromServer} = useContext(StoreContext);
-
+    const {gameStatus} = useContext(StoreContext);
 
     const deleteList = () => {
         axios({ 
@@ -402,6 +429,7 @@ const UserList = ({data}) => {
     };
 
     useEffect(() => {
+
         //If not logged redirects to login page
         if (data.login === false) {
             setMessage(data);
@@ -435,7 +463,7 @@ const UserList = ({data}) => {
         //Stops getting data from server.
         //Fetches from client with axios.
         //Updates user id hook if different from coming from server.
-        if (!fetchGamesListFromServer || (data.id !== userId && userId !== null) ) {
+        if (!fetchGamesListFromServer || (data.id !== userId && userId !== null) || !gameStatus ) {
             let id;
             
             if (data.id !== userId) {
@@ -450,7 +478,8 @@ const UserList = ({data}) => {
         
             //Fetches games and listName when did not get them previously from server.
             axios("/api/getlist", { method: 'POST', data: {userId: id} })
-                    .then(result => {                        
+                    .then(result => {          
+                        console.log("fetching elements from client", result);              
                         const gamesList = result.data.gamesList;
                         const listName = result.data.list.result.list_name;
                 
