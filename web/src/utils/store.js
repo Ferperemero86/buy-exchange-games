@@ -22,7 +22,11 @@ const Store = ({ children }) => {
     const [editName, setEditName] = useState(false);
     const [fetchGamesListFromServer, setFetchGamesListFromServer] = useState(true);
     const [gameID, setGameID] = useState(true);
+    const [gameStatusUpdateId, setGameStatusUpdateId] = useState(false);
     const [showGameMenu, setShowGameMenu] = useState(false);
+    const [showGameStatus, setShowGameStatus] = useState(true);
+    const [gameStatus, setGameStatus] = useState(false);
+
     const [gamePrice, setGamePrice] = useState("");
     const [gameDescription, setGameDescription] = useState("");
     const [gameCondition, setGameCondition] = useState("Grade A");
@@ -61,6 +65,8 @@ const Store = ({ children }) => {
         setGames: updateState(setGames),
         gameID: gameID,
         setGameID: updateState(setGameID),
+        gameStatusUpdateId: gameStatusUpdateId, 
+        setGameStatusUpdateId: updateState(setGameStatusUpdateId),
         gamesList: gamesList,
         setGamesList: updateState(setGamesList),
         fetchGamesListFromServer: fetchGamesListFromServer,
@@ -97,6 +103,8 @@ const Store = ({ children }) => {
         setGameDescription: updateState(setGameDescription),
         showGamePriceInput: showGamePriceInput,
         setShowGamePriceInput: updateState(setShowGamePriceInput),
+        showGameStatus: showGameStatus,
+        setShowGameStatus: updateState(setShowGameStatus),
         editList: editList,
         setEditList: updateState(setEditList),
         editName: editName,
@@ -118,7 +126,9 @@ const Store = ({ children }) => {
         currentPage: currentPage,
         setCurrentPage: updateState(setCurrentPage),
         disabledButton: disabledButton,
-        setDisabledButton: setDisabledButton
+        setDisabledButton: setDisabledButton,
+        gameStatus: gameStatus,
+        setGameStatus: updateState(setGameStatus)
     };
 
     return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
