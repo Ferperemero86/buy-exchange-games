@@ -8,12 +8,13 @@ import "../static/styles/styles.css";
 
 const Layout = ({ children }) => <div className="layout">{children}</div>
 
-export default ({ Component, pageProps }) => (
+const App = ({Component, pageProps }) => (
     <StoreProvider>
         <Layout>
             <Header />
             <Component {...pageProps} />
         </Layout>
     </StoreProvider>
-
 )
+
+export default App;
