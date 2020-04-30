@@ -1,5 +1,117 @@
 .sell-a-game {
     width: 100%;
-    padding: 100px 0;
     position: relative;
 }
+
+.sell-a-game .no-game-result {
+    text-align: center;
+}
+
+.no-game-result .no-game-heading {
+    text-align: center;
+    color: #fff;
+    margin: 150px 0 15px 0;
+}
+
+.no-game-result .left-arrow {
+    background-color: #fff;
+    border-radius: 100%;
+    margin: 0 5px 0 0;
+}
+
+.no-game-result .go-back-link {
+    color: #fff;
+}
+
+.no-game-result .go-back-link:hover {
+    cursor: pointer;
+}
+
+.sell-a-game .game.sell-a-game {
+    width: 264px;
+    height: 264px;
+    margin: 50px auto 0 auto;
+}
+
+.game.sell-a-game .cover-container {
+    width: 230px;
+    height: 230px;
+    position: relative;
+    top: 5px;
+    left: 17px;
+    overflow: hidden;
+}
+
+.cover-container .cover {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 1px 1px 20px #000;
+}
+
+.game.sell-a-game .title {
+    position: relative;
+    top: 15px;
+    text-align: center;
+    font-size: .8em;
+    color: #fff;
+}
+
+.sell-a-game .form {
+    display: block;
+    margin: 50px auto;
+    width: 350px;
+    text-align: center;
+}
+
+.sell-a-game .form-section {
+    width: 100%;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.sell-a-game .form .input {
+    float: left;
+    width: 63%;
+    margin: 0 5px 0 0;
+}
+
+.sell-a-game .form .label {
+    float: left;
+    width: 35%;
+    color: #8c92ac;
+}
+
+.sell-a-game .form .label label {
+    float: left;
+}
+
+.sell-a-game .form .input textarea {
+    width: 100%;
+    height: 80px;
+}
+
+.sell-a-game .form .input input,
+.sell-a-game .form .input select,
+.sell-a-game .form .input textarea {
+    float: left;
+}
+
+.sell-a-game .form .input input,
+.sell-a-game .form .input select,
+.sell-a-game .form .input textarea:focus {
+    outline: none;
+}
+
+.sell-a-game .form .button {
+    background-color: #000;
+    color: #fff;
+    padding: 6px 10px;
+    margin: 10px 5px 0 0;
+    text-align: center;
+    border: 0;
+}
+
+.sell-a-game .form .button:hover {
+    cursor: pointer;
+}
+

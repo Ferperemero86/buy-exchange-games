@@ -75,3 +75,24 @@
     width: 100%;
     color: #fff;
 }
+
+.no-game-selected {
+    width: 100%;
+    text-align: center;
+    padding: 100px 0 0 0;
+}
+
+.no-game-selected .heading {
+    margin: 0 0 15px 0;
+    color: #fff;
+}
+
+.no-game-selected .left-arrow {
+    background-color: #fff;
+    border-radius: 100%;
+    margin: 0 5px 0 0;
+}
+
+.no-game-selected .go-back-link {
+    color: #fff;
+}

@@ -31,7 +31,7 @@
     padding: 2px 3px;
     display: inline-block;
     position: absolute;
-    z-index: 1;
+    z-index: 9999;
     padding: 0;
 }
 
@@ -47,13 +47,6 @@
   top: 10px;
   left: 0;
 }
-
-.error-message.sellagame {
-    top: 50px;
-    left: 5%;
-}
-
-
 
 
 /*****DELETE QUESTION*****/
