@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {useEffect, useContext} from "react";
 
 import axiosModule from "../../utils/APIcall";
 import { StoreContext } from "../../utils/store";
-import { faIgloo } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
 
-const Games = ({ games, platform }) => {
+const Games = ({games, platform}) => {
 
     const { gamesIndex } = useContext(StoreContext);
     const router = useRouter();
@@ -26,7 +25,7 @@ const Games = ({ games, platform }) => {
     };
 
 
-    return Object.keys(games).map(index => {
+    return Object.keys(games).map(() => {
         return games[gamesIndex].map(game => {
             return (
                 <div key={game.id}
