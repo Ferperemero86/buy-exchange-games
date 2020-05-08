@@ -1,11 +1,12 @@
+import React from "react";
 import Head from "next/head";
 import { library } from "@fortawesome/fontawesome-svg-core";
 //import { fab } from "@fortawesome/free-brands-svg-icons";
-import { faSearch, faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import {faSearch, faArrowCircleLeft, faArrowsAltH} from "@fortawesome/free-solid-svg-icons";
 
-library.add(faSearch, faArrowCircleLeft, faTrashAlt);
+library.add(faSearch, faArrowCircleLeft, faArrowsAltH);
 
-function IndexPage() {
+const IndexPage = () => {
     return (
         <div>
             <Head>
