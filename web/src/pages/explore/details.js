@@ -69,7 +69,9 @@ const Details = ({query}) => {
                     </div>
                     <h2 className="title">{title}</h2>
                 </div>
-                <img src={`${cover}`} className="cover" />
+                <div className="cover-container">
+                    <img src={`${cover}`} className="cover" />
+                </div>
                 <div className="links">
                     <ul className="links-list">
                         <li className="link"
