@@ -5,11 +5,13 @@ const userAuthentication = require("../authentication");
 
 const acl = require("../controllers/acl");
 const validation = require("../validation");
+const fetchApiData = require("../utils/API");
 
 const User = require("../db/models/user");
 const Lists = require("../db/models/lists");
 const Games = require("../db/models/games");
 const GamesSelling = require("../db/models/games-selling");
+const GamesExchanging = require("../db/models/games-exchanging");
 
 
 router.post("/createlist",
@@ -123,9 +125,9 @@ router.post("/addgametolist",
 router.post("/getlist",
     jsonParser,
     async (req, res) => {
+        const userId = req.body.userId ? req.body.userId : req.user.id;
+      
         await new Promise((resolve, reject) => {
-            const userId = req.body.userId;
-
             return Lists
                 .where({"user_id": userId})
                 .fetch({columns: "list_name", require: false})
@@ -137,11 +139,16 @@ router.post("/getlist",
                 })
         })
         .then(list => { 
+            const status = req.body.status;
+            let query = status ? {"list_id": userId, status: "inList"} : {"list_id": userId};
+
+            console.log("QUERY", query);
+            console.log("USERID", userId);
             return Games
-                    .where({"list_id": list.userId})
+                    .where(query)
                     .orderBy("id")
                     .fetchAll({require:false})
-                    .then(result => {       
+                    .then(result => {     
                         return new Promise((resolve) => {                                 
                             return resolve({gamesList: result, id: list.userId, list});
                         })
@@ -267,7 +274,6 @@ router.post("/deletegame",
 });
 
 router.post("/finduserwithgame", jsonParser, (req, res) => {
-    console.log("gameId", req.body.gameId);
     res.json(req.body.gameId);    
 });
 
@@ -277,7 +283,6 @@ router.post("/setgameforsell",
               async (req, res) => {
                 const gameId = req.body.gameId;
                 const userId = req.user.id;
-                const status = req.body.status;
                 const price = req.body.gamePrice;
                 const currency = req.body.gameCurrency;
                 const condition = req.body.gameCondition;
@@ -287,49 +292,53 @@ router.post("/setgameforsell",
 
                 await new Promise((resolve, reject) => {
                     return Games
-                        .where({id: gameId, list_id: userId})
+                        .where({game_id: gameId, list_id: userId, status: "inList"})
                         .fetch({require: false})
                         .then(Game => {
                             if (Game) { return resolve(Game) }
                             return reject({gameUpdated: false});                            
                         })
                 })
-                .then(Game => {
-                    return Game
-                        .save({status}, {patch: true})
-                        .then(() => {
-                            return new Promise((resolve, reject) => {
-                                return GamesSelling
-                                        .where({id: gameId, list_id: userId})
-                                        .fetch({require: false})
-                                        .then(Game => {
-                                            if (Game) { 
-                                                return reject({gameAlreadySelling: true})
-                                            }
-                                            return resolve();
-                                        })
+                .then((Game) => {
+                    const id = Game.get("id");
+                    
+                    return new Promise((resolve) => {
+                        return Games
+                            .where({id})
+                            .save({status: "selling"}, {patch: true})
+                            .then(() => {
+                                return resolve(id);
                             })
-                        })
-                
+                    })
                 })
                 .then(() => {
                     if (valuesValidation) {
                         return res.status(500).json({inputValidation: valuesValidation});
                     }
 
-                    return GamesSelling
+                    return new Promise((resolve) => {
+                        return GamesSelling
                             .forge()
                             .save({
+                                game_id: gameId,
                                 price, 
                                 currency,
                                 condition, 
-                                description, 
-                                id: gameId, 
+                                description,  
                                 list_id: userId})
                             .then(() => { 
-                                console.log("sending info");
-                                return res.json({gameForSellUpdated: true}) 
+                                return resolve()
                             })
+                    })
+                })
+                .then(() => {
+                    return Games
+                        .where({list_id: userId})
+                        .orderBy("id")
+                        .fetchAll({require: false})
+                        .then(result => {
+                            return res.json({gamesList: result, message: {gameForSellUpdated: true} })
+                        })
                 })
                 .catch(err => {
                     if (err.gameUpdated === false) {
@@ -348,28 +357,30 @@ router.post("/setgameforsell",
 router.post("/stopselling", jsonParser, userAuthentication, async (req, res) => {
     const userId = req.user.id;
     const gameId = req.body.gameId;
-
+    
     await new Promise((resolve, reject) => {
         return Games
             .where({list_id: userId, id: gameId, status: "selling"})
             .fetch({require: false})
             .then(Game => {
+                const id = Game.get("game_id");
+
                 if (Game) {
                     return Game
-                            .save({status: "inList"}, {patch: true})
-                            .then (() => { return resolve() })
+                        .save({status: "inList"}, {patch: true})
+                        .then (() => { return resolve(id) })
                 }
                 return reject({GameNotForSell: true})
             })
     })
-    .then(() => {
+    .then(id => {
         return new Promise((resolve) => {
             return GamesSelling
-                    .where({id: gameId, list_id: userId})
-                    .destroy()
-                    .then(() => {
-                        return resolve();
-                    })
+                .where({game_id: id, list_id: userId})
+                .destroy()
+                .then(() => {
+                    return resolve();
+                })
         })
     })
     .then(() => {
@@ -378,7 +389,6 @@ router.post("/stopselling", jsonParser, userAuthentication, async (req, res) => 
                 .orderBy("id")
                 .fetchAll({require: false})
                 .then(gamesList => {
-                    console.log(gamesList);
                     return res.json({gamesList})
                 })
     })
@@ -389,7 +399,170 @@ router.post("/stopselling", jsonParser, userAuthentication, async (req, res) => 
         return res.status(500).json({internalError: true})
     })
 
-})
+});
+
+router.post("/searchgames", 
+            jsonParser, 
+            userAuthentication, 
+            async (req, res) => {
+                const game = req.body.game;
+                let query;
+               
+                if (typeof game === "string") {
+                    query = `search "${game}"; fields name, cover.url, platforms; where release_dates.platform = (48,49,6); limit 300;`
+                } else {
+                    query = `fields id, cover.url, name; where id = ${game}; limit 1;`
+                }
+
+                const games = await fetchApiData("games", "POST", query);
+               
+                if ( Array.isArray(games) ) {
+                    if (games.length > 0 && !games[0].id) {
+                        return res.status(500).json({internalError: true});
+                    }
+
+                    return res.json({games});
+                }
+
+                return res.status(500).json({internalError: true});
+});
+
+router.post("/stopexchanging", 
+            jsonParser, 
+            userAuthentication,
+            async (req, res) => {
+                const userId = req.user.id;
+                const gameId = req.body.gameId;
+
+                await new Promise((resolve, reject) => {
+                    return Games
+                        .where({id: gameId, list_id: userId, status: "exchanging"})
+                        .fetch()
+                        .then(result => {
+                            if (result) {
+                                return resolve()
+                            }
+                            return reject({gameNotAvailable: true})
+                        })
+                })
+                .then(() => {
+                    return new Promise ((resolve) => {
+                        return Games
+                            .forge({id: gameId})
+                            .save({status: "inList"}, {patch: true})
+                            .then(result => {
+                                const id = result.get("game_id");
+                        
+                                return resolve(id)
+                            })
+                    })
+                })
+                .then(id => {
+                    return new Promise((resolve) => {
+                        return GamesExchanging
+                            .where({game_1: id, list_id: userId})
+                            .destroy()
+                            .then(() => {
+                                return resolve();
+                            })
+                    })
+                })
+                .then(() => {
+                    return Games
+                        .where({list_id: userId})
+                        .orderBy("id")
+                        .fetchAll({required: false})
+                        .then(result => {
+                            return res.json({gamesList: result})
+                        })
+                })
+                .catch(err => {
+                    if (err.gameNotAvailable) {
+                        return res.status(400).json(err);
+                    }
+                    return res.status(500).json({internalError: true})
+                })
+                
+                
+});
+
+router.post("/exchangegame",
+            jsonParser,
+            userAuthentication,
+            async (req, res) => {
+                const game1 = req.body.game1;
+                const game2 = req.body.game2;
+                const user1 = req.user.id;
+                const user2 = req.body.user2 ? req.body.user2 : null;
+                const time = new Date().getTime();
+
+                return new Promise((resolve, reject) => {
+                    return Games
+                        .where({list_id: user1, game_id: game1, status: "inList"})
+                        .fetch({require:false})
+                        .then(GamesInListRes => {
+                                console.log("GAME1", game1);
+                                console.log("GAME TO EXCHANGE", GamesInListRes);
+                                if (GamesInListRes) {
+                                    return resolve()
+                                }
+                                return reject({GameAlreadyExchanging: true})
+                        })
+                })
+                .then(() => {
+                    return new Promise((resolve) => {
+                        return GamesExchanging
+                        .forge()
+                        .save({
+                            list_id: user1,
+                            user_1: user1,
+                            user_2: user2,
+                            game_1: game1,
+                            game_2: game2,
+                            status: "active",
+                            time: time
+                        })
+                        .then(() => {
+                            return resolve();
+                        })
+                    })
+                })  
+                .then(() => {
+                    return new Promise((resolve, reject) => {
+                        return Games
+                            .where({game_id: game1, list_id: user1})
+                            .fetch({require: false})
+                            .then(Game => {
+                                if (Game) {
+                                    return Game
+                                        .save({status: "exchanging"}, {patch: true})
+                                        .then(() => {
+                                            return resolve();
+                                            //return res.json({gameSetToExchange: true})
+                                        })
+                                }
+                                return reject();
+                        })
+                    })
+                })
+                .then(() => {
+                    return Games
+                        .where({list_id: user1})
+                        .orderBy("id")
+                        .fetchAll({require: false})
+                        .then(result => {
+                            return res.json({gamesList: result, message: {gameSetToExchange: true} });
+                        })
+                })
+                .catch(err => {
+                    if (err.GameAlreadyExchanging) {
+                        res.status(400).json(err);
+                    }
+
+                    return res.status(500).json({internalError: true})
+                })
+
+});
 
 
 module.exports = router;
