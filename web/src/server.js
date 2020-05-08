@@ -27,11 +27,15 @@ nextApp.prepare().then(() => {
     saveUninitialized: false
   };
 
-
   server.use(cookieParser('W$q4=25*8%v-}UV'));
   server.use(session(sess));
   server.use(passport.initialize());
   server.use(passport.session());
+
+  server.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    next();
+  });
 
   passport.use(
     new LocalStrategy(
@@ -79,7 +83,6 @@ nextApp.prepare().then(() => {
   server.get("*", (req, res) => {
     return handle(req, res);
   });
-
 
   server.listen(port, err => {
     if (err) throw err;
