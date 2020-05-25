@@ -1,20 +1,82 @@
 import React from 'react';
 
-import Header from "../components/Header";
-import StoreProvider from "../utils/store";
-
 import "../static/styles/styles.css";
+import UserFormProvider from "../components/providers/UserFormProvider";
+import GamesListProvider from "../components/providers/GamesListProvider";
+import TransactionsProvider from "../components/providers/TransactionsProvider";
+import SellGameProvider from "../components/providers/SellGameProvider";
+import UserProvider from "../components/providers/UserProvider";
+import ExploreGamesProvider from "../components/providers/ExploreGamesProvider";
+import Header from "../components/Header";
 
+const Page = ({pageProps, Component, router}) => {
+    const path = router.pathname;
 
-const Layout = ({ children }) => <div className="layout">{children}</div>
+    if (path.includes("/explore/") ) {
+        return (
+            <ExploreGamesProvider pageProps={pageProps}>
+                 <Component {...pageProps} />
+            </ExploreGamesProvider>
+        )
+    }
 
-const App = ({Component, pageProps }) => (
-    <StoreProvider>
-        <Layout>
-            <Header />
-            <Component {...pageProps} />
-        </Layout>
-    </StoreProvider>
-)
+    if (path.includes("/account/exchange-a-game") ) {
+        return (
+            <TransactionsProvider pageProps={pageProps}>
+                <Component {...pageProps} />   
+            </TransactionsProvider>
+        )
+    }
 
-export default App;
+    if (path.includes("/account/sell-a-game") ) {
+        return (
+            <SellGameProvider pageProps={pageProps}>
+                <Component {...pageProps} />   
+            </SellGameProvider>
+        )
+    }
+
+    switch (path) {
+        case "/account/login" :
+
+            return (
+                <UserFormProvider>
+                    <Component {...pageProps} />
+                </UserFormProvider>
+            )
+
+        case "/account/register" :
+
+            return (
+                <UserFormProvider>
+                    <Component {...pageProps} />
+                </UserFormProvider>
+            )
+
+        case "/account/gameslist" :
+        
+            return (
+                <GamesListProvider pageProps={pageProps}>
+                    <Component {...pageProps} />
+                </GamesListProvider>
+            )
+
+    }
+    return <Component {...pageProps} />
+}
+
+const MyApp = ({Component, pageProps, router}) => {
+    return (
+        <div id="app">
+            <UserProvider>
+                <Header />
+                <Page pageProps={pageProps} 
+                      Component={Component} 
+                      router={router} />
+            </UserProvider>
+        </div>
+    )
+   
+}
+
+export default MyApp;
