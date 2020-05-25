@@ -1,26 +1,5 @@
-import React, {useContext} from "react";
-import {StoreContext} from "../../utils/store";
+import React from "react";
 
-const RemoveGameButton = ({classEl, gameToRemove, page}) => {
-    const {setGameFromListToExchange} = useContext(StoreContext);
-    const {setGameToExchange} = useContext(StoreContext);
-    const {gameToFind} = useContext(StoreContext);
-    
-    const removeGameFromExchange = () => {
-        if (gameToRemove === "game1") {
-            setGameFromListToExchange([]);
-        }
-        if (gameToRemove === "game2") {
-            console.log("game2");
-            setGameToExchange([]);
-        }
-    }
-
-    if (page === "exchange-a-game" && gameToFind || gameToRemove === "game1") {
-        return <button className={`${classEl}`} onClick={removeGameFromExchange}>Remove</button>
-    }
-    return null;
-}
 
 const Image = ({Url}) => {
     if (Url) {
@@ -29,23 +8,20 @@ const Image = ({Url}) => {
     return <p className="image-no-available">Image no available</p>
 };
 
-const Game = ({Url, title, page, gameId, platform, gameToRemove}) => {
-    let coverURL;
-    console.log("gamerrr to exchange", gameId);
-    if (title) {
-        if (typeof Url === "string" && Url.indexOf("t_thumb") !== -1) {
-            coverURL = Url.replace("t_thumb", "t_cover_big");
-        } 
-    }
+const Game = ({Url, title, page, gameId, platform}) => {
+    let coverUrl;
 
+    if (typeof Url === "string" && Url.indexOf("t_thumb") !== -1) {
+        coverUrl = Url.replace("t_thumb", "t_cover_big");
+    } else {
+        coverUrl = Url;
+    }
+   
     return (
         <div className={`game ${page}`} key={gameId}>
-            <RemoveGameButton classEl="remove-game-button" 
-                              gameToRemove={gameToRemove} 
-                              page={page} />
             <p>{platform}</p>
             <div className="cover-container">
-                <Image Url={coverURL} />
+                <Image Url={coverUrl} />
             </div>
             <p className="title">{title}</p>
         </div>
