@@ -1,8 +1,10 @@
 import React, {useContext} from "react";
-import {StoreContext} from "../../utils/store";
+import {GamesListContext} from "../providers/GamesListProvider";
 
-const DeleteQuestion = ({showQuestion, action, cancelDelete, element, gameId}) => {
-    const {gameID} = useContext(StoreContext);
+const DeleteQuestion = ({action, element, gameId}) => {
+    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
+    const {showQuestion, gameToDelete} = gamesList;
+
     let title;
 
     if (element === "list") {
@@ -14,14 +16,19 @@ const DeleteQuestion = ({showQuestion, action, cancelDelete, element, gameId}) =
     }
 
     const deleteItem = () => {
-        action();
+        if (element === "game") {
+            return action(gameId);
+        }
+        if (element === "list") {
+            return action()
+        }
     }
 
     const stopDelete = () => {
-        cancelDelete(false);
+        dispatchGamesList({type: "HIDE_DELETE_QUESTION"})
     }
 
-    if(showQuestion && gameID === gameId) {
+    if( (element === "game" && showQuestion && gameToDelete === gameId) || element === "list" && showQuestion) {
         return (
             <div className={`delete-question ${element}`}>
                 <h1 className="heading">{title}</h1>
