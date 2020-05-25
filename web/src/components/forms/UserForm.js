@@ -1,8 +1,12 @@
 import React, {useContext, useEffect} from "react";
-import {StoreContext} from "../../utils/store";
+
+import {UserFormContext} from "../providers/UserFormProvider";
+import {UserContext} from "../providers/UserProvider";
+
 import axios from "axios";
-import Messages from "../messages/Messages";
+
 import {useRouter} from "next/router";
+
 
 const Heading = ({url}) => {
     if (url === "session") {return <h1>Login</h1>}
@@ -10,80 +14,67 @@ const Heading = ({url}) => {
 };
 
 const UserForm = ({URL}) => {
-    const {loginUsernameValue, setLoginUsernameValue} = useContext(StoreContext);
-    const {loginPassValue, setLoginPassValue} = useContext(StoreContext);
-    const {userLogged, setUserLogged} = useContext(StoreContext);
-    const {message, setMessage} = useContext(StoreContext);
-    const {currentPage, setCurrentPage} = useContext(StoreContext);
-    const {disabledButton, setDisabledButton} = useContext(StoreContext);
+    const {user, dispatchUser} = useContext(UserContext);
+    const {userForm, dispatchUserForm} = useContext(UserFormContext);
     const router = useRouter();
 
     const updateUsernameValue = (e) => {
-        setLoginUsernameValue(e.target.value);
+        dispatchUserForm({ type:"ADD_USERNAMEINPUT_VALUE", payload: e.target.value });
     }
 
     const updatePassValue = (e) => {
-        setLoginPassValue(e.target.value);
+       dispatchUserForm({ type: "ADD_PASSWORDINPUT_VALUE", payload: e.target.value });
     }
 
     const sendInputData = (e) => {
         e.preventDefault();
-
+    
         const userData = {
-            email: loginUsernameValue,
-            password: loginPassValue
+            email: userForm.usernameInputValue,
+            password: userForm.passwordInputValue
         };
-
+        
         axios.post(`/api/${URL}`, userData)
             .then((result) => {
                 const success = result.data;
+               
+                if (success && success.login) {
+                    //const userId = success.userId;
+                    
+                    dispatchUser({ type: "USER_LOGGED_IN"});
+                }
                 
-                setUserLogged(true);
-                setMessage(success);
             })
-            .catch(err => {
-                const error = err.response.data;
-                
-                setMessage(error);
+            .catch(() => {
+                //const error = err.response;
             });
     }
 
     useEffect(() => {
-        if (URL === "session" && userLogged) {
-            setDisabledButton("disabled");
+        if (user.userLogged) {
             router.push("/");
-        }
-        if (URL === "user") {
-            setDisabledButton("");
         }
     });
 
     return (
         <form id="user-form">
-            <Messages 
-                message={message} 
-                page={URL} 
-                currentPage={currentPage}
-                clearMessage={setMessage}
-                setCurrentPage={setCurrentPage} /> 
             <Heading url={URL} />
             <div className="form-section">
                 <label>Name</label>
                 <input
                     type="text"
-                    value={loginUsernameValue}
+                    value={userForm.usernameInputValue}
                     onChange={updateUsernameValue} />
             </div>
             <div className="form-section">
                 <label>Password</label>
                 <input
                     type="password"
-                    value={loginPassValue}
+                    value={userForm.passwordInputValue}
                     onChange={updatePassValue} />
             </div>
             <button 
-                onClick={sendInputData}
-                disabled={disabledButton}>Send</button>
+                onClick={sendInputData}>Send</button>
         </form>
     )
 }
