@@ -3,11 +3,12 @@ exports.up = function (knex) {
         .createTable("games_selling", table => {
             table.increments("id");
             table.integer("game_id").notNullable();
-            table.integer("list_id").references("user_id").inTable("lists").onDelete("CASCADE");
+            table.integer("list_id").notNullable();
             table.integer("price").notNullable();
             table.string("currency").notNullable();
             table.string("condition").notNullable();
             table.string("description").notNullable();
+            table.string("time");
         })
 }
 
