@@ -1,33 +1,19 @@
-import PlatformGames from "../../components/explore/PlatformGames";
-import fetchApiData from "../../utils/API";
-import {useEffect, useContext } from "react";
-import { StoreContext } from "../../utils/store";
-
-const Pc = ({gamesFromServer, query}) => {
-    const {setPage} = useContext(StoreContext);
-    const {setPlatform} = useContext(StoreContext);
-
-    useEffect(() => {
-        setPage(parseInt(query.page));
-        setPlatform("pc");
-    })
-  
-  return <PlatformGames
-            gamesFromServer={gamesFromServer}
-            query={query} />
-};
+import React from "react";
+import GamesDisplay from "../../components/explore/GamesDisplay";
+import {fetchApiData} from "../../utils/API";
 
 export async function getServerSideProps({query}) {
     const gameQuery = `fields name, summary, cover.url; where platforms = {6}; limit 300;`;
     const pc = await fetchApiData("games", "POST", gameQuery);
-    const gamesFromServer = {pc};
+    const games = {pc};
   
- 
-    return {props: {gamesFromServer, query}};
-  
- 
-};
+    return {props: {games, platform: "pc", page: query.page}};
+}
 
+const Pc = () => (
+    <GamesDisplay />
+  );
+  
 
 export default Pc;
   
