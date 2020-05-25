@@ -2,7 +2,7 @@ import React, {useContext} from "react";
 
 import axios from "axios";
 
-import DeleteQuestion from "../messages/DeleteQuestion";
+import DeleteGameQuestion from "../messages/DeleteGameQuestion";
 import {GamesListContext} from "../providers/GamesListProvider";
 
 import {useRouter} from "next/router";
@@ -24,12 +24,10 @@ const GameStatus = ({status, gameId}) => {
                 if (Array.isArray(gamesList) ) {
                     dispatchGamesList({type: "UPDATE_GAMES", payload: gamesList})
                 } else {
-                    console.log("error stoping sell")
                     //setMessage(result.data);
                 }
             })
-            .catch(err => {
-                console.log(err.response);
+            .catch(() => {
                 //setMessage(err.response.data);
             })
     }
@@ -162,7 +160,7 @@ const Game = ({games}) => {
              .then(result => {
                  const gamesList = result.data.gamesList;
                 
-                 dispatchGamesList({type: "HIDE_DELETE_QUESTION"});
+                 dispatchGamesList({type: "SHOW_DELETE_GAME_QUESTION", payload: false});
                 
                  if (Array.isArray(gamesList)) {
                      dispatchGamesList({type: "UPDATE_GAMES", payload: gamesList});
@@ -171,7 +169,7 @@ const Game = ({games}) => {
                  }
              })
              .catch(() => {
-               dispatchGamesList({type: "HIDE_DELETE_GAME_QUESTION"})
+               dispatchGamesList({type: "SHOW_DELETE_GAME_QUESTION", payload: false})
                  //setMessage(err.response.data);
              })
             
@@ -183,15 +181,15 @@ const Game = ({games}) => {
             if(gameId === game.id) {
                dispatchGamesList({type: "SET_ELEMENT_TO_DELETE", payload: "game"})
                dispatchGamesList({type: "SET_GAME_TO_DELETE", payload: gameId})
-               dispatchGamesList({type: "SHOW_DELETE_QUESTION"});
+               dispatchGamesList({type: "SHOW_DELETE_GAME_QUESTION", payload: true});
             }
         }
 
         return (
             <div className="game" key={id}>
-               <DeleteQuestion gameId={game.id}
-                               action={deleteGame} 
-                               element={elementToDelete} /> 
+               <DeleteGameQuestion gameId={game.id}
+                                   action={deleteGame} 
+                                   element={elementToDelete} /> 
                <GameStatus status={game.status} gameId={game.id} />
                <GameMenu hideGameMenu={hideGameMenu} 
                          game={game} /> 

@@ -25,7 +25,8 @@ const GamesListProvider =({children, pageProps}) => {
         createListInput: false,
         editListName: false,
         createListInputValue: "",
-        showQuestion: false,
+        showDeleteListQuestion: false,
+        showDeleteGameQuestion: false,
         gameToDelete: null,
         elementToDelete: null
     };

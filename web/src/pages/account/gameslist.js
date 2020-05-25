@@ -6,7 +6,7 @@ import {useRouter} from "next/router";
 
 import {GamesListContext} from "../../components/providers/GamesListProvider";
 
-import DeleteQuestion from "../../components/messages/DeleteQuestion";
+import DeleteListQuestion from "../../components/messages/DeleteListQuestion";
 import GamesSection from "../../components/games/GamesSection";
 import ListInput from "../../components/gameslist/ListInput";
 import EditList from "../../components/gameslist/EditList";
@@ -57,7 +57,7 @@ const GamesList = () => {
 
                 dispatchGamesList({type: "UPDATE_GAMES", payload: games});
                 dispatchGamesList({type: "UPDATE_LIST_EXISTS", payload: false});
-                dispatchGamesList({type: "HIDE_DELETE_QUESTION"});
+                dispatchGamesList({type: "SHOW_DELETE_LIST_QUESTION", payload: false});
                 dispatchGamesList({type: "HIDE_EDIT_LIST"});
             })
             .catch(()=> {
@@ -95,7 +95,7 @@ const GamesList = () => {
 
     return (
         <div className="user-list">
-            <DeleteQuestion 
+            <DeleteListQuestion 
                 action={deleteList} 
                 element={elementToDelete} />
             <ListInput />

@@ -2,9 +2,7 @@ import React, {useContext} from "react";
 import {GamesListContext} from "../providers/GamesListProvider";
 
 const DeleteQuestion = ({action, element, gameId}) => {
-    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
-    const {showQuestion, gameToDelete} = gamesList;
-
+    const {dispatchGamesList} = useContext(GamesListContext);
     let title;
 
     if (element === "list") {
@@ -25,10 +23,15 @@ const DeleteQuestion = ({action, element, gameId}) => {
     }
 
     const stopDelete = () => {
-        dispatchGamesList({type: "HIDE_DELETE_QUESTION"})
+        if (element === "list") {
+            dispatchGamesList({type: "SHOW_DELETE_LIST_QUESTION", payload: false})
+        }
+        if (element === "game") {
+            dispatchGamesList({type: "SHOW_DELETE_GAME_QEUSTION", payload: false})
+        }
     }
 
-    if( (element === "game" && showQuestion && gameToDelete === gameId) || element === "list" && showQuestion) {
+    //if( (element === "game" && showQuestion && gameToDelete === gameId || element === "list" && showQuestion)) {
         return (
             <div className={`delete-question ${element}`}>
                 <h1 className="heading">{title}</h1>
@@ -36,8 +39,7 @@ const DeleteQuestion = ({action, element, gameId}) => {
                 <button className="button" onClick={stopDelete}>Cancel</button>
             </div>
         )
-    }
-    return null;
+   // } 
 };
 
 export default DeleteQuestion;

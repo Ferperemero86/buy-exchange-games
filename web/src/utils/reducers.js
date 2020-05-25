@@ -37,11 +37,11 @@ module.exports = {
             case "SHOW_GAME_MENU" :
                 return {...state, showGameMenu: action.payload}
 
-            case "SHOW_DELETE_QUESTION" :
-                return {...state, showQuestion: true}
+            case "SHOW_DELETE_LIST_QUESTION" :
+                return {...state, showDeleteListQuestion: action.payload}
 
-            case "HIDE_DELETE_QUESTION" :
-                return {...state, showQuestion: false}
+            case "SHOW_DELETE_GAME_QUESTION" :
+                return {...state, showDeleteGameQuestion: action.payload}
 
             case "UPDATE_GAME_STATUS" :
                 return {...state, gameStatus: action.payload}

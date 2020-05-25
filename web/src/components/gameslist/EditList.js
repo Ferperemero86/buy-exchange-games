@@ -8,7 +8,7 @@ const List = () => {
     const {editList} = gamesList;
 
     const askForListDelete = () => {
-        dispatchGamesList({type: "SHOW_DELETE_QUESTION"})
+        dispatchGamesList({type: "SHOW_DELETE_LIST_QUESTION", payload: true})
         dispatchGamesList({type: "SET_ELEMENT_TO_DELETE", payload: "list"})
         dispatchGamesList({type: "EDIT_NAME", payload: false});
     }

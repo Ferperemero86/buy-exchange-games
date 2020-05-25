@@ -13,7 +13,6 @@ const ListInput = () => {
     const label = Url === "gameslist/name" ? "Edit Name" : "New List";
    
     const updateInputValue = (e) => {
-        console.log(e.currentTarget.value);
         dispatchGamesList({type: "UPDATE_CREATE_LIST_INPUT_VALUE", payload: e.currentTarget.value});
     }
 
