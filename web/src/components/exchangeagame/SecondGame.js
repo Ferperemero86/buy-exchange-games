@@ -1,22 +1,20 @@
 import React, {useContext} from "react";
 
-import {StoreContext} from "../../utils/store";
+import {TransactionsContext} from "../providers/TransactionsProvider";
 
 import Game from "../../components/games/Game";
 
 const SecondGame = () => {
-    const {setShowGameExchangeWindow} = useContext(StoreContext);
-    const {gameToExchange} = useContext(StoreContext);
-    const {setGameToFind} = useContext(StoreContext);
-    const {setExchangeGamesSearch} = useContext(StoreContext);
+    const {transactions, dispatchTransactions} = useContext(TransactionsContext);
+    const {gameToExchange} = transactions; 
 
     const openSearchWindow = () => {
-        setShowGameExchangeWindow(true);
-        setGameToFind("game2");
-        setExchangeGamesSearch([]);
+        dispatchTransactions({type: "SHOW_EXCHANGE_SEARCH_WINDOW", payload: true})
+        dispatchTransactions({type: "SET_GAME_TO_FIND", payload: "game2"})
+        dispatchTransactions({type: "SET_EXCHANGE_GAMES_SEARCH", payload: []})
     }
 
-    if (gameToExchange && gameToExchange.length > 0) {
+    if (Array.isArray(gameToExchange) && gameToExchange.length > 0) {
         const cover = gameToExchange[0].cover.url;
         const title = gameToExchange[0].name;
 
