@@ -3,30 +3,26 @@ import axios from "axios";
 
 import GamesSearch from "../../components/GamesSearch";
 
-import {StoreContext} from "../../utils/store";
+import {TransactionsContext} from "../providers/TransactionsProvider";
 
 
 const SearchInput = () => {
-    const {searchGameToExchangeInputValue, setSearchGameToExchangeInputValue} = useContext(StoreContext);
-    const {setExchangeGamesSearch} = useContext(StoreContext);
-    const {gameToFind} = useContext(StoreContext);
-    const {setMessage} = useContext(StoreContext);
+    const {transactions, dispatchTransactions} = useContext(TransactionsContext);
+    const {gameToFind, searchGameToExchangeInputValue} = transactions;
 
     const handleInputValue = async (e) => {
         const inputValue = e.currentTarget.value;
 
-        setSearchGameToExchangeInputValue(inputValue);
+        dispatchTransactions({type: "SET_SEARCH_GAME_TO_EXCHANGE_INPUT_VALUE", payload: inputValue})
 
-        await axios.post("/api/searchgames", {game: inputValue} )
+        await axios.post("/api/gamesinlist/game/search", {game: inputValue} )
             .then(result => {
-                const games = result.data.games;
-            
-                setExchangeGamesSearch(games);
+                const games = result.data.gamesList;
+                console.log("GAMES", result);
+                dispatchTransactions({type: "SET_EXCHANGE_GAMES_SEARCH", payload: games});
             })
-            .catch(err => {
-                const error = err.response;
-
-                if (error) { setMessage(error.data) }
+            .catch(() => {
+                //const error = err.response;
             })
 
     }
@@ -46,7 +42,8 @@ const SearchInput = () => {
 }
 
 const Heading = () => {
-    const {gameToFind} = useContext(StoreContext);
+    const {transactions} = useContext(TransactionsContext);
+    const {gameToFind} = transactions;
 
     if (gameToFind === "game1") {
         return <h3 className="window-search-heading">Games available in List</h3>
@@ -55,21 +52,20 @@ const Heading = () => {
 }
 
 const SearchWindow = () => {
-    const {showGameExchangeWindow, setShowGameExchangeWindow} = useContext(StoreContext);
-    const {setGameToFind} = useContext(StoreContext);
-    const {setMessage} = useContext(StoreContext);
+    const {transactions, dispatchTransactions} = useContext(TransactionsContext);
+    const {showGameExchangeWindow} = transactions;
    
     const closeWindow = () => {
-        setShowGameExchangeWindow(false);
-        setGameToFind(false);
-        setMessage(false);
+        dispatchTransactions({type: "SET_GAME_TO_FIND", payload: false});
+        dispatchTransactions({type: "SHOW_EXCHANGE_SEARCH_WINDOW", payload: false});
+        console.log(showGameExchangeWindow);
     }
 
     if(showGameExchangeWindow) {
         return (
             <div className="window-game-search">
                 <span onClick={closeWindow} 
-                      className="close-icon">X</span>
+                    className="close-icon">X</span>
                 <Heading />
                 <SearchInput />
                 <div className="window-search-games"> 
