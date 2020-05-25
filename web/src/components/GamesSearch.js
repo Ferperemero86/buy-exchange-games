@@ -3,34 +3,26 @@ import React, { useContext, useEffect } from "react";
 import axios from "axios";
 
 import Game from "../components/games/Game";
-import { StoreContext } from "../utils/store";
+import {TransactionsContext} from "./providers/TransactionsProvider";
 
-const ExchangeGameButton = ({gameId}) => {
-    const {setGameToExchange} = useContext(StoreContext);
-    const {setGameFromListToExchange} = useContext(StoreContext);
-    const {setShowGameExchangeWindow} = useContext(StoreContext);
-    const {gameToFind} = useContext(StoreContext);
-    const {setMessage} = useContext(StoreContext);
-   
+const ExchangeGameButton = ({gameId, gameSelected}) => {
+    const {transactions, dispatchTransactions} = useContext(TransactionsContext);
+    const {gameToFind} = transactions;
+
     const exchangeGame = async () => {
-        await axios.post("/api/searchgames", {game: gameId})
+        await axios.post("/api/gamesinlist/game/search", {game: gameId, gameSelected})
             .then(result => {
-                const game = result.data.games;
+                const game = result.data.gamesList;
                 
                 if (gameToFind === "game1") {
-                    setGameFromListToExchange(game);
+                    dispatchTransactions({type: "SET_GAME_FROM_LIST_TO_EXCHANGE", payload: game})
                 } else {
-                    setGameToExchange(game);
+                    dispatchTransactions({type: "SET_GAME_TO_EXCHANGE", payload: game})
                 }
-
-                setShowGameExchangeWindow(false);
+                dispatchTransactions({type: "SHOW_EXCHANGE_SEARCH_WINDOW", payload: false})
             })
-            .catch(err => {
-                const error = err.response;
-                
-                if (error) {
-                    setMessage(error.data);
-                }
+            .catch(() => {
+                //const error = err.response;
             })
     }
 
@@ -42,26 +34,23 @@ const ExchangeGameButton = ({gameId}) => {
 }
 
 const GamesSearch = ({page}) => {
-    const {searchGameToExchangeInputValue} = useContext(StoreContext);
-    const {exchangeGamesSearch} = useContext(StoreContext);
-    const {setExchangeGamesSearch} = useContext(StoreContext);
-    const {gameToFind} = useContext(StoreContext);
+    const {transactions, dispatchTransactions} = useContext(TransactionsContext);
+    const {searchGameToExchangeInputValue, exchangeGamesSearch, gameToFind} = transactions;
 
     useEffect(() => {
-        console.log(gameToFind);
-        axios.post("/api/getlist", {status: true})
-        .then(result => {
-            if (result) {
-                const gamesList = result.data.gamesList;
-                console.log("GAMESLIST", gamesList);
-                if (gameToFind === "game1") {
-                    setExchangeGamesSearch(gamesList);
+        axios.post("/api/gameslist", {status: true})
+            .then(result => {
+                if (result) {
+                    const gamesList = result.data.gamesList;
+                
+                    if (gameToFind === "game1") {
+                        dispatchTransactions({type:"SET_EXCHANGE_GAMES_SEARCH", payload: gamesList})
+                    }
                 }
-            }
-        })
-        .catch(err => {
-            console.log(err.response)
-        });
+            })
+            .catch(err => {
+                console.log(err.response)
+            });
 
     }, [exchangeGamesSearch.length]);
     
@@ -74,16 +63,17 @@ const GamesSearch = ({page}) => {
        
         return exchangeGamesSearch.map(game => {
             let cover;
-            let gameId;
-            
+            let gameSelected;
+            let title = game.name;
+          
             if (game && game.cover) {
                 if (gameToFind === "game1") {
                     cover = game.cover
-                    gameId = game.game_id;
+                    gameSelected = "game1"
                 }
                 if (gameToFind === "game2") {
                     cover = game.cover.url;
-                    gameId = game.id;
+                    gameSelected = "game2";
                 }
             } 
             
@@ -91,11 +81,11 @@ const GamesSearch = ({page}) => {
                 return (
                     <div className="game-container" key={game.id}>
                         <Game Url={cover} 
-                              title={game.name}
+                              title={title}
                               platform={game.platform}
                               gameId={game.id}
                               key={game.id} />
-                        <ExchangeGameButton gameId={gameId}/>
+                        <ExchangeGameButton gameId={game.id} gameSelected={gameSelected}/>
                     </div>
                 )
             }
