@@ -13,7 +13,7 @@
     }
 }
 
-.game-container {
+.explore-games .game-container {
     background-color: #c70039;
     overflow: hidden;
     width: 100%;
@@ -21,16 +21,15 @@
 
 }
 
-.game-container:hover {
+.explore-games .game-container:hover {
     cursor: pointer;
 }
 
-.game-container .title {
-   float: none;
+.explore-games .game-container .title {
    text-align: center;
-   margin: 30px 0 0 0;
+   padding: 30px 0;
 }
 
-.game-container .cover {
+.explore-games .game-container .cover {
     float: left;
 }

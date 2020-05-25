@@ -13,14 +13,21 @@
     margin: 150px 0 15px 0;
 }
 
-.no-game-result .left-arrow {
+.no-game-result .sell-a-game-left-arrow {
     background-color: #fff;
     border-radius: 100%;
     margin: 0 5px 0 0;
+    position: relative;
+    float: right;
+    right: 59%;
 }
 
-.no-game-result .go-back-link {
+.no-game-result .sell-a-game-go-back-link {
     color: #fff;
+    border: 1px solid;
+    position: relative;
+    float: right;
+    right: 50%;
 }
 
 .no-game-result .go-back-link:hover {

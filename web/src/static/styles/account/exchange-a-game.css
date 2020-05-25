@@ -1,0 +1,242 @@
+.exchange-a-game {
+    width: 100%;
+    overflow: hidden;
+}
+
+.exchange-a-game .error-message {
+    transform: translateX(-50%);
+    margin: 20px 0 0 0;
+    left: 50%;
+}
+
+.exchange-a-game .games {
+    width: 80%;
+    margin: 50px auto;
+    padding: 25px 0;
+    overflow: hidden;
+    position: relative;
+    height: 300px;
+}
+
+@media screen and (min-width: 1200px) {
+    .exchange-a-game .games {
+        width: 60%;
+    }
+}
+
+.exchange-a-game .first-game {
+    float: left;
+    position: relative;
+    padding: 0 0 5px 0;
+    max-width: 250px;
+    max-height: 250px;
+    border: 1px solid;
+}
+
+.remove-game-button {
+   position: absolute;
+   top: -20px;
+}
+
+.exchange-a-game .second-game {
+    float: right;
+    position: relative;
+    padding: 0 0 5px 0;
+    max-width: 250px;
+    max-height: 250px;
+    border: 1px solid;
+}
+
+.exchange-a-game .exchange-a-game .game {
+    max-width: 30%;
+    overflow: visible;
+    position: absolute;
+    text-align: center;
+}
+
+@media screen and (min-width: 800px) {
+    .exchange-a-game .game {
+        max-width: 250px;
+    }
+}
+
+.exchange-a-game .cover-container {
+    max-height: 250px;
+    max-width: 250px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 15px #000;
+}
+
+.exchange-a-game .game-2 {
+    width: 30%;
+    float: right;
+}
+
+.exchange-a-game .game-2 .game {
+    float: right;
+    width: 250px;
+}
+
+.exchange-a-game .title {
+    margin: 5px 0 5px 0;
+    text-align: center;
+    color: #fff;
+}
+
+.exchange-a-game .exchange-arrow {
+    font-size: 5rem;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+}
+
+.exchange-a-game .exchange-confirmation-button,
+.exchange-a-game .exchange-cancel-button  {
+    background-color: #000;
+    color: #fff;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    margin: 60px 0 0 0;
+    border: 0;
+    font-size: 1.1em;
+    padding: 8px 12px;
+}
+
+.exchange-a-game .find-a-game1,
+.exchange-a-game .find-a-game2 {
+   height: 250px;
+   width: 250px;
+}
+
+.exchange-a-game .find-a-game2 {
+    right: 0;
+}
+
+.exchange-a-game .find-a-game1 .button,
+.exchange-a-game .find-a-game2 .button {
+    padding: 10px 15px;
+    font-size: .6em;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+.exchange-a-game .exchange-cancel-button {
+   margin: 100px 0 0 0;
+}
+
+.exchange-a-game .game-to-search-from-list {
+    float: right;
+}
+
+.exchange-a-game .window-game-search {
+    position: absolute;
+    z-index: 9999;
+    width: 90%;
+    background-color: #fff;
+    height: 700px;
+    transform: translateX(-50%);
+    left: 50%;
+    overflow-y: scroll;
+}
+
+.window-game-search .window-search-heading {
+    text-align: center;
+    font-size: 1.2em;
+    margin: 15px 0 0 0;
+}
+
+.window-game-search .close-icon {
+    float: right;
+    margin: 15px 5% 0 0;
+}
+
+.window-game-search .close-icon:hover {
+    cursor: pointer;
+}
+
+.window-game-search .input-search {
+    width: 100%;
+    margin: 30px 0 0 0;
+}
+
+.window-game-search .label-search {
+    margin: 0 5px 0 5%;
+    font-size: 0.7em;
+}
+
+.window-game-search .search-message-error,
+.window-game-search .search-message {
+    text-align: center;
+    margin: 50px 0 0 0;
+}
+
+.window-game-search .window-search-games {
+   padding: 50px 0 0 3%;
+   width: 100%;
+   overflow: hidden;
+}
+
+.window-game-search .window-search-games .button {
+    background-color: yellow;
+    color: #000;
+    padding: 2px 5px;
+    display: block;
+    margin: 20px auto;
+    border: 0;
+}
+
+.window-game-search .window-search-games .button {
+    cursor: pointer;
+}
+
+.window-game-search .game-container {
+    float: left;
+    width: 250px;
+    height: 250px;
+    margin: 10px;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.window-game-search .game {
+    width: 100%;
+}
+
+.window-game-search .game .image-no-available {
+    color: #fff;
+    position: relative;
+    transform: translateY(-50%);
+    top: 50%;
+}
+
+.window-game-search .game:hover {
+    cursor: default;
+}
+
+.window-game-search .image-no-available {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.window-game-search .game .cover-container {
+    max-width: 150px;
+    height: 150px;
+    overflow: hidden;
+    margin: 10px auto;
+}
+
+.window-game-search .game .title {
+    font-size: .7em;
+}
+
+
+
+
+

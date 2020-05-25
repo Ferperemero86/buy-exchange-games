@@ -97,11 +97,15 @@
 .games-list-section .game {
     float: left;
     text-align: center;
-    width: 50%;
-    margin: 60px auto;
+    width: 30%;
+    margin: 30px 5%;
     background-color: #000;
     position: relative;
     z-index: 1;
+}
+
+.games-list-section .cover {
+    height: 100px;
 }
 
 .games-list-section .game .game-status {

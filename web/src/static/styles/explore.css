@@ -1,12 +1,12 @@
 #explore-games {
     width: 90%;
     margin: 50px auto;
-    overflow: hidden;
+    border: 2px solid;
 }
 
 #explore-games .game {
-    width: 150px;
-    height: 150px;
+    width: 40%;
+    position: relative;
     margin: 10px;
     background-color: #c70039;
     overflow: hidden;
@@ -16,19 +16,54 @@
     border: 0;
 }
 
+@media screen and (min-width: 700px) {
+    #explore-games .game {
+        width: 30%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    #explore-games .game {
+        width: 20%;
+    }
+}
+
+#explore-games .game:after {
+    padding-top: 30%;
+    /* 16:9 ratio */
+    display: block;
+    content: '';
+}
+
 #explore-games .game:hover {
     cursor: pointer;
 }
 
-#explore-games .game .cover-container {
-    width: 338px;
-    height: 338px;
-    margin: 0 auto;
+#explore-games .game .cover {
+    width: 70%;
+    background: #000;
+    height: 200px;
+    overflow: hidden;
+    margin: 10px auto;
+}
+
+#explore-games .game .cover p {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    margin: 0;
+    z-index: 9999;
+    color: #fff;
+}
+
+#explore-games .game .cover img {
+    max-width: 100%;
 }
 
 #explore-games .game .title {
    margin: 10px 0 10px 0;
-   font-size: 0.7em;
+   font-size: .8em;
    color: #fff;
 }
 

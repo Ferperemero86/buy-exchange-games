@@ -1,6 +1,6 @@
 .main-header {
     width: 100%;
-    padding: 15px 0 25px 0;
+    padding: 15px 0 35px 0;
     overflow: hidden;
     height: 100px;
     background-color: #000;
@@ -19,9 +19,8 @@
 }
 
 .header-main-nav {
-    width: 300px;
-    overflow: hidden;
     float: left;
+    width: 50%;
     margin: 30px 0 0 0;
     color: #fff;
     font-family: Helvetica;
@@ -33,9 +32,10 @@
 }
 
 .header-main-nav ul > li {
-    padding: 0 15px 0 15px;
-    display: inline-block;
+    padding: 10px 3%;
     text-align: center;
+    display: block;
+    float: left;
 }
 
 .header-main-nav ul > li:hover {
@@ -74,7 +74,7 @@
 }
 
 .header-search {
-    margin: 30px 25%;
+    margin: 20px 25%;
     width: 50%;
     border: 2px solid #fff;
     overflow: hidden;

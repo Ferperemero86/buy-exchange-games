@@ -59,6 +59,10 @@
     border: 0;
 }
 
+.user-list .delete-question.list {
+    top: 80px;
+}
+
 .delete-question .heading {
     margin: 0 0 10px 0;
 }
@@ -66,6 +70,7 @@
 .delete-question .button {
     margin: 0 5px;
     background-color: #fff;
+    color: #000;
     border: 0;
     padding: 3px 6px;
 }
