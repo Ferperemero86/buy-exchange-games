@@ -1,5 +1,4 @@
 const passport = require("passport");
-const User = require("./db/models/user");
 
 function authenticateUser(req, res, next) {
   passport.authenticate("local", function (err, user) {
@@ -24,15 +23,11 @@ function authenticateUser(req, res, next) {
   })(req, res, next);
 
   passport.serializeUser(function (user, done) {
-    done(null, user.id);
+    done(null, user);
   });
 
-  passport.deserializeUser((id, done) => {
-    User.where({ id: id })
-      .fetch()
-      .then(user => {
-        done(null, user);
-      });
+  passport.deserializeUser((obj, done) => {
+    done(null, obj);
   });
 }
 
