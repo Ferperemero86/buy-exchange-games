@@ -1,47 +1,41 @@
 import React, {useContext} from "react";
+import {useRouter} from "next/router";
 import axios from "axios";
 
-import {StoreContext} from "../../utils/store";
-
+import {TransactionsContext} from "../providers/TransactionsProvider";
 
 
 const ExchangeConfirmationButton = () => {
-    const {gameToExchange} = useContext(StoreContext);
-    const {setMessage} = useContext(StoreContext);
-    const {setGamesList} = useContext(StoreContext);
-    const {gameFromListToExchange} = useContext(StoreContext);
+    const {transactions} = useContext(TransactionsContext);
+    const {gameToExchange, gameFromListToExchange} = transactions;
     let game1;
-    
-    const game2 = gameToExchange.length > 0 ? gameToExchange[0].id : null;
+    const game2 = gameToExchange && gameToExchange.length > 0 ? gameToExchange[0].id : null;
+    const router = useRouter();
     
     if (gameFromListToExchange) {
         if (Array.isArray(gameFromListToExchange) && gameFromListToExchange.length > 0) {
             game1 = gameFromListToExchange[0].id;
+            console.log("Game1111", game1);
         } else {
+            console.log("Game1", game1);
             game1 = parseInt(gameFromListToExchange.id);
         }
     } else {
         game1 = [];
     }
-
+   
     const exchangeGame = () => {
-        axios.post("/api/exchangegame", {game1: game1, game2: game2})
+        axios.post("/api/gamesinlist/game/exchange", {game1: game1, game2: game2})
             .then(result => {
-                const message = result.data.message;
-                const gamesList = result.data.gamesList;
-
-                setGamesList(gamesList);
-                setMessage(message);
+                console.log(result);
+                router.push("/account/gameslist");
             })
-            .catch(err => {
-                const error = err.response;
-
-                if (error) {
-                    setMessage(error.data);
-                }
+            .catch(() => {
+                //const error = err.response;
             })
             
     }
+   
     //If both games to exchange are selected show exchange button
     if (game1 && game2) {
         return <button className="exchange-confirmation-button" onClick={exchangeGame}>Exchange</button>
