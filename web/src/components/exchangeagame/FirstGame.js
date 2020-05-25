@@ -1,47 +1,44 @@
 import React, {useContext} from "react";
 
-import {StoreContext} from "../../utils/store";
+import {TransactionsContext} from "../providers/TransactionsProvider";
 
 import Game from "../../components/games/Game";
 
 
-const FirstGame = ({cover, title}) => {
-    const {gameFromListToExchange} = useContext(StoreContext);
-    const {setGameToFind} = useContext(StoreContext);
-    const {setShowGameExchangeWindow} = useContext(StoreContext);
-    const {setExchangeGamesSearch} = useContext(StoreContext);
+const FirstGame = () => {
+    const {transactions, dispatchTransactions} = useContext(TransactionsContext);
+    const {gameFromListToExchange} = transactions;
+    let name, cover;
    
     const openSearchWindow = () => {
-        setGameToFind("game1");
-        setShowGameExchangeWindow(true);
-        setExchangeGamesSearch([]);
+        dispatchTransactions({type: "SHOW_EXCHANGE_SEARCH_WINDOW", payload: true});
+        dispatchTransactions({type: "SET_GAME_TO_FIND", payload: "game1"});
+        dispatchTransactions({type: "SET_EXCHANGE_GAMES_SEARCH", payload: []});
     }
-   
-    if (Array.isArray(gameFromListToExchange) ) {
 
-        if (gameFromListToExchange.length > 0 ) {
-            const cover = gameFromListToExchange[0].cover.url;
-            const title = gameFromListToExchange[0].name
-            return <Game Url={cover} 
-                         title={title} 
-                         gameToRemove="game1"
-                         page="exchange-a-game" />
+    if (gameFromListToExchange) {
+        
+        if (Object.keys(gameFromListToExchange).length > 0 ) {
+            name = gameFromListToExchange.name;
+            cover = gameFromListToExchange.cover;
         }
-
-        if (gameFromListToExchange.length < 1) {
-            return (
-                <div className="find-a-game1">
-                    <button className="button" onClick={openSearchWindow}>Find Game</button>
-                </div>
-            )
+        if (Array.isArray(gameFromListToExchange) && gameFromListToExchange.length > 0 ) {
+            name = gameFromListToExchange[0].name;
+            cover = gameFromListToExchange[0].cover;
         }
-   }
     
-    return  <Game Url={cover} 
-                  title={title} 
-                  gameToRemove= "game1"
-                  page="exchange-a-game" />
+        return <Game Url={cover} 
+                     title={name} 
+                     gameToRemove="game1"
+                     page="exchange-a-game" />
        
+    }
+    
+    return (
+        <div className="find-a-game1">
+            <button className="button" onClick={openSearchWindow}>Find Game</button>
+        </div>
+    )  
 }
 
 export default FirstGame;
