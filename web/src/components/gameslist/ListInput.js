@@ -2,61 +2,54 @@ import React, {useContext} from "react";
 
 import axios from "axios";
 
-import {StoreContext} from "../../utils/store";
+import {GamesListContext} from "../providers/GamesListProvider";
+import {UserContext} from "../providers/UserProvider";
 
 const ListInput = () => {
-    const {createListInputValue, setCreateListInputValue} = useContext(StoreContext);
-    const {createListInput, setCreateListInput} = useContext(StoreContext);
-    const {setEditListMenuActive} = useContext(StoreContext);
-    const {editName} = useContext(StoreContext);
-    const {setListName} = useContext(StoreContext);
-    const {setEditList} = useContext(StoreContext);
-    const {setListCreated} = useContext(StoreContext);
-    const {setMessage} = useContext(StoreContext);
-    const {userId} = useContext(StoreContext);
-    const URL = editName ? "editlistname" : "createlist";
-    const label = URL === "editlistname" ? "Edit Name" : "New List";
-
-
+    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
+    const {createListInput, editName, createListInputValue} = gamesList;
+    const {userId} = useContext(UserContext);
+    const Url = editName ? "gameslist/name" : "gameslist/newlist";
+    const label = Url === "gameslist/name" ? "Edit Name" : "New List";
+   
     const updateInputValue = (e) => {
-        setCreateListInputValue(e.target.value)
+        console.log(e.currentTarget.value);
+        dispatchGamesList({type: "UPDATE_CREATE_LIST_INPUT_VALUE", payload: e.currentTarget.value});
     }
 
-    const sendInputData = (e) => {
+    const sendInputData = async (e) => {
         e.preventDefault();
-        axios({
-            url: `/api/${URL}`,
+        
+        await axios({
+            url: `/api/${Url}`,
             method: "POST",
             data: {listName: createListInputValue, userId}
         })
             .then(result => {
                 const success = result.data;
-
                 if (success.listCreated) {
-                    setCreateListInput(false);
-                    setEditListMenuActive(true);
-                    setEditList(false);
-                    setListCreated(true);
-                    setListName(success.listName)
+                    dispatchGamesList({type: "UPDATE_LIST_EXISTS", payload: true});
+                    dispatchGamesList({type: "UPDATE_LIST_NAME", payload: success.gamesListName});
                 }
 
                 if (success.listNameUpdated) {
-                    setListName(success.listNameUpdated);
-                    setCreateListInput(false);
-                    setEditList(false);
-                    setCreateListInputValue("");
+                    console.log("List created", result.data);
+                    dispatchGamesList({type: "UPDATE_LIST_NAME", payload: success.listNameUpdated});
+                    dispatchGamesList({type: "HIDE_EDIT_LIST"})
+                    dispatchGamesList({type: "HIDE_CREATE_LIST_INPUT"});
+                    dispatchGamesList({type: "UPDATE_CREATE_LIST_INPUT_VALUE"});
                 }
             })
-            .catch(err => {
-                const error = err.response.data;
-                setMessage(error);
+            .catch(() => {
+            
             });
     };
 
+    
     const cancelEditName = () => {
-        setCreateListInput(false);
+        dispatchGamesList({type: "HIDE_CREATE_LIST_INPUT"});
     };
-
+   
     if (createListInput) {
         return (
             <div className="create-list">
@@ -70,7 +63,7 @@ const ListInput = () => {
                     <button
                         onClick={sendInputData}
                         className="button">Send</button>
-                        {URL === "editlistname" && <button 
+                        {Url === "gameslist/name" && <button 
                                                         onClick={cancelEditName}
                                                         className="button">Cancel</button>}
                 </form>
@@ -78,6 +71,6 @@ const ListInput = () => {
         )  
     }
     return null;
-};
+}
 
 export default ListInput;
