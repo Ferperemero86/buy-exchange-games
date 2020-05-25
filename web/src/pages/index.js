@@ -1,56 +1,25 @@
-import React, {useEffect, useContext} from "react";
+import React from "react";
 import Link from 'next/link';
-import fetchApiData from "../utils/API";
-import {StoreContext} from "../utils/store";
 
-export async function getServerSideProps() {
-  const ps4 = await fetchApiData("games", "POST", `fields platforms.name, cover.url; limit 1; where platforms = {48};`);
-  const xbox = await fetchApiData("games", "POST", `fields platforms.name, cover.url; limit 1; where platforms = {49};`);
-  const pc = await fetchApiData("games", "POST", `fields platforms.name, cover.url; limit 1; where platforms = {6};`);
-  const gamesFromServer = {ps4, xbox, pc};
-
-  return {props: {gamesFromServer}};
-}
-
-const Games = () => {
-  const {games} = useContext(StoreContext);
-
-  return Object.keys(games).map(index => {   
-    let cover = games[index][0].cover;
-    const gameId = games[index][0].id;
-    const platform = index;
-    const URL = index;
-
-    if(cover) {
-      cover = cover.url;
-    }
-    
+const PlatformGamesLink = ({Url, platform}) => {
     return(
-      <Link href={{ pathname: `/explore/${URL}`, query: {page: 1} }} key={gameId} >
+      <Link href={{ pathname: `/explore/${Url}`, query: {page: 1}} }>
         <div className="game-container">
-          <img src={`${cover}`} className="cover" />
           <p className="title">{platform}</p>
         </div>
       </Link>
     )
-  });
 }
 
-const Home = ({ gamesFromServer }) => {
-  const {setGames} = useContext(StoreContext);
-  const {setMessage} = useContext(StoreContext);
-
-  useEffect(() => {
-    setMessage(false);
-    setGames(gamesFromServer);
-  });
-
+const Home = () => {
   return (
-  <div id="home">
-    <div className="explore-games">
-      <Games />
+    <div id="home">
+      <div className="explore-games">
+        <PlatformGamesLink Url={"ps4"} platform="PS4" />
+        <PlatformGamesLink Url={"xbox"} platform="XBOX" />
+        <PlatformGamesLink Url={"pc"} platform="PC" />
+      </div>
     </div>
-  </div>
   )
 }
 
