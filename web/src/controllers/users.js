@@ -52,7 +52,9 @@ router.post("/user", jsonParser, (req, res) => {
 });
 
 router.post('/session', jsonParser, userAuthentication, (req, res) => {
-  res.json({login: true});
+  const userId = req.user.id;
+  
+  return res.json({login: true, userId});
 });
 
 
