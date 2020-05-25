@@ -1,25 +1,30 @@
 import React from "react";
+//import {useRouter} from "next/router";
 import fetch from "node-fetch";
+//import GamesSection from "../../components/games/GamesSection";
+//import { StoreContext } from "../../utils/store";
 
 export async function getServerSideProps(ctx) {
+    const userId = await ctx.req.user ? ctx.req.user.id : null;
     const URLBase = await ctx.req.headers.host;
-    const Url = new URL("/api/finduserwithgame", `http://${URLBase}`).href;
-    const query = await ctx.query;
-    console.log("query", query.id);
-    //console.log("context", ctx.query);
-
+    const Url = new URL("/api/gamesselling", `http://${URLBase}`).href;
+   
     const result = await fetch(Url, { method: "POST", 
-                       body: JSON.stringify({gameId: query.id}), 
-                       headers: {'Content-Type': 'application/json'} });
-
+                                      body: JSON.stringify({userId}),
+                                      headers: {'Content-Type': 'application/json'} });
     const data = await result.json();
-
-    return { props: {query: data} };
+   
+    return { props: {data} };
+   
 }
 
-const GameToBuy = ({query}) => {
-    console.log(query);
-    return <h1>{query.id}</h1>;
+
+const GamesForSale = () => {
+    return (
+        <div className="users-selling">
+            <h1>Users Selling Games</h1>
+        </div>
+    )
 }
 
-export default GameToBuy;
+export default GamesForSale;
