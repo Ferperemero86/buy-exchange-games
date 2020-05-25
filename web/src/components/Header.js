@@ -1,12 +1,13 @@
-import React, { useEffect, useContext } from "react";
-import { StoreContext } from "../utils/store";
+import React, {useContext} from "react";
 import Link from 'next/link';
 import cookie from 'react-cookies';
+import {useRouter} from "next/router";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import {UserContext} from "../components/providers/UserProvider";
+
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import LogoImage from "../static/images/controller-logo.png";
-import { useRouter } from 'next/router';
 
 
 const Logo = () => (
@@ -21,32 +22,33 @@ const HeaderMainNav = () => (
             <Link href="/">
                 <li>Home</li>
             </Link>
-            <li>Buy</li>
-            <li>Exchange</li>
-            <li>Lists</li>
+            <Link href="/games/users-selling">
+                <li>Buy</li>
+            </Link>
+            <Link href="/games/users-exchanging">
+                <li>Exchange</li>
+            </Link>
+            <Link href="/account/gameslist">
+                <li>Sell</li>
+            </Link>
+            <Link href="/games/users-lists">
+                <li>Lists</li>
+            </Link>
+            
         </ul>
     </nav>
 );
 
+
 const HeaderAccountNav = () => {
-    const {userLogged, setUserLogged} = useContext(StoreContext);
-    const {setDisabledButton} = useContext(StoreContext);
+    const {user, dispatchUser} = useContext(UserContext);
+    const {userLogged} = user;
     const router = useRouter();
-
-    useEffect(() => {
-        if (cookie.load("user_id") && router.pathname !== "/account/login") {
-            setUserLogged(true);
-        } else {
-            setUserLogged(false);
-        }
-    })
-
+    
     const logOut = () => {
         cookie.remove("user_id", { path: "/" });
-        setUserLogged(false);
-        setDisabledButton("");
-
-        router.push({ pathname: `/account/login` });
+        router.push("/");
+        dispatchUser({ type: "USER_LOGGED_OUT"});
     }
 
     if (!userLogged) {
@@ -62,23 +64,23 @@ const HeaderAccountNav = () => {
                 </ul>
             </nav>
         )
-    } else {
-        return (
-            <div className="account-menu">
-                <span>Account</span>
-                <ul className="account-menu-list">
-                    <Link href="/account/gameslist">
-                        <li className="list-element">Games List</li>
-                    </Link>
-                    <li
-                        className="list-element"
-                        onClick={logOut}>Log Out</li>
-                </ul>
-            </div>
-        )
     }
+   
+    return (
+        <div className="account-menu">
+            <span>Account</span>
+            <ul className="account-menu-list">
+                <Link href="/account/gameslist">
+                    <li className="list-element">Games List</li>
+                </Link>
+                <li
+                    className="list-element"
+                    onClick={logOut}>Log Out</li>
+            </ul>
+        </div>
+    )
+    
 }
-
 
 const HeaderSearch = () => (
     <div className="header-search">
@@ -100,7 +102,6 @@ const Header = () => (
         </div>
         <HeaderSearch />
     </header>
-
 )
 
 export default Header;
