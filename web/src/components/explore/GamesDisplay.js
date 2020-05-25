@@ -17,8 +17,7 @@ const Cover = ({cover}) => {
 
 const Game = ({game}) => {
     const {exploreGames} = useContext(ExploreGamesContext);
-    const page = exploreGames.page;
-    const platform = exploreGames.platform;
+    const {page, platform} = exploreGames;
     const gameId = game.id;
     const summary = game.summary;
     const longName = game.name; 
@@ -178,7 +177,6 @@ const organizeGames = (games) => {
 
 const GamesDisplay = () => {
     const {exploreGames, dispatchExploreGames} = useContext(ExploreGamesContext);
-    console.log(exploreGames);
     const result = organizeGames(exploreGames.games);
 
     useEffect(() => {
