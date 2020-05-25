@@ -27,19 +27,17 @@ const DeleteQuestion = ({action, element, gameId}) => {
             dispatchGamesList({type: "SHOW_DELETE_LIST_QUESTION", payload: false})
         }
         if (element === "game") {
-            dispatchGamesList({type: "SHOW_DELETE_GAME_QEUSTION", payload: false})
+            dispatchGamesList({type: "SHOW_DELETE_GAME_QUESTION", payload: false})
         }
     }
 
-    //if( (element === "game" && showQuestion && gameToDelete === gameId || element === "list" && showQuestion)) {
-        return (
-            <div className={`delete-question ${element}`}>
-                <h1 className="heading">{title}</h1>
-                <button className="button" onClick={deleteItem}>Ok</button>
-                <button className="button" onClick={stopDelete}>Cancel</button>
-            </div>
-        )
-   // } 
+    return (
+        <div className={`delete-question ${element}`}>
+            <h1 className="heading">{title}</h1>
+            <button className="button" onClick={deleteItem}>Ok</button>
+            <button className="button" onClick={stopDelete}>Cancel</button>
+        </div>
+    )
 };
 
 export default DeleteQuestion;
