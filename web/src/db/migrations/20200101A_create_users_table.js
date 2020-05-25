@@ -5,6 +5,7 @@ exports.up = function (knex) {
       table.string("email").notNullable();
       table.string("password").notNullable();
       table.boolean("isAdmin").default(false).notNullable();
+      table.string("time");
     })
 };
 
