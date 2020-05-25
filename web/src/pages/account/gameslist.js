@@ -66,26 +66,28 @@ const GamesList = () => {
             });
     };
 
-   
+    
+
     useEffect(() => {
+
         //If user is not logged send to Login page
         if (login === false) {
             router.push("/account/login")
-        }
-
-        if (listExists && !editListName) {
-            dispatchGamesList({type: "HIDE_CREATE_LIST_INPUT"});
-        }
-        if (listExists && editListName) {
-            dispatchGamesList({type: "SHOW_CREATE_LIST_INPUT"});
-        }
-        if (listExists) {
-            dispatchGamesList({type: "SHOW_EDIT_LIST_ACTIVE_MENU"});
-        }
-        if (!listExists) {
-            dispatchGamesList({type: "HIDE_EDIT_LIST_ACTIVE_MENU"});
-            dispatchGamesList({type: "SHOW_CREATE_LIST_INPUT"});
-            dispatchGamesList({type: "UPDATE_LIST_NAME", payload: ""});
+        } else {
+            if (listExists && !editListName) {
+                dispatchGamesList({type: "HIDE_CREATE_LIST_INPUT"});
+            }
+            if (listExists && editListName) {
+                dispatchGamesList({type: "SHOW_CREATE_LIST_INPUT"});
+            }
+            if (listExists) {
+                dispatchGamesList({type: "SHOW_EDIT_LIST_ACTIVE_MENU"});
+            }
+            if (!listExists) {
+                dispatchGamesList({type: "HIDE_EDIT_LIST_ACTIVE_MENU"});
+                dispatchGamesList({type: "SHOW_CREATE_LIST_INPUT"});
+                dispatchGamesList({type: "UPDATE_LIST_NAME", payload: ""});
+            }
         }
 
     }, [listExists]);
