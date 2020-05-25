@@ -1,32 +1,24 @@
 import React, {useContext} from "react";
 
-import {StoreContext} from "../../utils/store";
+import {GamesListContext} from "../providers/GamesListProvider";
 
 
-const EditList = () => {
-    const {editListMenuActive} = useContext(StoreContext);
-    const {setAskDeleteList} = useContext(StoreContext);
-    const {setEditName} = useContext(StoreContext);
-    const {editList, setEditList} = useContext(StoreContext);
-    const {setCreateListInput} = useContext(StoreContext);
-
-    const toggleEditMenu = () => {
-        if (!editList) {
-            return setEditList(true)
-        }
-        setEditList(false);
-    };
+const List = () => {
+    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
+    const {editList} = gamesList;
 
     const askForListDelete = () => {
-        setAskDeleteList(true);
+        dispatchGamesList({type: "SHOW_DELETE_QUESTION"})
+        dispatchGamesList({type: "SET_ELEMENT_TO_DELETE", payload: "list"})
+        dispatchGamesList({type: "EDIT_NAME", payload: false});
     }
 
     const editListName = () => {
-        setEditName(true);
-        setCreateListInput(true);
+        dispatchGamesList({type: "EDIT_NAME", payload: true});
+        dispatchGamesList({type: "SHOW_CREATE_LIST_INPUT"});
     }
 
-    const List = () => {
+    if (editList) {
         return (
             <ul className="list">
                 <li onClick={askForListDelete}>Delete</li>
@@ -34,6 +26,21 @@ const EditList = () => {
             </ul>
         )
     }
+    return null;
+}
+
+const EditList = () => {
+    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
+    const {editList} = gamesList;
+    const {editListMenuActive} = gamesList;
+  
+    const toggleEditMenu = () => {
+        if (!editList) {
+            return dispatchGamesList({type: "SHOW_EDIT_LIST"})
+        }
+        return dispatchGamesList({type: "HIDE_EDIT_LIST"});
+    };
+
 
     if(editListMenuActive) {
         return (
@@ -41,7 +48,7 @@ const EditList = () => {
                 <span
                     className="span"
                     onClick={toggleEditMenu}>Edit List</span>
-                {editList === true && <List />}
+                <List />
             </div>
         )
     }
