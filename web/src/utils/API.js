@@ -22,6 +22,17 @@ module.exports = {
     const data = await result.json();
 
     return data;
+  },
+  fetchApiLocationData: async (Url) => {
+    const result = await fetch(`${Url}key=e606273e097efefe933265fcdf7bd23d`, { 
+      headers: {
+       'Accept': 'application/json'
+      } 
+    });
+
+    const data = await result.json();
+
+    return data;
   }
 }
 

@@ -124,5 +124,26 @@ module.exports = {
             case "UPDATE_GAME_CURRENCY" :
                 return {...state, gameCurrency: action.payload}
         }
+    },
+    usersSellingReducer: (state, action) => {
+        switch(action.type) {
+            case "UPDATE_GAMES" :
+                return {...state, games: action.payload}
+
+            case "UPDATE_SELECTED_COUNTRY" :
+                return {...state, countrySelected: action.payload}
+
+            case "UPDATE_SELECTED_STATE" :
+                return {...state, stateSelected: action.payload}
+
+            case "UPDATE_STATES" :
+                return {...state, states: action.payload}
+
+            case "UPDATE_COUNTRIES" :
+                return {...state, countries: action.payload}
+
+            case "UPDATE_CITIES" :
+                return {...state, cities: action.payload}
+        }
     }
 }

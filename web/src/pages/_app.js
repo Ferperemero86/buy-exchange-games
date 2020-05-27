@@ -7,6 +7,7 @@ import TransactionsProvider from "../components/providers/TransactionsProvider";
 import SellGameProvider from "../components/providers/SellGameProvider";
 import UserProvider from "../components/providers/UserProvider";
 import ExploreGamesProvider from "../components/providers/ExploreGamesProvider";
+import UsersSellingProvider from "../components/providers/UsersSellingProvider";
 import Header from "../components/Header";
 
 const Page = ({pageProps, Component, router}) => {
@@ -33,6 +34,14 @@ const Page = ({pageProps, Component, router}) => {
             <SellGameProvider pageProps={pageProps}>
                 <Component {...pageProps} />   
             </SellGameProvider>
+        )
+    }
+
+    if (path.includes("/games/users-selling") ) {
+        return (
+            <UsersSellingProvider pageProps={pageProps}>
+                <Component {...pageProps} />   
+            </UsersSellingProvider>
         )
     }
 
