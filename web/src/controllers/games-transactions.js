@@ -54,6 +54,27 @@ router.post("/usersselling/search",
                     .catch(err => {
                         console.log(err)
                     })
-            })
+});
+
+router.post("/usersselling/game",
+            jsonParser,
+            async (req, res) => {
+                const id = req.body.id;
+                console.log("ID", id);
+
+                knex("games_selling")
+                    .select("games_content.name", "games_content.cover", "games_content.platform", "games_selling.id", "games_selling.game_id", "games_selling.price", "games_selling.currency", "games_selling.condition", "games_selling.description")
+                    .where({"games_selling.id": id})
+                    .join("games_content", "games_content.id", "=", "games_selling.game_id")
+                    .then(games => {
+                        console.log("GAME DETAILS SELLING", games);
+                        return res.json({games})
+                }) 
+                .catch(err=> {
+                    console.log(err);
+                })
+                
+});
+
 
 module.exports = router;

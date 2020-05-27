@@ -8,6 +8,7 @@ import SellGameProvider from "../components/providers/SellGameProvider";
 import UserProvider from "../components/providers/UserProvider";
 import ExploreGamesProvider from "../components/providers/ExploreGamesProvider";
 import UsersSellingProvider from "../components/providers/UsersSellingProvider";
+import MessagesProvider from "../components/providers/MessagesProvider";
 import Header from "../components/Header";
 
 const Page = ({pageProps, Component, router}) => {
@@ -37,11 +38,11 @@ const Page = ({pageProps, Component, router}) => {
         )
     }
 
-    if (path.includes("/games/users-selling") ) {
+    if (path.includes("/users-selling/details")) {
         return (
-            <UsersSellingProvider pageProps={pageProps}>
-                <Component {...pageProps} />   
-            </UsersSellingProvider>
+            <MessagesProvider>
+                <Component {...pageProps} />  
+            </MessagesProvider>
         )
     }
 
@@ -68,6 +69,13 @@ const Page = ({pageProps, Component, router}) => {
                 <GamesListProvider pageProps={pageProps}>
                     <Component {...pageProps} />
                 </GamesListProvider>
+            )
+
+        case "/games/users-selling" :
+            return (
+                <UsersSellingProvider pageProps={pageProps}>
+                    <Component {...pageProps} />   
+                </UsersSellingProvider>
             )
 
     }

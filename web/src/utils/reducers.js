@@ -145,5 +145,14 @@ module.exports = {
             case "UPDATE_CITIES" :
                 return {...state, cities: action.payload}
         }
+    },
+    messagesReducer: (state, action) => {
+        switch(action.type) {
+            case "SHOW_CONFIRM_QUESTION": 
+                return {...state, confirmQuestion: action.payload}
+
+            case "UPDATE_CONFIRMATION_MESSAGE": 
+                return {...state, confirmMessage: action.payload}
+        }
     }
 }

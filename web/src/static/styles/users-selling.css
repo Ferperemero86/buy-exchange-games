@@ -129,3 +129,48 @@
     float: right;
 }
 
+.users-selling-game-details {
+    width: 90%;
+    margin: 50px auto;
+    font-size: .8em;
+    overflow: hidden;
+}
+@media screen and (min-width: 800px) {
+    .users-selling-game-details {
+        width: 50%;
+    }
+}
+
+.users-selling-game-details .game {
+    float: left;
+    max-width: 40%;
+    color: #fff;
+}
+
+.users-selling-game-details .selling-details {
+    float: left;
+    padding-left: 5%;
+    width: 45%;
+}
+
+.users-selling-game-details .selling-details p {
+    margin: 10px;
+    color: #fff;
+}
+
+.users-selling-game-details .selling-links {
+    float: left;
+    width: 100%;
+    border-top: 1px solid #8c92ac;
+    text-align: center;
+    margin: 10px 3px;
+    padding: 20px 0 0 0;
+}
+
+.users-selling-game-details .selling-links button {
+    margin: 0 5px;
+}
+
+
+
+
