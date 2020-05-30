@@ -11,13 +11,37 @@ module.exports = {
                 return {...state, userId: action.payload}
         }
     },
-    userFormReducer: (state, action) => {
+    formsReducer: (state, action) => {
         switch(action.type) {
             case "ADD_USERNAMEINPUT_VALUE" :
                 return {...state, usernameInputValue: action.payload}
 
             case "ADD_PASSWORDINPUT_VALUE" :
                 return {...state, passwordInputValue: action.payload}
+
+            case "SELECT_IMAGE" :
+                return {...state, selectedImage: action.payload}
+
+            case "UPDATE_SELECTED_COUNTRY_NAME" :
+                return {...state, selectedCountryName: action.payload} 
+
+            case "UPDATE_SELECTED_COUNTRY_CODE" :
+                return {...state, selectedCountryCode: action.payload}
+
+            case "UPDATE_SELECTED_CITY" :
+                return {...state, selectedCityName: action.payload}
+
+            case "UPDATE_CITIES" :
+                return {...state, cities: action.payload}
+
+            case "UPDATE_COUNTRY_NAMES" :
+                return {...state, countryNames: action.payload}
+
+            case "UPDATE_COUNTRIES" :
+                return {...state, countries: action.payload}
+
+            case "UPDATE_NICK_NAME_VALUE" : 
+                return {...state, nickName: action.payload}
         }
     },
     exploreGamesReducer: (state, action) => {
