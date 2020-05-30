@@ -4,16 +4,17 @@ import {formsReducer} from "../../utils/reducers";
 
 export const FormsContext = createContext(false);
 
-const FormsProvider = ({children}) => {
-
+const FormsProvider = ({children, pageProps}) => {
+    const {countryNames, countries} = pageProps;
+    
     const initialValues = {
         usernameInputValue: "",
         passwordInputValue: "",
         selectedImage: null,
         cities: [],
         nickName: "",
-        countries: [],
-        countryNames: [],
+        countries,
+        countryNames,
         countryCodes: [],
         selectedCountryCode: "",
         selectedCountryName: ""

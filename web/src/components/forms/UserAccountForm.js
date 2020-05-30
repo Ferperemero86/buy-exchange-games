@@ -8,17 +8,9 @@ import {UserContext} from "../providers/UserProvider";
 
 
 const Countries = () => {
-    const {forms, dispatchForms} = useContext(FormsContext);
+    const {forms} = useContext(FormsContext);
     const {countries, countryNames} = forms;
 
-    useEffect(() => {
-        axios.get("/api/countries")
-            .then(result => {
-                dispatchForms({type: "UPDATE_COUNTRY_NAMES", payload: result.data.countryNames})
-                dispatchForms({type: "UPDATE_COUNTRIES", payload: result.data.countries})
-            })
-    }, [countryNames.length]);
-   
     if (countryNames && (Array.isArray(countryNames)) ) {
         return countryNames.map(country => {
             const code = countries[country];
@@ -39,11 +31,9 @@ const Cities = () => {
    
     useEffect(() => {
         if (selectedCountryCode) {
-            console.log("sending post...");
             axios.post("/api/cities", {selectedCountryCode})
             .then(result => {
-                console.log(result);
-                dispatchForms({type: "UPDATE_CITIES", payload: result.data.cities})
+                 dispatchForms({type: "UPDATE_CITIES", payload: result.data.cities})
             })
         }
     }, [selectedCountryCode]);
@@ -85,7 +75,7 @@ const RegistrationInputs = ({URL}) => {
 
     const updateNickName = (e) => {
         const nickVal = e.target.value;
-        console.log(nickVal);
+      
         dispatchForms({type: "UPDATE_NICK_NAME_VALUE", payload: nickVal})
     }
 
@@ -129,7 +119,6 @@ const UserForm = ({URL}) => {
     const {forms, dispatchForms} = useContext(FormsContext);
     const {usernameInputValue, passwordInputValue, selectedCityName, selectedCountryName, nickName} = forms;
     const router = useRouter();
-    console.log(selectedCountryName);
 
     const updateUsernameValue = (e) => {
         dispatchForms({ type:"ADD_USERNAMEINPUT_VALUE", payload: e.target.value });
@@ -158,12 +147,9 @@ const UserForm = ({URL}) => {
                 password: passwordInputValue
             };
         }
-
-        console.log(userData);
         
         axios.post(`/api/${URL}`, userData)
             .then((result) => {
-                console.log(result);
                 const success = result.data;
                
                 if (success && success.login) {
