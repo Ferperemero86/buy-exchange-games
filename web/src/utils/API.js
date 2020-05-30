@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const axios = require("axios");
 
 module.exports = {
   fetchApiData: async (URL, method, query) => {
@@ -15,8 +16,8 @@ module.exports = {
     
     return data;
   },
-  fetchLocalData: async (Url, method, query) => {
-    const result = await fetch(Url, { method, 
+  sendLocalData: async (Url, query) => {
+    const result = await fetch(Url, { method: "POST", 
                                       body: JSON.stringify(query), 
                                       headers: {'Content-Type': 'application/json'} });
     if (Array.isArray(result) !== true) {
@@ -25,16 +26,31 @@ module.exports = {
     }
     return result;
   },
-  fetchApiLocationData: async (Url) => {
-    const result = await fetch(`${Url}key=e606273e097efefe933265fcdf7bd23d`, { 
-      headers: {
-       'Accept': 'application/json'
-      } 
+  getLocalData: async (Url) => {
+    const result = await fetch(Url, {
+      headers: {'Accept': 'application/json'} 
     });
-
-    const data = await result.json();
-
-    return data;
+   
+    if (Array.isArray(result) !== true) {
+      const data = await result.json();
+      return data;
+    }
+    return result;
+    
+  },
+  uploadFile: async (file) => {
+    await axios({
+      url: "https://api.cloudinary.com/v1_1/dby4kdmbv/image/upload",
+      method: "POST",
+      headers: {"Content-type": "x-www-form-urlencoded"},
+      data: file
+    })
+    .then(result => {
+      console.log(result)
+    })
+    .catch(err => {
+      console.log(JSON.stringify(err));
+    })
   }
 }
 
