@@ -1,7 +1,7 @@
 import React, {useContext} from "react";
 import {useRouter} from "next/router";
 
-import {fetchLocalData} from "../../../utils/API";
+import {sendLocalData} from "../../../utils/API";
 
 import Game from "../../../components/games/Game";
 import ConfirmQuestion from "../../../components/messages/ConfirmQuestion";
@@ -12,7 +12,7 @@ export async function getServerSideProps(ctx) {
     const URLBase = await ctx.req.headers.host;
     const Url = new URL("/api/usersselling/game", `http://${URLBase}`).href;
 
-    const gameDetails = await fetchLocalData(Url, "POST", {id});
+    const gameDetails = await sendLocalData(Url, {id});
 
     return { props: {gameDetails} };
 }
