@@ -6,7 +6,7 @@ import Games from "../../../components/usersselling/Games";
 import UserLocationForm from "../../../components/forms/UserLocationForm";
 
 import {UsersSellingContext} from "../../../components/providers/UsersSellingProvider";
-import {fetchLocalData} from "../../../utils/API";
+import {sendLocalData} from "../../../utils/API";
 
 
 
@@ -15,7 +15,7 @@ export async function getServerSideProps(ctx) {
     const URLBase = await ctx.req.headers.host;
     const Url = new URL("/api/gamesselling", `http://${URLBase}`).href;
    
-    const data = await fetchLocalData(Url, "POST", {userId});
+    const data = await sendLocalData(Url, {userId});
 
     return { props: {data} };
 }
