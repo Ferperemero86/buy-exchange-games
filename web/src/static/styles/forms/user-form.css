@@ -1,6 +1,7 @@
 #user-form {
     width: 350px;
     margin: 100px auto;
+    color: #fff;
 }
 
 #user-form h1 {
@@ -13,4 +14,8 @@
 
 #user-form .form-section {
     margin: 20px 0;
+}
+
+.uploader-button:hover {
+    cursor: pointer;
 }
