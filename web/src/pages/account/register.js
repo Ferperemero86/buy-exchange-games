@@ -1,9 +1,10 @@
 import React from "react";
 
-import UserForm from "../../components/forms/UserForm";
+import UserAccountForm from "../../components/forms/UserAccountForm";
 
-const Register = () => (
-    <UserForm URL="user" />   
-);
+
+const Register = () => {
+    return <UserAccountForm URL="user/new" />   
+};
 
 export default Register;
