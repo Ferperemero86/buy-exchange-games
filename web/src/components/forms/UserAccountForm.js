@@ -6,53 +6,12 @@ import {useRouter} from "next/router";
 import {FormsContext} from "../providers/FormsProvider";
 import {UserContext} from "../providers/UserProvider";
 
-
-const Countries = () => {
-    const {forms} = useContext(FormsContext);
-    const {countries, countryNames} = forms;
-
-    if (countryNames && (Array.isArray(countryNames)) ) {
-        return countryNames.map(country => {
-            const code = countries[country];
-    
-            return <option 
-                        value={code}
-                        key={country}>{country}</option>
-        })
-    }
-   
-    return <option>Something went wrong</option>
-}
-
-const Cities = () => {
-    const {forms, dispatchForms} = useContext(FormsContext);
-    const {cities, selectedCountryCode} = forms;
-    let keyVal = 0;
-   
-    useEffect(() => {
-        if (selectedCountryCode) {
-            axios.post("/api/cities", {selectedCountryCode})
-            .then(result => {
-                 dispatchForms({type: "UPDATE_CITIES", payload: result.data.cities})
-            })
-        }
-    }, [selectedCountryCode]);
-
-    if (cities && Array.isArray(cities)) {
-        return cities.map(city => {
-            keyVal++;
-            return <option 
-                        key={city + keyVal}>{city}</option>
-            })
-   }
-
-   return <option>Something went wrong</option>
-}
-
+import Countries from "../../components/forms/CountriesSearch";
+import Cities from "../../components/forms/CitiesSearch";
 
 const RegistrationInputs = ({URL}) => {
     const {forms, dispatchForms} = useContext(FormsContext);
-    const {countries, nickName} = forms;
+    const {countries, cities, nickName, countryNames} = forms;
 
     const selectCountry = (e) => {
         const countryCodeSel = e.target.value;
@@ -92,14 +51,16 @@ const RegistrationInputs = ({URL}) => {
                     <label>Country</label>
                     <select onChange={selectCountry}>
                         <option>Choose country</option>
-                        <Countries />
+                        <Countries 
+                            countries={countries}
+                            countryNames={countryNames} />
                     </select>
                 </div>
                 <div className="form-section">
                     <label>City</label>
                     <select onChange={selectCity}>
                         <option>Choose city</option>
-                        <Cities />
+                        <Cities cities={cities} />
                     </select>
                 </div> 
             </div>
