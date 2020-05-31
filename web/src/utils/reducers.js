@@ -56,7 +56,7 @@ module.exports = {
                 return {...state, passwordInputValue: action.payload}
 
             case "UPDATE_MESSAGE" :
-                return {...state, passwordInputValue: action.payload}
+                return {...state, messages: action.payload}
         }
     },
     exploreGamesReducer: (state, action) => {

@@ -45,6 +45,7 @@ const LoginForm = () => {
         .catch(err => {
             if (err.response) {
                 const messages = handleMessages(err.response.data);
+                console.log(messages);
                 dispatchLogin({type: "UPDATE_MESSAGE", payload: messages});
             }
         });

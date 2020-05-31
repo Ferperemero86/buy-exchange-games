@@ -24,7 +24,7 @@ const register = {
     format: {
       pattern: /^.{3,20}$/,
       message: () => {
-        return validate.format("^Please enter minimum 3 and maximum 20 characters");
+        return validate.format("^Enter a nickname of 3-20 characters");
       }
     }
   },

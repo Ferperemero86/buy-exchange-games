@@ -1,5 +1,6 @@
 import React, {useContext} from "react";
 import axios from "axios";
+import {useRouter} from "next/router";
 
 import {RegisterContext} from "../../components/providers/forms/RegisterProvider";
 import Countries from "../../components/forms/CountriesSearch";
@@ -8,11 +9,13 @@ import Message from "../../components/messages/Message";
 
 import handleMessages from "../../controllers/messagesHandler";
 
+
 const RegisterForm = () => {
     const {register, dispatchRegister} = useContext(RegisterContext);
     const {countries, cities, nickName, countryNames, 
            usernameInputValue, passwordInputValue, 
            selectedCountryName, selectedCityName, messages} = register;
+    const router = useRouter();
 
     const selectCountry = (e) => {
         const countryCodeSel = e.target.value;
@@ -27,7 +30,6 @@ const RegisterForm = () => {
         })
        
         if (countryCodeSel === "Choose country") {
-            console.log("empty country");
             dispatchRegister({type: "UPDATE_SELECTED_COUNTRY_NAME", payload: ""});
             dispatchRegister({type: "UPDATE_SELECTED_COUNTRY_CODE", payload: ""});
         }
@@ -69,8 +71,9 @@ const RegisterForm = () => {
                 const success = result.data;
                
                 if (success && success.userCreated) {
-                    const messages = handleMessages(success.userCreated);
-                    dispatchRegister({ type: "USER_CREATED", payload: messages});
+                    //const messages = handleMessages(success.userCreated);
+                    //dispatchRegister({ type: "USER_CREATED", payload: messages});
+                    router.push("/account/login");
                 }
             })
             .catch(err => {

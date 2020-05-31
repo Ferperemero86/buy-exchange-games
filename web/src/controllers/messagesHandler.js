@@ -13,5 +13,18 @@ module.exports = function handleMessages(response) {
         }
     }
 
+    if (response.login === false) {
+        msg.push("Password and username does not match")
+    }
+
+    if (response.nickNameExists) {
+        msg.push("Nickname taken")
+    }
+
+    if (response.userExists) {
+        msg.push("User already exists")
+    }
+
+
     return msg;
 }
