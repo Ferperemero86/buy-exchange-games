@@ -19,17 +19,18 @@ router.post("/user/new",
             jsonParser, 
             async (req, res) => {
               const {email, password, nickName, country, city} = req.body;
-              console.log(req.body);
-              console.log(country);
-
+             
               const valuesValidation = validation.validate(
-                {email, password},
+                {email, password, nickName, country},
                 validation.register
               );
               
               if (valuesValidation) {
                 return res.status(400).json({ inputValidation: valuesValidation });
               }
+              //if (country === "") {
+              //  return res.status(400).json({countryInserted: false});
+              //}
 
               const salt = bcrypt.genSaltSync(10);
 

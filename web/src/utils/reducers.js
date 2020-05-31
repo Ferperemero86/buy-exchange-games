@@ -11,7 +11,7 @@ module.exports = {
                 return {...state, userId: action.payload}
         }
     },
-    formsReducer: (state, action) => {
+    registerReducer: (state, action) => {
         switch(action.type) {
             case "ADD_USERNAMEINPUT_VALUE" :
                 return {...state, usernameInputValue: action.payload}
@@ -42,6 +42,21 @@ module.exports = {
 
             case "UPDATE_NICK_NAME_VALUE" : 
                 return {...state, nickName: action.payload}
+
+            case "UPDATE_MESSAGE" :
+                return {...state, messages: action.payload}
+        }
+    },
+    loginReducer: (state, action) => {
+        switch(action.type) {
+            case "ADD_USERNAMEINPUT_VALUE" :
+                return {...state, usernameInputValue: action.payload}
+
+            case "ADD_PASSWORDINPUT_VALUE" :
+                return {...state, passwordInputValue: action.payload}
+
+            case "UPDATE_MESSAGE" :
+                return {...state, passwordInputValue: action.payload}
         }
     },
     exploreGamesReducer: (state, action) => {

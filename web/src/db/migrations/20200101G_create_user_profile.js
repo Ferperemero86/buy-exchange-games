@@ -4,7 +4,7 @@ exports.up = function (knex) {
         table.integer("id").notNullable();
         table.string("nickName").notNullable();
         table.string("country").notNullable();
-        table.string("city").notNullable();
+        table.string("city").defaultTo("not selected");
         table.string("time").defaultTo(knex.fn.now());
       })
   };

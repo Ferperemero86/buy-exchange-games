@@ -1,7 +1,8 @@
 import React from 'react';
 
 import "../static/styles/styles.css";
-import FormsProvider from "../components/providers/FormsProvider";
+import RegisterProvider from "../components/providers/forms/RegisterProvider";
+import LoginProvider from "../components/providers/forms/LoginProvider";
 import GamesListProvider from "../components/providers/GamesListProvider";
 import TransactionsProvider from "../components/providers/TransactionsProvider";
 import SellGameProvider from "../components/providers/SellGameProvider";
@@ -48,19 +49,17 @@ const Page = ({pageProps, Component, router}) => {
 
     switch (path) {
         case "/account/login" :
-
             return (
-                <FormsProvider pageProps={pageProps}>
+                <LoginProvider pageProps={pageProps}>
                     <Component {...pageProps} />
-                </FormsProvider>
+                </LoginProvider>
             )
-
+            
         case "/account/register" :
-
             return (
-                <FormsProvider pageProps={pageProps}>
+                <RegisterProvider pageProps={pageProps}>
                     <Component {...pageProps} />
-                </FormsProvider>
+                </RegisterProvider>
             )
 
         case "/account/gameslist" :

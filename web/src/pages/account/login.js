@@ -1,9 +1,9 @@
 import React from "react";
 
-import UserAccountForm from "../../components/forms/UserAccountForm";
+import LoginForm from "../../components/forms/LoginForm";
 
 const Login = () => (
-    <UserAccountForm URL="session" />
+    <LoginForm />
 );
 
 export default Login;

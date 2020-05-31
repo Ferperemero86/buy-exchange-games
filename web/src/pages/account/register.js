@@ -1,6 +1,6 @@
 import React from "react";
 
-import UserAccountForm from "../../components/forms/UserAccountForm";
+import RegisterForm from "../../components/forms/RegisterForm";
 
 import {getLocalData} from "../../utils/API";
 
@@ -16,7 +16,7 @@ export async function getServerSideProps(ctx) {
 
 
 const Register = () => {
-    return <UserAccountForm URL="user/new" />   
+    return <RegisterForm />   
 };
 
 export default Register;

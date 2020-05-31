@@ -1,18 +1,18 @@
 import React, {useContext, useEffect} from "react";
 import axios from "axios";
 
-import {FormsContext} from "../providers/FormsProvider";
+import {RegisterContext} from "../providers/forms/RegisterProvider";
 
 const Cities = ({cities}) => {
-    const {forms, dispatchForms} = useContext(FormsContext);
-    const {selectedCountryCode} = forms;
+    const {register, dispatchRegister} = useContext(RegisterContext);
+    const {selectedCountryCode} = register;
     let keyVal = 0;
    
     useEffect(() => {
         if (selectedCountryCode) {
             axios.post("/api/cities", {selectedCountryCode})
             .then(result => {
-                 dispatchForms({type: "UPDATE_CITIES", payload: result.data.cities})
+                 dispatchRegister({type: "UPDATE_CITIES", payload: result.data.cities})
             })
         }
     }, [selectedCountryCode]);

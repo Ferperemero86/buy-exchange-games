@@ -1,10 +1,10 @@
 import React, {useReducer, createContext, useMemo} from "react";
 
-import {formsReducer} from "../../utils/reducers";
+import {registerReducer} from "../../../utils/reducers";
 
-export const FormsContext = createContext(false);
+export const RegisterContext = createContext(false);
 
-const FormsProvider = ({children, pageProps}) => {
+const RegisterProvider = ({children, pageProps}) => {
     const {countryNames, countries} = pageProps;
     
     const initialValues = {
@@ -21,15 +21,15 @@ const FormsProvider = ({children, pageProps}) => {
         messages: []
     }
 
-    const [FormsState, dispatchForms] = useReducer(formsReducer, initialValues);
+    const [RegisterState, dispatchRegister] = useReducer(registerReducer, initialValues);
 
     const form = useMemo(() => {
-        return FormsState
-    }, [FormsState])
+        return RegisterState
+    }, [RegisterState])
 
-    return <FormsContext.Provider value={{forms: form, dispatchForms}}>{children}</FormsContext.Provider>
+    return <RegisterContext.Provider value={{register: form, dispatchRegister}}>{children}</RegisterContext.Provider>
 
 }
 
 
-export default FormsProvider;
+export default RegisterProvider;

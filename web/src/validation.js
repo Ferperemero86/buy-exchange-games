@@ -19,6 +19,24 @@ const register = {
       },
     },
   },
+  nickName: {
+    presence: true,
+    format: {
+      pattern: /^.{3,20}$/,
+      message: () => {
+        return validate.format("^Please enter minimum 3 and maximum 20 characters");
+      }
+    }
+  },
+  country: {
+    presence: true,
+    format: {
+      pattern: /^.{1,100}$/,
+      message: () => {
+        return validate.format("^Please select a country");
+      }
+    }
+  }
 };
 
 const createList = {
