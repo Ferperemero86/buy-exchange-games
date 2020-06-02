@@ -25,6 +25,10 @@ module.exports = function handleMessages(response) {
         msg.push("User already exists")
     }
 
+    if (response.locationsEmpty) {
+        msg.push("Select a location to see games");
+    }
+
 
     return msg;
 }
