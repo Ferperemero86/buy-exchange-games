@@ -5,7 +5,7 @@ const Message = ({messages}) => {
    
     console.log(messages);
 
-    if (messages.length > 0) {
+    if (messages && messages.length > 0) {
         return messages.map(msg => {
             msgKey++;
             return <p key={msgKey}>{msg}</p>
