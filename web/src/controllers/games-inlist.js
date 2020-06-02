@@ -23,10 +23,7 @@ router.post("/gamesinlist/game/add",
         const gameDetails = req.body.game;
         const userId = req.user.id;
         const nameString = gameDetails.title;
-        const cover = gameDetails.cover;
-        const id = gameDetails.id;
-        const summary = gameDetails.summary;
-        const platform = gameDetails.platform;
+        const {cover, id, summary, platform} = gameDetails;
         const name = nameString.replace("'", "");
         
         await Bookshelf.transaction(t => {
@@ -166,73 +163,65 @@ router.post("/gamesinlist/game/sell",
               userAuthentication, 
               jsonParser, 
               async (req, res) => {
-                const gameId = req.body.gameId;
-                const userId = req.user.id;
-                const price = req.body.gamePrice;
-                const currency = req.body.gameCurrency;
-                const condition = req.body.gameCondition;
-                const description = req.body.gameDescription;
-                //Checks if the price input value is valid
-                const valuesValidation = validation.validate({price}, validation.gameForSale);
-               
-               await Bookshelf.transaction(t => {
-                return new Promise((resolve, reject) => {
-                    //Checks if game is available for sale
-                    return GamesInList
-                        .where({game_id: gameId, list_id: userId, status: "inList"})
-                        .fetch({require: false}, {transacting: t})
-                        .then(Game => {
-                            if (Game) { return resolve(Game) }
-                            return reject({gameUpdated: false});                            
-                        })
-                })
-                .then((Game) => {
-                    const id = Game.get("id");
-                    
-                    return new Promise((resolve) => {
-                        //Updates game status
-                        return GamesInList
-                            .where({id})
-                            .save({status: "selling"}, {patch: true, transacting: t})
-                            .then(() => {                    
-                                return resolve(id);
+                  const userId = req.user.id;
+                  const {gameId, price,
+                         currency, condition, description} = req.body;
+              
+                        await Bookshelf.transaction(t => {
+                            //Checks if the price input value is valid
+                            const valuesValidation = validation.validate({price}, validation.gameForSale);
+                            
+                            return new Promise((resolve, reject) => {
+                                //If a value is returned from valuesValidation the input was not correct
+                                if (valuesValidation) {
+                                    return reject({inputValidation: valuesValidation});
+                                }
+                                //Checks if game is available for sale
+                                return GamesInList
+                                    .where({game_id: gameId, list_id: userId, status: "inList"})
+                                    .fetch({require: false})
+                                    .then(Game => {
+                                        console.log("GAME", Game)
+                                        if (Game) { return resolve(Game) }
+                                        return reject({gameUpdated: false});                            
+                                    })
                             })
-                    })
-                })
-                .then(() => {
-                    //If a value is returned from valuesValidation the input was not correct
-                    if (valuesValidation) {
-                        return res.status(400).json({inputValidation: valuesValidation});
-                    }
-            
-                    //Saves game in sellings table (games_selling)
-                    return GamesSelling
-                        .forge({
-                            game_id: gameId,
-                            price, 
-                            currency,
-                            condition, 
-                            description,  
-                            list_id: userId})
-                        .save(null, {method: "insert", transacting: t})
-                        .then(() => { 
-                            return res.json({GameSetForSelling: true})
-                        })
-                   
-                    })
-                })
-                .catch(err => {
-                    if (err.gameUpdated === false) {
-                        return res.status(400).json(err);
-                    }
-                    if (err.updatedGamesList === false) {
-                        return res.status(500).json(err);
-                    }
-                    if (err.gameAlreadySelling) {
-                        return res.status(400).json(err);
-                    }
-                    return res.status(500).json({internalError: true})
-                })
+                            .then((Game) => {
+                                const id = Game.get("id");
+                                
+                                return new Promise((resolve) => {
+                                    //Updates game status
+                                    return GamesInList
+                                        .where({id})
+                                        .save({status: "selling"}, {patch: true, transacting: t})
+                                        .then(() => {                    
+                                            return resolve(id);
+                                        })
+                                })
+                            })
+                            .then(() => {        
+                                //Saves game in sellings table (games_selling)
+                                return GamesSelling
+                                    .forge({
+                                        game_id: gameId,
+                                        price, 
+                                        currency,
+                                        condition, 
+                                        description,  
+                                        list_id: userId})
+                                    .save(null, {method: "insert", transacting: t})
+                                    .then(() => { 
+                                        return res.json({GameSetForSelling: true})
+                                    })
+                                
+                                })
+                            })
+                            .catch(err => {
+                                if (err.gameUpdated === false || err.gameAlreadySelling || err.inputValidation ) {
+                                    return res.status(400).json(err);
+                                }
+                                return res.status(500).json({internalError: true})
+                            })
 });
 
 router.post("/gamesinlist/game/stopselling", 
@@ -240,61 +229,70 @@ router.post("/gamesinlist/game/stopselling",
             userAuthentication, 
             (req, res) => {
 
-        const userId = req.user.id;
-        const gameId = req.body.gameId;
+                const userId = req.user.id;
+                const gameId = req.body.gameId;
 
-        Bookshelf.transaction(t => {
-            //Check if the games selling exists in list
-            return GamesInList
-                .where({list_id: userId, id: gameId, status: "selling"})
-                .fetch({require: false}, {transacting: t})
-                .then(Game => {
-                    //If games exists updates status to a default one
-                    return new Promise((resolve, reject) => {
-                        if (Game) {
-                            const id = Game.get("game_id");
-                        
-                            return Game
-                                .save({status: "inList"}, {patch: true, transacting: t})
-                                .then (() => { return resolve(id) })
-                        } else {  return reject({GameNotForSell: true}) }
-                    });
-                })
-            .then(id => {
-                return new Promise((resolve, reject) => {
-                    //Deletes Game from games selling table (games_selling)
-                    return GamesSelling
-                        .where({game_id: id, list_id: userId})
-                        .fetch({transacting: t})
+                Bookshelf.transaction(t => {
+                    //Check if the games selling exists in list
+                    return GamesInList
+                        .where({list_id: userId, id: gameId, status: "selling"})
+                        .fetch({require: false})
                         .then(Game => {
-                            if (Game) { 
-                                return Game
-                                    .destroy({transacting: t})
-                                    .then(() => {  return resolve() })
-                            }
-                            return reject();
-
+                            console.log("first then");
+                            //If games exists updates status to a default one
+                            return new Promise((resolve, reject) => {
+                                if (Game) {
+                                    const id = Game.get("game_id");
+                                
+                                    return Game
+                                        .save({status: "inList"}, {patch: true, transacting: t})
+                                        .then (() => { return resolve(id) })
+                                } else {  return reject({GameNotForSell: true}) }
+                            });
+                        })
+                    .then(id => {
+                        console.log("2 then");
+                        //return new Promise((resolve, reject) => {
+                            //Deletes Game from games selling table (games_selling)
+                            return GamesSelling
+                                .where({game_id: id, list_id: userId})
+                                .fetch({required: false})
+                                .then(Game => {
+                                    return new Promise((resolve, reject) => {
+                                        if (Game) { 
+                                            console.log("GAME", Game);
+                                            return Game
+                                                .destroy({transacting: t})
+                                                .then(() => {  
+                                                    console.log("destoyed!");
+                                                    return resolve() 
+                                                })
+                                        }
+                                        return reject();
+                                    
+                                    })
+                                })
+                        //})
+                    })
+                })
+                .then(() => {
+                    console.log("3 then");
+                    //Returns an updated gameslist
+                    knex("games_in_list")
+                        .select("games_content.name", "games_content.cover", "games_content.platform", "games_in_list.status", "games_in_list.game_id", "games_in_list.id")
+                        .where({"games_in_list.list_id": userId})
+                        .join("games_content", "games_content.id", "=", "games_in_list.game_id")
+                        .orderBy("games_in_list.id")
+                        .then(gamesList => {
+                            return res.json({gamesList})
                         })
                 })
-            })
-        })
-        .then(() => {
-            //Returns an updated gameslist
-            knex("games_in_list")
-                .select("games_content.name", "games_content.cover", "games_content.platform", "games_in_list.status", "games_in_list.game_id", "games_in_list.id")
-                .where({"games_in_list.list_id": userId})
-                .join("games_content", "games_content.id", "=", "games_in_list.game_id")
-                .orderBy("games_in_list.id")
-                .then(gamesList => {
-                    return res.json({gamesList})
+                .catch(err => {
+                    if(err.GameNotForSell) {
+                        res.status(400).json(err);
+                    }
+                    return res.status(500).json({internalError: true})
                 })
-        })
-        .catch(err => {
-            if(err.GameNotForSell) {
-                res.status(400).json(err);
-            }
-            return res.status(500).json({internalError: true})
-        })
 
 });
 
@@ -347,7 +345,7 @@ router.post("/gamesinlist/game/stopexchanging",
                         //Checks if the game is already exchanging
                         return GamesInList
                             .where({id: gameId, list_id: userId, status: "exchanging"})
-                            .fetch({require: false, transacting: t})
+                            .fetch({require: false})
                             .then(Game => {
                                 if (Game) {
                                     return resolve()
@@ -403,8 +401,7 @@ router.post("/gamesinlist/game/exchange",
             jsonParser,
             userAuthentication,
             async (req, res) => {
-                const game1 = req.body.game1;
-                const game2 = req.body.game2;
+                const {game1, game2} = req.body;
                 const user1 = req.user.id;
                 const user2 = req.body.user2 ? req.body.user2 : null;
                 const time = new Date().getTime();
