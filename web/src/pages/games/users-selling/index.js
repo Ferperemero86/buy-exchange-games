@@ -20,7 +20,6 @@ export async function getServerSideProps(ctx) {
 
     const result = await getLocalData(countriesUrl);
     const data = await sendLocalData(Url, {userId});
-    console.log("DATA", result);
 
     const {countries, countryNames} = await result;
 
@@ -30,7 +29,7 @@ export async function getServerSideProps(ctx) {
 const UsersGames = () => {
     const {usersSelling} = useContext(UsersSellingContext);
     const {games} = usersSelling;
-    console.log(games);
+    
     if (Array.isArray(games)) {
         return <Games games={games} />
     }
@@ -82,16 +81,14 @@ const GamesForSale = () => {
 
         dispatchUsersSelling({type: "UPDATE_SELECTED_CITY", payload: city})
     }
-    console.log(selectedCountryName);
+   
     useEffect(() => {
         if (selectedCountryName || countrySelected && citySelected) {
-            console.log("getting games...");
             axios.post("/api/gamesselling", {
                 country: selectedCountryName,
                 city: citySelected
             })
             .then(result => {
-                console.log(result)
                 if (result.data) {
                     const games = result.data.games;
                     dispatchUsersSelling({type: "UPDATE_GAMES", payload: games});

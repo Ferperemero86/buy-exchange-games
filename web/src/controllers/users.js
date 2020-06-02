@@ -28,10 +28,7 @@ router.post("/user/new",
               if (valuesValidation) {
                 return res.status(400).json({ inputValidation: valuesValidation });
               }
-              //if (country === "") {
-              //  return res.status(400).json({countryInserted: false});
-              //}
-
+             
               const salt = bcrypt.genSaltSync(10);
 
               Bookshelf.transaction(t => {
@@ -60,7 +57,6 @@ router.post("/user/new",
                     })
                 })
                 .then(() => {
-                  console.log("second then");
                   return new Promise((resolve, reject) => {
                     return bcrypt.hash(password, salt, (err, hash) => {
                       if (err) {
@@ -72,7 +68,7 @@ router.post("/user/new",
                         .save(null, {method: 'insert', require: false, transacting: t})
                         .then(user => {
                           const userId = user.get("id");
-                          console.log("third then");
+                         
                           if (user) {
                             return resolve(userId);
                           }
@@ -82,7 +78,6 @@ router.post("/user/new",
                     })
                   })
                   .then(userId => {
-                    console.log("fourth then");
                     return UserProfile
                       .forge(
                         {id: userId, nickName, country, city}, 
@@ -125,9 +120,7 @@ router.post(
         .where("id", req.user.id)
         .then(() => res.json({ updatedPassword: true }))
         .catch(() => {
-          res
-            .status(500)
-            .json({ error: "Could not edit pass" });
+          res.status(500).json({ error: "Could not edit pass" });
         });
     });
   }
@@ -138,7 +131,7 @@ router.post("/cities",
             (req, res) => {
               const {selectedCountryCode} = req.body;
               const citiesArray = [];
-              console.log("COUNTRY CODE", selectedCountryCode);
+      
               cities.map(city => {
                 if (city.country === selectedCountryCode) {
                   citiesArray.push(city.name);
