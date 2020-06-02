@@ -31,7 +31,7 @@ router.post("/gamesinlist/game/add",
                 //Check if gameslist exists first
                 return GamesLists
                     .where({id: userId})
-                    .fetch({require: false}, {transacting: t})
+                    .fetch({require: false})
                     .then(List => {                    
                         if (List) {
                             return resolve(List);
@@ -59,21 +59,23 @@ router.post("/gamesinlist/game/add",
                 //Check if the game exists in games_content
                 return GamesContent
                     .where({id: id})
-                    .fetch({require: false}, {transacting: t})
+                    .fetch({require: false})
                     .then(Game => {
                         return new Promise((resolve) => {
                             //If game exists continue
                             if (Game) { 
-                                return resolve() 
+                                return resolve(List) 
                             }
     
                             //If it does not exist insert content in table
                             return GamesContent
-                                .forge({name,
+                                .forge({
+                                        name,
                                         id,
                                         cover,
                                         platform,
-                                        summary})
+                                        summary
+                                    })
                                 .save(null, {method: "insert", transacting: t})
                                 .then(() => {
                                     return resolve(List);
@@ -95,7 +97,6 @@ router.post("/gamesinlist/game/add",
                     return res.json({gamesList: result, id: userId, gamesListName, listExists: true})
                 })
         })
-        
         .catch(err => {
             if (err.listExists === false) {
                 return res.status(400).json(err);
