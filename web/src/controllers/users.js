@@ -136,11 +136,11 @@ router.post(
 router.post("/cities",
             jsonParser,
             (req, res) => {
-              const countryCode = req.body.selectedCountryCode;
+              const {selectedCountryCode} = req.body;
               const citiesArray = [];
-              console.log("COUNTRY CODE", countryCode);
+              console.log("COUNTRY CODE", selectedCountryCode);
               cities.map(city => {
-                if (city.country === countryCode) {
+                if (city.country === selectedCountryCode) {
                   citiesArray.push(city.name);
                 }
               });

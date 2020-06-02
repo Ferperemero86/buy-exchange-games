@@ -172,6 +172,12 @@ module.exports = {
             case "UPDATE_SELECTED_COUNTRY" :
                 return {...state, countrySelected: action.payload}
 
+            case "UPDATE_SELECTED_COUNTRY_NAME" :
+                return {...state, selectedCountryName: action.payload}
+
+            case "UPDATE_SELECTED_CITY" :
+                return {...state, citySelected: action.payload}
+
             case "UPDATE_SELECTED_STATE" :
                 return {...state, stateSelected: action.payload}
 
@@ -183,6 +189,9 @@ module.exports = {
 
             case "UPDATE_CITIES" :
                 return {...state, cities: action.payload}
+
+            case "UPDATE_MESSAGES" :
+                return {...state, messages: action.payload}
         }
     },
     messagesReducer: (state, action) => {

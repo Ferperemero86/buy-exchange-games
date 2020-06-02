@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import axios from "axios";
 import {useRouter} from "next/router";
 
@@ -14,7 +14,8 @@ const RegisterForm = () => {
     const {register, dispatchRegister} = useContext(RegisterContext);
     const {countries, cities, nickName, countryNames, 
            usernameInputValue, passwordInputValue, 
-           selectedCountryName, selectedCityName, messages} = register;
+           selectedCountryName, selectedCityName,
+           messages, selectedCountryCode} = register;
     const router = useRouter();
 
     const selectCountry = (e) => {
@@ -83,6 +84,15 @@ const RegisterForm = () => {
                 }
             });
     }
+
+    useEffect(() => {
+        if (selectedCountryCode) {
+            axios.post("/api/cities", {selectedCountryCode})
+            .then(result => {
+                 dispatchRegister({type: "UPDATE_CITIES", payload: result.data.cities})
+            })
+        }
+    }, [selectedCountryCode]);
 
     return (
         <div id="user-form">

@@ -15,7 +15,8 @@ const SellGameProvider =({children, pageProps}) => {
         gameCondition: "Grade A",
         gamePrice: "",
         gameDescription: "",
-        gameCurrency: "£"
+        gameCurrency: "£",
+        messages: []
     };
 
     const [sellGameState, dispatchSellGame] = useReducer(sellGameReducer, initialValues);

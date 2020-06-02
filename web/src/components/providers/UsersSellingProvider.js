@@ -1,20 +1,31 @@
 import React, {createContext, useReducer, useMemo} from "react";
 
 import {usersSellingReducer} from "../../utils/reducers";
+import handleMessages from "../../controllers/messagesHandler";
 
 export const UsersSellingContext = createContext();
 
 
 const UsersSellingProvider = ({children, pageProps}) => {
-    console.log(pageProps.data.games);
+    console.log(pageProps);
+    const games = pageProps.data.games ? pageProps.data.games : [];
+    const {countries, countryNames} = pageProps;
+    let messages = "";
+
+    if (pageProps.data.locationsEmpty) {
+        messages = handleMessages(pageProps.data);
+    }
+
     const initialValues = {
-        games: pageProps.data.games,
-        countries: "Choose a country",
-        states: "Choose a country first",
-        cities: "Coose a state first",
-        countrySelected: "",
-        citySelected: "",
+        games,
+        countries,
+        countryNames,
+        selectedCountryName: null,
+        cities: [],
+        countrySelected: null,
+        citySelected: null,
         stateSelected: "",
+        messages
     }
     
     const [usersSellingState, dispatchUsersSelling] = useReducer(usersSellingReducer, initialValues);

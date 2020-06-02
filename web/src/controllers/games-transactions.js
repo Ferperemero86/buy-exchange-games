@@ -15,18 +15,30 @@ const GamesSelling = require("../db/models/games-selling");
 router.post("/gamesselling",
             jsonParser,
             (req, res) => {
-                const userId = req.body.userId ? req.body.userId : 0;
-                
-                //return res.json({games})
-                knex("games_selling")
-                    .select("games_content.name", "games_content.cover", "games_content.platform", "games_selling.id", "games_selling.game_id", "games_selling.price", "games_selling.currency", "games_selling.condition", "games_selling.description")
-                    .whereRaw("games_selling.list_id <> ?", [userId])
-                    .join("games_content", "games_content.id", "=", "games_selling.game_id")
-                    .then(games => {
-                        return res.json({games})
-                }) 
-                .catch(()=> {
-            
+                const userId = req.user && req.user.id ? req.user.id : 0;
+                const {country, city} = req.body;
+
+                return new Promise((resolve, reject) => {
+                    if (!country && !city) {
+                        return reject({locationsEmpty: true})
+                    }
+                    return resolve();
+                })
+                .then(() => {
+                    knex("user_profile")
+                        .select("games_content.name", "games_content.cover", "games_content.platform", "games_selling.id", "games_selling.game_id", "games_selling.price", "games_selling.currency", "games_selling.condition", "games_selling.description")
+                        .whereNot("user_profile.id", userId)
+                        .andWhere("user_profile.country", country)
+                        .join("games_selling", "games_selling.list_id", "=", "user_profile.id")
+                        .join("games_content", "games_content.id", "=", "games_selling.game_id")
+                        .then(games => {
+                            console.log("GAMES IN SERVER", games);
+                            return res.json({games})
+                    }) 
+                })
+                .catch(err=> {
+                    if (err.locationsEmpty) { return res.status(400).json(err) }
+                    return res.status(500).json(err);
                 })
         
 })

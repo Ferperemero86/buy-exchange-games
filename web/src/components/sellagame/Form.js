@@ -82,18 +82,23 @@ const Form = () => {
           gameCondition, gameDescription, gameCurrency} = sellGame;
     const router = useRouter();
     
-    const updateGameStatus = (e) => {
+    const updateGameStatus = async (e) => {
         e.preventDefault();
     
-        axios.post("/api/gamesinlist/game/sell", 
-                    {status, gameId, gamePrice,
-                    gameCurrency, gameCondition, gameDescription })
+        await axios.post("/api/gamesinlist/game/sell", 
+                {   status, 
+                    gameId, 
+                    price: gamePrice,
+                    currency:gameCurrency, 
+                    condition: gameCondition, 
+                    description: gameDescription 
+                })
             .then(() => {
                dispatchSellGame({type: "UPDATE_GAME_PRICE", payload: ""});
                router.push("/account/gameslist");
             })
-            .catch(() => {
-        
+            .catch(err => {
+                console.log(err.response);
             })
     }
 
