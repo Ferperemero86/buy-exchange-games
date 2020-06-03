@@ -7,9 +7,10 @@ export const UsersSellingContext = createContext();
 
 
 const UsersSellingProvider = ({children, pageProps}) => {
-    console.log(pageProps);
     const games = pageProps.data.games ? pageProps.data.games : [];
-    const {countries, countryNames} = pageProps;
+    const selectedCountryName = pageProps.data.countryName ? pageProps.data.countryName : "";
+    const citySelected = pageProps.data.city ? pageProps.data.city : "";
+    const {countries, countryNames, cities, countryCode} = pageProps;
     let messages = "";
 
     if (pageProps.data.locationsEmpty) {
@@ -20,10 +21,10 @@ const UsersSellingProvider = ({children, pageProps}) => {
         games,
         countries,
         countryNames,
-        selectedCountryName: null,
-        cities: [],
-        countrySelected: null,
-        citySelected: null,
+        selectedCountryName,
+        cities: cities.cities,
+        countrySelected: countryCode,
+        citySelected,
         stateSelected: "",
         messages
     }

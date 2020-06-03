@@ -130,17 +130,13 @@ router.post("/cities",
             jsonParser,
             (req, res) => {
               const {selectedCountryCode} = req.body;
-              const citiesArray = [];
-      
-              cities.map(city => {
-                if (city.country === selectedCountryCode) {
-                  citiesArray.push(city.name);
-                }
-              });
+          
+              const cityNames= cities.filter(city => city.country === selectedCountryCode && city.population > 30000)
+                                     .map(city => {return city.name});
 
-              citiesArray.sort();
-              
-              return res.json({cities: citiesArray})
+              cityNames.sort();
+             
+              return res.json({cities: cityNames})
 });
 
 router.get("/countries",
