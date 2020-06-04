@@ -192,6 +192,9 @@ module.exports = {
 
             case "UPDATE_MESSAGES" :
                 return {...state, messages: action.payload}
+
+            case "UPDATE_SEARCH_INPUT_VALUE" :
+                return {...state, searchInputValue: action.payload}
         }
     },
     messagesReducer: (state, action) => {

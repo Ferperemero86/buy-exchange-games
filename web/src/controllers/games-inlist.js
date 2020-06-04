@@ -22,7 +22,7 @@ router.post("/gamesinlist/game/add",
     async (req, res) => {
         const gameDetails = req.body.game;
         const userId = req.user.id;
-        const nameString = gameDetails.title;
+        const nameString = gameDetails.title.toLowerCase();
         const {cover, id, summary, platform} = gameDetails;
         const name = nameString.replace("'", "");
         

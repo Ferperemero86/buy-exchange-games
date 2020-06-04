@@ -26,6 +26,7 @@ const UsersSellingProvider = ({children, pageProps}) => {
         countrySelected: countryCode,
         citySelected,
         stateSelected: "",
+        searchInputValue: "",
         messages
     }
     

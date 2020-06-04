@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json({ type: "application/json" });
-const {fetchApiLocationData} = require("../utils/API");
+//const {fetchApiLocationData} = require("../utils/API");
 //const userAuthentication = require("../authentication");
 const knex = require("../db/knex");
 //const Bookshelf = require("../db/bookshelf");
@@ -9,7 +9,7 @@ const knex = require("../db/knex");
 //const acl = require("./acl");
 //const validation = require("../validation");
 
-const GamesSelling = require("../db/models/games-selling");
+//const GamesSelling = require("../db/models/games-selling");
 const UserProfile = require("../db/models/user-profile");
 
 router.post("/usersgames",
@@ -18,6 +18,13 @@ router.post("/usersgames",
                 const userId = req.body.userId ? req.body.userId : 0;
                 const countryName = req.body.country ? req.body.country : "";
                 const cityName = req.body.city ? req.body.city : "";
+                let textSearch = req.body.textSearch ? req.body.textSearch : "";
+            
+                //Converts search in lowcase format
+                if (textSearch !== "") {
+                    textSearch = textSearch.toLowerCase();
+                }
+
                 let query = knex("user_profile")
                                 .select("user_profile.country", "games_content.name", "games_content.cover", 
                                         "games_content.platform", "games_selling.id", "games_selling.game_id", 
@@ -29,14 +36,18 @@ router.post("/usersgames",
                 return new Promise((resolve, reject) => {
                     if (!userId) {
                         if (countryName === "" && cityName === "") {
-                            return reject({locationsEmpty: true})
+                            return reject({locationsEmpty: true});
                         }
                         if (countryName !== "" && cityName === "") {
-                            query.where("country", countryName)
+                            console.log("JUSY COUNTRY SELECTED!");
+                            query.where("country", countryName);
                         }
                         if (countryName !== "" && cityName !== "") {
-                            query.where("country", countryName)
-                            query.andWhere("city", cityName)
+                            query.where("country", countryName);
+                            query.andWhere("city", cityName);
+                        }
+                        if(textSearch !== "") {
+                            query.andWhere("games_content.name", "like", `%${textSearch}%`);
                         }
 
                         query.then(games => {
@@ -61,14 +72,17 @@ router.post("/usersgames",
                     return new Promise((resolve) => {
                         const country = countryName !== "" ? countryName : locations.country;
                         const city = cityName !== "" ? cityName : locations.city;
-    
+
+                        query.whereNot("user_profile.id", userId);
+                        
+                        if(textSearch !== "") {
+                            query.andWhere("games_content.name", "like", `%${textSearch}%`);
+                        }
                         if (country !== "" && city === "not selected") {
-                            query.whereNot("user_profile.id", userId)
                             query.andWhere("country", country)
                             return resolve({country});
                         }
                         if (country !== "" && city !== "not selected") {
-                            query.whereNot("user_profile.id", userId)
                             query.andWhere("country", country)
                             query.andWhere("city", city)
                             return resolve({country, city});
@@ -92,31 +106,6 @@ router.post("/usersgames",
                 })
         
 })
-
-router.post("/getlocations", 
-            jsonParser,
-            async (req, res) => {
-                const locationUrl = req.body.locationUrl;
-                const locations = await fetchApiLocationData(locationUrl);
-                
-                return res.json({locations})
-});
-
-router.post("/usersselling/search",
-            jsonParser,
-            async (req) => {
-                const query = req.body.query;
-                console.log("QUERY", query);
-                
-                return GamesSelling
-                    .fetchAll()
-                    .then(result => {
-                        console.log("RESULT", result)
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-});
 
 router.post("/usersselling/game",
             jsonParser,

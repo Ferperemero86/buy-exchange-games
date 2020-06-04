@@ -24,7 +24,7 @@ export async function getServerSideProps(ctx) {
 
     const {countryName} = await data;
     const {countries, countryNames} = await countriesResult;
-    let countryCode;
+    let countryCode = "";
     let cities = [];
 
     Object.keys(countries).map(name => {
@@ -43,7 +43,7 @@ const FirstCitiesOption = () => {
     const {usersSelling} = useContext(UsersSellingContext);
     const {cities} = usersSelling;
 
-    if (cities.length > 1) {
+    if (cities && cities.length > 1) {
         return <option value="not selected">All cities</option>
     }
     return <option>Choose city</option>
@@ -54,6 +54,9 @@ const UsersGames = () => {
     const {games} = usersSelling;
     
     if (Array.isArray(games)) {
+        if (games.length < 1) {
+            return <h2>No Results</h2>
+        }
         return <Games games={games} />
     }
     return null;
@@ -62,17 +65,17 @@ const UsersGames = () => {
 const GamesForSale = ({userId}) => {
     const {usersSelling, dispatchUsersSelling} = useContext(UsersSellingContext);
     const {countries, countryNames, cities,
-           messages, citySelected, selectedCountryName} = usersSelling;
+           messages, citySelected, selectedCountryName,
+           searchInputValue} = usersSelling;
     const selectCountriesRef = useRef(null);
     const selectCitiesRef = useRef(null);
 
     const addSelectedAttribute = (selectValues, selectedValue) => {
         const selectChildren = selectValues.current.children;
         const selectChildrenArray = [...selectChildren];
-        console.log(selectedValue);
+        
         selectChildrenArray.map((item) => {
             if (selectedValue === item.innerHTML) {
-                    console.log("match", item.value);
                     item.selected = true;
                 }
         })
@@ -94,7 +97,6 @@ const GamesForSale = ({userId}) => {
 
         axios.post("/api/cities", {selectedCountryCode: countryCode})
             .then(result => {
-                console.log(result.data);
                 dispatchUsersSelling({type: "UPDATE_CITIES", payload: result.data.cities});
                 dispatchUsersSelling({type: "UPDATE_SELECTED_COUNTRY_NAME", payload: countryName});
                 dispatchUsersSelling({type: "UPDATE_SELECTED_COUNTRY", payload: countryCode});
@@ -109,15 +111,20 @@ const GamesForSale = ({userId}) => {
 
         dispatchUsersSelling({type: "UPDATE_SELECTED_CITY", payload: city});
     }
-   
-    useEffect(() => {
-        addSelectedAttribute(selectCountriesRef, selectedCountryName);
-        addSelectedAttribute(selectCitiesRef, citySelected);
 
-        axios.post("/api/usersgames", {
+    const searchGamesByName = (e) => {
+        const textValue = e.target.value;
+        
+        getUserGames(selectedCountryName, citySelected, userId, textValue);
+        dispatchUsersSelling({type: "UPDATE_SEARCH_INPUT_VALUE", payload: textValue})
+    }
+
+    const getUserGames = async (selectedCountryName, citySelected, userId, searchInputValue) => {
+        await axios.post("/api/usersgames", {
             country: selectedCountryName,
             city: citySelected,
-            userId
+            userId,
+            textSearch: searchInputValue
         })
         .then(result => {
             if (result.data) {
@@ -129,6 +136,15 @@ const GamesForSale = ({userId}) => {
         .catch(err => {
             console.log(err);
         })
+    }
+   
+    useEffect(() => {
+        addSelectedAttribute(selectCountriesRef, selectedCountryName);
+        addSelectedAttribute(selectCitiesRef, citySelected);
+
+        getUserGames(selectedCountryName, citySelected, userId, searchInputValue);
+
+        
     }, [selectedCountryName, citySelected])
 
     return (
@@ -137,19 +153,32 @@ const GamesForSale = ({userId}) => {
             <div className="users-selling-forms">
                     <div className="locations">
                         <form>
-                            <select onChange={selectCountry} 
-                                    ref={selectCountriesRef}>
-                                <option>Choose country</option>
-                                <Countries
-                                    countries={countries}
-                                    countryNames={countryNames} />
-                            </select>
-                            <select onChange={selectCity} 
-                                    ref={selectCitiesRef}>
-                                <FirstCitiesOption />
-                                <Cities cities={cities}/>
-                            </select>
+                            <div className="form-section">
+                                <label className="label">Countries</label>
+                                <select onChange={selectCountry} 
+                                        ref={selectCountriesRef}>
+                                    <option>Choose country</option>
+                                    <Countries
+                                        countries={countries}
+                                        countryNames={countryNames} />
+                                </select>
+                            </div>
+                            <div className="form-section">
+                                <label className="label">Cities</label>
+                                <select onChange={selectCity} 
+                                        ref={selectCitiesRef}>
+                                    <FirstCitiesOption />
+                                    <Cities cities={cities}/>
+                                </select>
+                            </div>
                         </form>
+                    </div>
+                    <div className="name-search">
+                        <label className="label">Search</label>
+                        <input type="search"
+                               className="search-input"
+                               value={searchInputValue}
+                               onChange={searchGamesByName}></input>
                     </div>
                 </div>
             <div className="users-selling-games">

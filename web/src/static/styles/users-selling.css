@@ -171,6 +171,37 @@
     margin: 0 5px;
 }
 
+.users-selling-forms {
+    overflow: hidden;
+}
+
+.users-selling-forms .locations {
+    float: left;
+}
+
+.users-selling-forms .locations .form-section {
+    margin: 15px 0;
+}
+
+.users-selling-forms .name-search {
+    float: right;
+    margin: 0 5%;
+}
+
+.users-selling-forms .name-search .label {
+    margin: 0 3px;
+}
+
+.users-selling-forms .locations .label {
+    display: block;
+}
+
+.users-selling-games {
+    overflow: hidden;
+    padding: 50px 0;
+    margin: 30px 0;
+}
+
 
 
 
