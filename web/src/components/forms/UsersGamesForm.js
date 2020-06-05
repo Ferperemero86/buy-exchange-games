@@ -124,7 +124,7 @@ const Locations = ({userId, getUserGames}) => {
     )
 }
 
-const UsersGamesForm = ({userId}) => {
+const UsersGamesForm = ({userId, type}) => {
     const {dispatchUsersGames} = useContext(UsersGamesContext);
 
     const getUserGames = async (selectedCountryName, citySelected, userId, searchInputValue) => {
@@ -132,7 +132,8 @@ const UsersGamesForm = ({userId}) => {
             country: selectedCountryName,
             city: citySelected,
             userId,
-            textSearch: searchInputValue
+            textSearch: searchInputValue,
+            type
         })
         .then(result => {
             if (result.data) {

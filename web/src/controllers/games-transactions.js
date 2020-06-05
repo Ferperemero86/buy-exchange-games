@@ -19,20 +19,32 @@ router.post("/usersgames",
                 const countryName = req.body.country ? req.body.country : "";
                 const cityName = req.body.city ? req.body.city : "";
                 let textSearch = req.body.textSearch ? req.body.textSearch : "";
+                const type = req.body.type ? req.body.type : "selling";
+                let query;
             
                 //Converts search in lowcase format
                 if (textSearch !== "") {
                     textSearch = textSearch.toLowerCase();
                 }
+                console.log("TYPE", type);
+                if (type === "exchanging") {
+                    query =  knex("user_profile")
+                    .select("user_profile.country", "games_content.name", "games_content.cover", 
+                            "games_content.platform", "games_exchanging.id", "games_exchanging.list_id", 
+                            "games_exchanging.game_1", "games_exchanging.game_2")
+                    .join("games_exchanging", "games_exchanging.list_id", "=", "user_profile.id")
+                    .join("games_content", "games_content.id", "=", "games_exchanging.game_1", "games_content.id", "=", "games_exchanging.game_2");
+                } else {
+                    query = knex("user_profile")
+                    .select("user_profile.country", "games_content.name", "games_content.cover", 
+                            "games_content.platform", "games_selling.id", "games_selling.game_id", 
+                            "games_selling.price", "games_selling.currency", "games_selling.condition", 
+                            "games_selling.description")
+                    .join("games_selling", "games_selling.list_id", "=", "user_profile.id")
+                    .join("games_content", "games_content.id", "=", "games_selling.game_id");
+                }
 
-                let query = knex("user_profile")
-                                .select("user_profile.country", "games_content.name", "games_content.cover", 
-                                        "games_content.platform", "games_selling.id", "games_selling.game_id", 
-                                        "games_selling.price", "games_selling.currency", "games_selling.condition", 
-                                        "games_selling.description")
-                                .join("games_selling", "games_selling.list_id", "=", "user_profile.id")
-                                .join("games_content", "games_content.id", "=", "games_selling.game_id");
-                
+            
                 return new Promise((resolve, reject) => {
                     if (!userId) {
                         if (countryName === "" && cityName === "") {
@@ -92,6 +104,7 @@ router.post("/usersgames",
                 })
                 .then(locations => {
                     query.then(games => {
+                        console.log("GAMES TRANSACTIONS", games);
                         if (locations.country && !locations.city) {
                             return res.json({games, countryName: locations.country});
                         }

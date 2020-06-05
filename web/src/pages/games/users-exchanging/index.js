@@ -15,7 +15,7 @@ export async function getServerSideProps(ctx) {
     const citiesUrl = new URL("/api/cities", `http://${URLBase}`).href;
 
     const countriesResult = await getLocalData(countriesUrl);
-    const data = await sendLocalData(Url, {userId});
+    const data = await sendLocalData(Url, {userId, type: "exchanging"});
 
     const {countryName} = await data;
     const {countries, countryNames} = await countriesResult;
@@ -35,7 +35,8 @@ export async function getServerSideProps(ctx) {
 }
 
 
-const UsersExchangingGames = ({userId}) => {
+const UsersExchangingGames = ({userId, data}) => {
+    console.log(data);
     const {usersGames} = useContext(UsersGamesContext);
     const {games, messages} = usersGames;
    
@@ -43,7 +44,9 @@ const UsersExchangingGames = ({userId}) => {
         <div className="users-games-container">
             <h1 className="users-games-heading">Users Selling Games</h1>
             <div className="users-games-forms">
-               <UsersGamesForm userId={userId} />
+               <UsersGamesForm 
+                    userId={userId} 
+                    type="exchanging" />
             </div>
             <div className="users-games">
                 <Message messages={messages} />
