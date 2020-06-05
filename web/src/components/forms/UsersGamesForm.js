@@ -1,15 +1,15 @@
 import React, {useContext, useRef, useEffect} from "react";
 import axios from "axios";
 
-import {UsersSellingContext} from "../providers/UsersSellingProvider";
+import {UsersGamesContext} from "../providers/UsersGamesProvider";
 
 import Countries from "../../components/forms/CountriesSearch";
 import Cities from "../../components/forms/CitiesSearch";
 
 
 const FirstCitiesOption = () => {
-    const {usersSelling} = useContext(UsersSellingContext);
-    const {cities} = usersSelling;
+    const {usersGames} = useContext(UsersGamesContext);
+    const {cities} = usersGames;
 
     if (cities && cities.length > 1) {
         return <option value="not selected">All cities</option>
@@ -18,15 +18,15 @@ const FirstCitiesOption = () => {
 };
 
 const NameSearch = ({getUserGames, userId}) => {
-    const {usersSelling, dispatchUsersSelling} = useContext(UsersSellingContext);
-    const {searchInputValue, selectedCountryName, citySelected} = usersSelling;
+    const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
+    const {searchInputValue, selectedCountryName, citySelected} = usersGames;
 
      
     const searchGamesByName = (e) => {
         const textValue = e.target.value;
         
         getUserGames(selectedCountryName, citySelected, userId, textValue);
-        dispatchUsersSelling({type: "UPDATE_SEARCH_INPUT_VALUE", payload: textValue})
+        dispatchUsersGames({type: "UPDATE_SEARCH_INPUT_VALUE", payload: textValue})
     }
 
     return (
@@ -41,9 +41,9 @@ const NameSearch = ({getUserGames, userId}) => {
 }
 
 const Locations = ({userId, getUserGames}) => {
-    const {usersSelling, dispatchUsersSelling} = useContext(UsersSellingContext);
+    const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
     const {countries, countryNames, cities, messages,
-           selectedCountryName, citySelected, searchInputValue } = usersSelling;
+           selectedCountryName, citySelected, searchInputValue } = usersGames;
     const selectCountriesRef = useRef(null);
     const selectCitiesRef = useRef(null);
 
@@ -52,7 +52,7 @@ const Locations = ({userId, getUserGames}) => {
         let countryName;
 
         if (messages.length > 0) {
-            dispatchUsersSelling({type: "UPDATE_MESSAGES", payload: ""});
+            dispatchUsersGames({type: "UPDATE_MESSAGES", payload: ""});
         }
         
         Object.keys(countries).map(name => {
@@ -63,9 +63,9 @@ const Locations = ({userId, getUserGames}) => {
 
         axios.post("/api/cities", {selectedCountryCode: countryCode})
             .then(result => {
-                dispatchUsersSelling({type: "UPDATE_CITIES", payload: result.data.cities});
-                dispatchUsersSelling({type: "UPDATE_SELECTED_COUNTRY_NAME", payload: countryName});
-                dispatchUsersSelling({type: "UPDATE_SELECTED_COUNTRY", payload: countryCode});
+                dispatchUsersGames({type: "UPDATE_CITIES", payload: result.data.cities});
+                dispatchUsersGames({type: "UPDATE_SELECTED_COUNTRY_NAME", payload: countryName});
+                dispatchUsersGames({type: "UPDATE_SELECTED_COUNTRY", payload: countryCode});
             })
             .catch(err => {
                 console.log(err.response);
@@ -75,7 +75,7 @@ const Locations = ({userId, getUserGames}) => {
     const selectCity = (e) => {
         const city = e.target.value;
 
-        dispatchUsersSelling({type: "UPDATE_SELECTED_CITY", payload: city});
+        dispatchUsersGames({type: "UPDATE_SELECTED_CITY", payload: city});
     }
 
 
@@ -125,7 +125,7 @@ const Locations = ({userId, getUserGames}) => {
 }
 
 const UsersGamesForm = ({userId}) => {
-    const {dispatchUsersSelling} = useContext(UsersSellingContext);
+    const {dispatchUsersGames} = useContext(UsersGamesContext);
 
     const getUserGames = async (selectedCountryName, citySelected, userId, searchInputValue) => {
         await axios.post("/api/usersgames", {
@@ -138,7 +138,7 @@ const UsersGamesForm = ({userId}) => {
             if (result.data) {
                 const games = result.data.games;
         
-                dispatchUsersSelling({type: "UPDATE_GAMES", payload: games});
+                dispatchUsersGames({type: "UPDATE_GAMES", payload: games});
             }
         })
         .catch(err => {

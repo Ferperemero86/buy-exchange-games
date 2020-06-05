@@ -1,39 +1,39 @@
-.users-selling {
+.users-games-container {
     width: 90%;
     margin: 50px auto;
     color: #fff;
 }
 
-.users-selling-heading {
+.users-games-heading {
     margin: 0 0 50px 0;
     font-size: 1.4em;
     color: #8c92ac;
 }
 
-.users-selling-games {
+.users-games {
     width: 100%;
     padding: 50px 0;
 }
 
 .users-selling-game {
     float: left;
-    width: 47%;
+    width: 45%;
     position: relative;
-    margin: 0 5px;
+    margin: 30px 5px;
+    padding: 10px 0 0 0;
     border: 1px solid #8c92ac;
 }
 
-.users-selling-game-info {
-    float: left;
-    width: 40%;
+.users-selling-game .game {
+    width: 100%;
     text-align: center;
 }
 
-.users-selling-game .title {
+.users-selling-game-info .title {
     font-size: .5em;
 }
 
-.users-selling-game .game {
+.users-selling-game-info .game {
     width: 55%;
     margin: 15px 0;
     overflow: hidden;
@@ -42,22 +42,29 @@
 }
 
 .users-selling-game .game .cover {
-    max-width: 80%;
+    max-width: 100%;
     max-height: 100px;
     overflow: hidden;
 }
 
 @media screen and (min-width: 800px) {
     .users-selling-game .game .cover {
-        max-height: 150px;
+        max-height: 100px;
     }
     .users-selling-game {
-        width: 25%;
+        width: 48%;
+    }
+    .users-games {
+        width: 70%;
+        margin: 0 auto;
+        position: relative;
+        transform: translateX(-50%);
+        left: 50%;
     }
 }
 
 .users-selling-details-button,
-.users-selling-proposals-button {
+.users-selling-proposals-button  {
     display: block;
     width: 80%;
     padding: 6px 3px;
@@ -65,8 +72,8 @@
 }
 
 @media screen and (min-width: 800px) {
-    .users-selling-details-button,
-    .users-selling-proposals-button {
+    .users-selling-proposals-button,
+    .users-selling-details-button {
         font-size: .7em;
     }
 }
@@ -79,21 +86,22 @@
     margin: 10px auto 0 auto;
 }
 
-.users-selling-details {
+.users-selling-game-details {
     width: 80%;
     margin: 20px auto;
     border-top: 1px solid #8c92ac;
     border-bottom: 1px solid #8c92ac;
-    text-align: left;
+    text-align: center;
 }
 
-.users-selling-details p {
+.users-selling-game-details p {
     font-size: .7em;
-    margin: 15px 0;
+    margin: 15px 5px;
+    display: inline-block;
 }
 
 @media screen and (min-width: 800px) {
-    .users-selling-details p {
+    .users-selling-game-details p {
         font-size: .9em;
     }
 }
@@ -151,11 +159,14 @@
     float: left;
     padding-left: 5%;
     width: 45%;
+    padding: 30px 0 0 5%;
 }
 
 .users-selling-game-details .selling-details p {
     margin: 10px;
     color: #fff;
+    display: block;
+    text-align: left;
 }
 
 .users-selling-game-details .selling-links {
@@ -171,32 +182,32 @@
     margin: 0 5px;
 }
 
-.users-selling-forms {
+.users-games-forms {
     overflow: hidden;
 }
 
-.users-selling-forms .locations {
+.users-games-forms .locations {
     float: left;
 }
 
-.users-selling-forms .locations .form-section {
+.users-games-forms .locations .form-section {
     margin: 15px 0;
 }
 
-.users-selling-forms .name-search {
+.users-games-forms .name-search {
     float: right;
     margin: 0 5%;
 }
 
-.users-selling-forms .name-search .label {
+.users-games-forms .name-search .label {
     margin: 0 3px;
 }
 
-.users-selling-forms .locations .label {
+.users-games-forms .locations .label {
     display: block;
 }
 
-.users-selling-games {
+.users-games {
     overflow: hidden;
     padding: 50px 0;
     margin: 30px 0;

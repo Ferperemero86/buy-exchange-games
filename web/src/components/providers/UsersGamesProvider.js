@@ -1,12 +1,12 @@
 import React, {createContext, useReducer, useMemo} from "react";
 
-import {usersSellingReducer} from "../../utils/reducers";
+import {usersGamesReducer} from "../../utils/reducers";
 import handleMessages from "../../controllers/messagesHandler";
 
-export const UsersSellingContext = createContext();
+export const UsersGamesContext = createContext();
 
 
-const UsersSellingProvider = ({children, pageProps}) => {
+const UsersGamesProvider = ({children, pageProps}) => {
     const games = pageProps.data.games ? pageProps.data.games : [];
     const selectedCountryName = pageProps.data.countryName ? pageProps.data.countryName : "";
     const citySelected = pageProps.data.city ? pageProps.data.city : "";
@@ -30,14 +30,14 @@ const UsersSellingProvider = ({children, pageProps}) => {
         messages
     }
     
-    const [usersSellingState, dispatchUsersSelling] = useReducer(usersSellingReducer, initialValues);
+    const [usersGamesState, dispatchUsersGames] = useReducer(usersGamesReducer, initialValues);
 
-    const usersSelling = useMemo(() => {
-        return usersSellingState
-    }, [usersSellingState])
+    const usersGames = useMemo(() => {
+        return usersGamesState
+    }, [usersGamesState])
        
-    return <UsersSellingContext.Provider value={{usersSelling, dispatchUsersSelling}}>{children}</UsersSellingContext.Provider>
+    return <UsersGamesContext.Provider value={{usersGames, dispatchUsersGames}}>{children}</UsersGamesContext.Provider>
 
 }
 
-export default UsersSellingProvider;
+export default UsersGamesProvider;

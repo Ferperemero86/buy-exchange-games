@@ -5,6 +5,11 @@ import GameInfo from "./GameInfo";
 import Game from "../games/Game";
 
 const Games = ({games}) => {
+
+    if (Array.isArray(games) && games.length < 1) {
+        return <h2>No Results</h2>
+    }
+
     return games.map(game => {
         const {name, cover, price, platform, currency, id} = game;
         const capitalPlatform = platform.toUpperCase();

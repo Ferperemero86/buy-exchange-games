@@ -8,7 +8,7 @@ import TransactionsProvider from "../components/providers/TransactionsProvider";
 import SellGameProvider from "../components/providers/SellGameProvider";
 import UserProvider from "../components/providers/UserProvider";
 import ExploreGamesProvider from "../components/providers/ExploreGamesProvider";
-import UsersSellingProvider from "../components/providers/UsersSellingProvider";
+import UsersGamesProvider from "../components/providers/UsersGamesProvider";
 import MessagesProvider from "../components/providers/MessagesProvider";
 import Header from "../components/Header";
 
@@ -72,9 +72,16 @@ const Page = ({pageProps, Component, router}) => {
 
         case "/games/users-selling" :
             return (
-                <UsersSellingProvider pageProps={pageProps}>
+                <UsersGamesProvider pageProps={pageProps}>
                     <Component {...pageProps} />   
-                </UsersSellingProvider>
+                </UsersGamesProvider>
+            )
+
+        case "/games/users-exchanging" :
+            return (
+                <UsersGamesProvider pageProps={pageProps}>
+                    <Component {...pageProps} />   
+                </UsersGamesProvider>
             )
 
     }

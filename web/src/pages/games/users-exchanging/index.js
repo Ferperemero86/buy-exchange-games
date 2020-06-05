@@ -35,7 +35,7 @@ export async function getServerSideProps(ctx) {
 }
 
 
-const UsersSellingGames = ({userId}) => {
+const UsersExchangingGames = ({userId}) => {
     const {usersGames} = useContext(UsersGamesContext);
     const {games, messages} = usersGames;
    
@@ -53,4 +53,4 @@ const UsersSellingGames = ({userId}) => {
     )
 }
 
-export default UsersSellingGames;
+export default UsersExchangingGames;

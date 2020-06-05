@@ -68,7 +68,6 @@ const GameDetails = ({gameDetails}) => {
 }
 
 const UsersSellingDetails = ({gameDetails}) => {
-
     return (
         <div className="users-selling-game-details">
             <ConfirmQuestion />

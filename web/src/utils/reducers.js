@@ -164,7 +164,7 @@ module.exports = {
                 return {...state, gameCurrency: action.payload}
         }
     },
-    usersSellingReducer: (state, action) => {
+    usersGamesReducer: (state, action) => {
         switch(action.type) {
             case "UPDATE_GAMES" :
                 return {...state, games: action.payload}
