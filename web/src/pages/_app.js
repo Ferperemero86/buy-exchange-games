@@ -63,7 +63,6 @@ const Page = ({pageProps, Component, router}) => {
             )
 
         case "/account/gameslist" :
-        
             return (
                 <GamesListProvider pageProps={pageProps}>
                     <Component {...pageProps} />
