@@ -42,7 +42,7 @@ const UsersExchangingGames = ({userId, data}) => {
    
     return (
         <div className="users-games-container">
-            <h1 className="users-games-heading">Users Selling Games</h1>
+            <h1 className="users-games-heading">Users Exchanging Games</h1>
             <div className="users-games-forms">
                <UsersGamesForm 
                     userId={userId} 
