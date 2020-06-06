@@ -4,12 +4,7 @@ import BasicUserInfo from "./BasicUserInfo";
 import GameInfo from "./GameInfo";
 import Game from "../games/Game";
 
-const Games = ({games}) => {
-
-    if (Array.isArray(games) && games.length < 1) {
-        return <h2>No Results</h2>
-    }
-
+const GameSelling = ({games}) => {
     return games.map(game => {
         const {name, cover, price, platform, currency, id} = game;
         const capitalPlatform = platform.toUpperCase();
@@ -35,6 +30,20 @@ const Games = ({games}) => {
             </div>
         )
     })
+};
+
+const GameExchanging = () => {
+    return <h1>Exchanging</h1>
 }
 
+const Games = ({games, type}) => {
+    if (Array.isArray(games) && games.length < 1) {
+        return <h2>No Results</h2>
+    }
+    if (type === "exchanging") {
+        return <GameExchanging />
+    }
+    return <GameSelling games={games} />
+ }
+   
 export default Games;

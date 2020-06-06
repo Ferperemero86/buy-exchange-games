@@ -8,14 +8,17 @@ import {TransactionsContext} from "../providers/TransactionsProvider";
 
 const SearchInput = () => {
     const {transactions, dispatchTransactions} = useContext(TransactionsContext);
-    const {gameToFind, searchGameToExchangeInputValue} = transactions;
+    const {gameToFind, searchGameToExchangeInputValue, platformSelected} = transactions;
 
     const handleInputValue = async (e) => {
         const inputValue = e.currentTarget.value;
 
         dispatchTransactions({type: "SET_SEARCH_GAME_TO_EXCHANGE_INPUT_VALUE", payload: inputValue})
 
-        await axios.post("/api/gamesinlist/game/search", {game: inputValue} )
+        await axios.post("/api/gamesinlist/game/search", { 
+                game: inputValue,
+                platformSelected: platformSelected.code
+            })
             .then(result => {
                 const games = result.data.gamesList;
                 console.log("GAMES", result);

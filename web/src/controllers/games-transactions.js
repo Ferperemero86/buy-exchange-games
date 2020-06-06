@@ -44,17 +44,17 @@ router.post("/usersgames",
                     .join("games_content", "games_content.id", "=", "games_selling.game_id");
                 }
 
-            
+                console.log("CITYNAME", cityName);
                 return new Promise((resolve, reject) => {
                     if (!userId) {
                         if (countryName === "" && cityName === "") {
                             return reject({locationsEmpty: true});
                         }
                         if (countryName !== "" && cityName === "") {
-                            console.log("JUSY COUNTRY SELECTED!");
                             query.where("country", countryName);
                         }
                         if (countryName !== "" && cityName !== "") {
+                            console.log("CITY SELECTED!", cityName);
                             query.where("country", countryName);
                             query.andWhere("city", cityName);
                         }

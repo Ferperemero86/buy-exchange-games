@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 
-import Games from "../../../components/usersselling/Games";
+import Games from "../../../components/usersGames/Games";
 import Message from "../../../components/messages/Message";
 import UsersGamesForm from "../../../components/forms/UsersGamesForm";
 

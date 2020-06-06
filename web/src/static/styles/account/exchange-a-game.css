@@ -33,6 +33,16 @@
     border: 1px solid;
 }
 
+.exchange-a-game .first-game .game-1-text {
+    text-align: center;
+    color: #fff;
+}
+
+.game-2 .exchange-a-game .platform {
+    color: #fff;
+    text-align: center;
+}
+
 .remove-game-button {
    position: absolute;
    top: -20px;
@@ -80,7 +90,7 @@
 }
 
 .exchange-a-game .title {
-    margin: 5px 0 5px 0;
+    margin: 10px 0;
     text-align: center;
     color: #fff;
 }
@@ -106,6 +116,7 @@
     font-size: 1.1em;
     padding: 8px 12px;
 }
+
 
 .exchange-a-game .find-a-game1,
 .exchange-a-game .find-a-game2 {

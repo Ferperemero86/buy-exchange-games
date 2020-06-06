@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 
-import Games from "../../../components/usersselling/Games";
+import Games from "../../../components/usersGames/Games";
 import Message from "../../../components/messages/Message";
 import UsersGamesForm from "../../../components/forms/UsersGamesForm";
 
@@ -35,8 +35,7 @@ export async function getServerSideProps(ctx) {
 }
 
 
-const UsersExchangingGames = ({userId, data}) => {
-    console.log(data);
+const UsersExchangingGames = ({userId}) => {
     const {usersGames} = useContext(UsersGamesContext);
     const {games, messages} = usersGames;
    
@@ -50,7 +49,9 @@ const UsersExchangingGames = ({userId, data}) => {
             </div>
             <div className="users-games">
                 <Message messages={messages} />
-                <Games games={games} />
+                <Games 
+                    games={games} 
+                    type="exchanging" />
             </div>
         </div>
     )

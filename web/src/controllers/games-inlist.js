@@ -22,7 +22,7 @@ router.post("/gamesinlist/game/add",
     async (req, res) => {
         const gameDetails = req.body.game;
         const userId = req.user.id;
-        const nameString = gameDetails.title.toLowerCase();
+        const nameString = gameDetails.title;
         const {cover, id, summary, platform} = gameDetails;
         const name = nameString.replace("'", "");
         
@@ -239,7 +239,6 @@ router.post("/gamesinlist/game/stopselling",
                         .where({list_id: userId, id: gameId, status: "selling"})
                         .fetch({require: false})
                         .then(Game => {
-                            console.log("first then");
                             //If games exists updates status to a default one
                             return new Promise((resolve, reject) => {
                                 if (Game) {
@@ -277,7 +276,6 @@ router.post("/gamesinlist/game/stopselling",
                     })
                 })
                 .then(() => {
-                    console.log("3 then");
                     //Returns an updated gameslist
                     knex("games_in_list")
                         .select("games_content.name", "games_content.cover", "games_content.platform", "games_in_list.status", "games_in_list.game_id", "games_in_list.id")
@@ -301,13 +299,13 @@ router.post("/gamesinlist/game/search",
             jsonParser, 
             userAuthentication, 
             async (req, res) => {
-                const game = req.body.game;
+                const {game, gameSelected, platformSelected} = req.body;
                 const userId = req.user.id;
-                const gameSelected = req.body.gameSelected;
+                console.log("PLATFORM SELECTED", platformSelected);
                 let query;
                 
                 if (typeof game === "string") {
-                    query = `search "${game}"; fields name, cover.url, platforms; where release_dates.platform = (48,49,6); limit 300;`;
+                    query = `search "${game}"; fields name, cover.url, platforms; where release_dates.platform = ${platformSelected}; limit 300;`;
                     const games = await fetchApiData("games", "POST", query);
 
                     return res.json({gamesList: games})
@@ -326,7 +324,7 @@ router.post("/gamesinlist/game/search",
                                 return res.status(500).json({internalError: true});
                             })
                     } else if (gameSelected === "game2") {
-                        query = `fields id, cover.url, name; where id = ${game}; limit 1;`;
+                        query = `fields id, cover.url, name, platforms, summary; where id = ${game}; limit 1;`;
                         const games = await fetchApiData("games", "POST", query);
 
                         return res.json({gamesList: games});
@@ -402,7 +400,7 @@ router.post("/gamesinlist/game/exchange",
             jsonParser,
             userAuthentication,
             async (req, res) => {
-                const {game1, game2} = req.body;
+                const {game1, game2, game2Data} = req.body;
                 const user1 = req.user.id;
                 const user2 = req.body.user2 ? req.body.user2 : null;
                 const time = new Date().getTime();
@@ -412,7 +410,7 @@ router.post("/gamesinlist/game/exchange",
                         //Check if the game is available to exchange
                         return GamesInList
                             .where({list_id: user1, id: game1, status: "inList"})
-                            .fetch({require:false, transacting: t})
+                            .fetch({require:false})
                             .then(Game => {
                                 if (Game) {
                                     return resolve(Game)
@@ -440,25 +438,58 @@ router.post("/gamesinlist/game/exchange",
                                 return resolve(game1Id);
                             })
                         })
-                    })  
+                    })
                     .then(game1Id => {                    
                         //Updates game status in gameslist
                         return GamesInList
                             .where({game_id: game1Id, list_id: user1})
-                            .fetch({transacting: t})
+                            .fetch({require: false})
                             .then(Game => {
-                                if (Game) {
-                                    return Game
-                                        .save({status: "exchanging"}, {patch: true, transacting: t})
-                                        .then(() => {
-                                           return res.json({gameSetToExchange: true})
-                                        })
-                                }
-                        })
-                       
+                                return new Promise((resolve, reject) => {
+                                    if (Game) {
+                                        return Game
+                                            .save({status: "exchanging"}, {patch: true, transacting: t})
+                                            .then(() => {
+                                               //return res.json({gameSetToExchange: true})
+                                               return resolve();
+                                            })
+                                    }
+                                    return reject();
+                                })
+                            })
+                    })
+                    .then(() => {
+                        return GamesContent
+                            .where({id: game2})
+                            .fetch({require: false})
+                            .then(Game2 => {
+                                return new Promise((resolve, reject) => {
+                                    const {id, name, cover, summary} = game2Data;
+                                    console.log("COVER", cover);
+                                    //If game content is not stored in Games content it saves in content table
+                                    if (!Game2) {
+                                        return GamesContent
+                                            .forge({
+                                                id,
+                                                name,
+                                                cover: cover.url,
+                                                platform: "ps4",
+                                                summary
+                                            })
+                                            .save(null, {method: "insert", transacting: t})
+                                            .then(() => { return resolve() })
+                                    }
+                                    return reject()
+
+                                })
+                            })
                     })
                 })
-                .catch(() => {
+                .then(() => {
+                    return res.json({gameSetToExchange: true})
+                })
+                .catch(err => {
+                    console.log("ERROR", err);
                     return res.status(500).json({internalError: true})
                 })
 

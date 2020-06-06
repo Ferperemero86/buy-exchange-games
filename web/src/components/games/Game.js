@@ -10,6 +10,7 @@ const Image = ({Url}) => {
 
 const Game = ({Url, title, page, gameId, platform}) => {
     let coverUrl;
+    const platformName = platform ? platform.toUpperCase() : "";
 
     if (typeof Url === "string" && Url.indexOf("t_thumb") !== -1) {
         coverUrl = Url.replace("t_thumb", "t_cover_big");
@@ -19,11 +20,11 @@ const Game = ({Url, title, page, gameId, platform}) => {
    
     return (
         <div className={`game ${page}`} key={gameId}>
-            <p>{platform}</p>
             <div className="cover-container">
                 <Image Url={coverUrl} />
             </div>
             <p className="title">{title}</p>
+            <p className="platform">{platformName}</p>
         </div>
     )
   

@@ -143,10 +143,13 @@ module.exports = {
                 return {...state, showGameExchangeWindow: action.payload}
 
             case "SET_EXCHANGE_GAMES_SEARCH" :
-                return {...state, exchangeGamesSearch: action.payload }
+                return {...state, exchangeGamesSearch: action.payload}
             
             case "SET_SEARCH_GAME_TO_EXCHANGE_INPUT_VALUE" :
                 return {...state, searchGameToExchangeInputValue: action.payload}
+
+            case "UPDATE_SELECTED_PLATFORM" :
+                return {...state, platformSelected: action.payload}
         }
     },
     sellGameReducer: (state, action) => {

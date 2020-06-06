@@ -10,14 +10,13 @@ const ExchangeConfirmationButton = () => {
     const {gameToExchange, gameFromListToExchange} = transactions;
     let game1;
     const game2 = gameToExchange && gameToExchange.length > 0 ? gameToExchange[0].id : null;
+    const game2Data = gameToExchange && gameToExchange.length > 0 ? gameToExchange[0] : null;
     const router = useRouter();
-    
+    console.log("GAME2 CONTENT", gameToExchange);
     if (gameFromListToExchange) {
         if (Array.isArray(gameFromListToExchange) && gameFromListToExchange.length > 0) {
             game1 = gameFromListToExchange[0].id;
-            console.log("Game1111", game1);
         } else {
-            console.log("Game1", game1);
             game1 = parseInt(gameFromListToExchange.id);
         }
     } else {
@@ -25,7 +24,11 @@ const ExchangeConfirmationButton = () => {
     }
    
     const exchangeGame = () => {
-        axios.post("/api/gamesinlist/game/exchange", {game1: game1, game2: game2})
+        axios.post("/api/gamesinlist/game/exchange", {
+            game1: game1, 
+            game2: game2,
+            game2Data
+            })
             .then(result => {
                 console.log(result);
                 router.push("/account/gameslist");
