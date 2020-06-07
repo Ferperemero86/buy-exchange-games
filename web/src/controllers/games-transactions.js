@@ -21,6 +21,25 @@ router.post("/usersgames",
                 let textSearch = req.body.textSearch ? req.body.textSearch : "";
                 const type = req.body.type ? req.body.type : "selling";
                 let query;
+
+
+                const groupExchangingGames = (games) => {
+                    let gamesArray = [];
+                    let currentGameId = 0;
+
+                    if (type === "exchanging" && games && Array.isArray(games)) {
+                        games.map(game => {
+
+                            if (currentGameId !== game.id) {
+                                const filteredGames = games.filter(item => { return item.id === game.id });
+
+                                currentGameId = game.id;
+                                gamesArray.push(filteredGames);
+                            }
+                        })
+                    }
+                    return gamesArray;
+                }
             
                 //Converts search in lowcase format
                 if (textSearch !== "") {
@@ -28,23 +47,27 @@ router.post("/usersgames",
                 }
                 console.log("TYPE", type);
                 if (type === "exchanging") {
-                    query =  knex("user_profile")
-                    .select("user_profile.country", "games_content.name", "games_content.cover", 
-                            "games_content.platform", "games_exchanging.id", "games_exchanging.list_id", 
-                            "games_exchanging.game_1", "games_exchanging.game_2")
-                    .join("games_exchanging", "games_exchanging.list_id", "=", "user_profile.id")
-                    .join("games_content", "games_content.id", "=", "games_exchanging.game_1", "games_content.id", "=", "games_exchanging.game_2");
+                    query = knex("user_profile")
+                                .select("user_profile.country", "user_profile.id", "user_profile.nickName", "games_content.name", "games_content.cover", 
+                                        "games_content.platform", "games_exchanging.id", "games_exchanging.list_id", 
+                                        "games_exchanging.game_1", "games_exchanging.game_2")
+                                .join("games_exchanging", "games_exchanging.list_id", "=", "user_profile.id")
+                                .join("games_content", function() {
+                                    this.on(function() {
+                                        this.on("games_content.id", "=", "games_exchanging.game_1")
+                                        this.orOn("games_content.id", "=", "games_exchanging.game_2")
+                                    })
+                    });
                 } else {
                     query = knex("user_profile")
-                    .select("user_profile.country", "games_content.name", "games_content.cover", 
-                            "games_content.platform", "games_selling.id", "games_selling.game_id", 
-                            "games_selling.price", "games_selling.currency", "games_selling.condition", 
-                            "games_selling.description")
-                    .join("games_selling", "games_selling.list_id", "=", "user_profile.id")
-                    .join("games_content", "games_content.id", "=", "games_selling.game_id");
+                                .select("user_profile.country", "user_profile.id", "user_profile.nickName", "games_content.name", "games_content.cover", 
+                                        "games_content.platform", "games_selling.id", "games_selling.game_id", 
+                                        "games_selling.price", "games_selling.currency", "games_selling.condition", 
+                                        "games_selling.description")
+                                .join("games_selling", "games_selling.list_id", "=", "user_profile.id")
+                                .join("games_content", "games_content.id", "=", "games_selling.game_id");
                 }
 
-                console.log("CITYNAME", cityName);
                 return new Promise((resolve, reject) => {
                     if (!userId) {
                         if (countryName === "" && cityName === "") {
@@ -63,7 +86,15 @@ router.post("/usersgames",
                         }
 
                         query.then(games => {
-                            return res.json({games});
+                            let gamesArray;
+                            if (type === "exchanging") {
+                                const gamesExchanging = groupExchangingGames(games);
+                                gamesArray = gamesExchanging;
+                            } else {
+                                gamesArray = games;
+                            }
+                            console.log("TESTTT", gamesArray)
+                            return res.json({games: gamesArray});
                         })
 
                     } else {
@@ -104,12 +135,22 @@ router.post("/usersgames",
                 })
                 .then(locations => {
                     query.then(games => {
-                        console.log("GAMES TRANSACTIONS", games);
+                        let gamesArray;
+                        if (type === "exchanging") {
+                            const gamesExchanging = groupExchangingGames(games);
+                            gamesArray = gamesExchanging;
+                        } else {
+                            gamesArray = games;
+                        }
+
                         if (locations.country && !locations.city) {
-                            return res.json({games, countryName: locations.country});
+                            return res.json({games: gamesArray,
+                                             countryName: locations.country});
                         }
                         if (locations.country && locations.city) {
-                            return res.json({games, countryName: locations.country, city: locations.city});
+                            return res.json({games: gamesArray, 
+                                            countryName: locations.country, 
+                                            city: locations.city});
                         }
                     })
                 })

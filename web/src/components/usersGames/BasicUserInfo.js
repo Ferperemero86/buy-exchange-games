@@ -1,7 +1,7 @@
 import React from "react";
 import {useRouter} from "next/router";
 
-const BasicUserInfo = () => {
+const BasicUserInfo = ({nickName}) => {
     const router = useRouter();
 
     const goToUserProfile = () => {
@@ -12,7 +12,7 @@ const BasicUserInfo = () => {
         <div className="basic-user-info" onClick={goToUserProfile}>
             <div className="picture-name">
                 <span className="image"></span>
-                <p className="name">Fernando</p>
+                <p className="name">{nickName}</p>
             </div>
         </div>
     )

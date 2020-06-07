@@ -14,19 +14,19 @@ module.exports = function handleMessages(response) {
     }
 
     if (response.login === false) {
-        msg.push("Password and username does not match")
+        msg.push({text:"Password and username does not match", classNam: ""});
     }
 
     if (response.nickNameExists) {
-        msg.push("Nickname taken")
+        msg.push({text: "Nickname taken", classNam: ""});
     }
 
     if (response.userExists) {
-        msg.push("User already exists")
+        msg.push({text: "User already exists", classNam: ""});
     }
 
     if (response.locationsEmpty) {
-        msg.push("Select a location to see games");
+        msg.push({text: "Select a location to see games", classNam: "select-location-text"});
     }
 
 

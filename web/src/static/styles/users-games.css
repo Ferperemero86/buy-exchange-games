@@ -108,10 +108,21 @@
 
 .basic-user-info {
     position: absolute;
-    top: -50px;
     color: #fff;
     border: 1px solid #fff;
     padding: 4px 8px;
+}
+
+.users-selling-game .basic-user-info {
+    top: -50px;
+}
+
+.users-exchanging-game .basic-user-info {
+   position: relative;
+   overflow: hidden;
+   top: -50px;
+   display: block;
+   width: 150px;
 }
 
 .basic-user-info:hover {
@@ -182,6 +193,13 @@
     margin: 0 5px;
 }
 
+.users-games {
+    overflow: hidden;
+    padding: 50px 0;
+    margin: 30px 0;
+    border: 1px solid red;
+}
+
 .users-games-forms {
     overflow: hidden;
 }
@@ -207,10 +225,28 @@
     display: block;
 }
 
-.users-games {
-    overflow: hidden;
-    padding: 50px 0;
-    margin: 30px 0;
+.users-exchanging-game {
+    width: 90%;
+    margin: 50px 5%;
+    border: 1px solid #fff;
+    float: left;
+}
+
+.users-exchanging-game .game-1 {
+   width: 35%;
+   float: left;
+   text-align: center;
+}
+
+.users-exchanging-game .game-2 {
+    width: 35%;
+    float: right;
+    text-align: center;
+}
+
+.no-results-text,
+.select-location-text {
+    text-align: center;
 }
 
 

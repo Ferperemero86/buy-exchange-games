@@ -47,7 +47,9 @@ const UsersSellingGames = ({userId}) => {
             </div>
             <div className="users-games">
                 <Message messages={messages} />
-                <Games games={games} />
+                <Games 
+                    games={games} 
+                    type="selling" />
             </div>
         </div>
     )

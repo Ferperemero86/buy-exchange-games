@@ -40,7 +40,7 @@ const NameSearch = ({getUserGames, userId}) => {
     )
 }
 
-const Locations = ({userId, getUserGames}) => {
+const Locations = ({userId, getUserGames, type}) => {
     const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
     const {countries, countryNames, cities, messages,
            selectedCountryName, citySelected, searchInputValue } = usersGames;
@@ -91,10 +91,11 @@ const Locations = ({userId, getUserGames}) => {
     }
    
     useEffect(() => {
+        console.log("GETTING FROM AXIOS...");
         addSelectedAttribute(selectCountriesRef, selectedCountryName);
         addSelectedAttribute(selectCitiesRef, citySelected);
 
-        getUserGames(selectedCountryName, citySelected, userId, searchInputValue);
+        getUserGames(selectedCountryName, citySelected, userId, searchInputValue, type);
 
         
     }, [selectedCountryName, citySelected])
@@ -151,7 +152,8 @@ const UsersGamesForm = ({userId, type}) => {
         <form>
             <Locations 
                 userId={userId} 
-                getUserGames={getUserGames} />
+                getUserGames={getUserGames} 
+                type/>
             <NameSearch 
                 userId={userId} 
                 getUserGames={getUserGames} />

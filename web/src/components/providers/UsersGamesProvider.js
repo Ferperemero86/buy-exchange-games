@@ -16,7 +16,7 @@ const UsersGamesProvider = ({children, pageProps}) => {
     if (pageProps.data.locationsEmpty) {
         messages = handleMessages(pageProps.data);
     }
-
+    
     const initialValues = {
         games,
         countries,
