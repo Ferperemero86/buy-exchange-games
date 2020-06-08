@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
-//import axios from "axios";
+import React, {useContext} from "react";
+
+import {useRouter} from "next/router";
 
 import BasicUserInfo from "./BasicUserInfo";
 import GameInfo from "./GameInfo";
@@ -48,38 +49,57 @@ const GamesSelling = ({games}) => {
     return null;
 };
 
-const GamesList = ({gameId}) => {
+const GamesList = () => {
     const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
-    const {showGamesList, gamesList} = usersGames;
+    const {gamesList} = usersGames;
 
     const selectGame = (e) => {
         const gameData = e.target.getAttribute("data-game-data");
         const gameDataArray = gameData.split(",");
-        console.log(gameDataArray);
 
         dispatchUsersGames({type: "GAME_FROM_LIST_TO_EXCHANGE", payload: gameDataArray});
         dispatchUsersGames({type: "SHOW_GAMES_LIST", payload: false});
     }
-   
-    if (showGamesList === gameId) {
-        return gamesList.map(game => {
-            const {platform, cover, name} = game;
-            const gameData = [platform, cover, name];
-
-            return (
-                <div className="games-list" key={game.id}>
-                    <div className="games-list-game">
+    console.log(gamesList);
+    if (gamesList && Array.isArray(gamesList)) {
+        if (gamesList.length > 0) {
+            return gamesList.map(game => {
+                let shortName;
+                const {platform, cover, name} = game;
+                shortName = reduceNameLength(name);
+                const gameData = [platform, cover, shortName];
+        
+                return (
+                    <div className="games-list-game" key={game.id}>
                         <Game
                             platform={platform}
-                            title={name}
+                            title={shortName}
                             Url={cover} />
                         <button onClick={selectGame}
                                 className="button"
                                 data-game-data={gameData}>Select</button>
                     </div>
+                )
+            })
+        }
+        return <p className="no-results-text">No games available in list</p>
+    }
+    return null;
+}
+
+const GamesListSearch = ({gameId, closeGamesList}) => {
+    const {usersGames} = useContext(UsersGamesContext);
+    const {showGamesList, gamesList} = usersGames;
+
+    if (showGamesList === gameId) {
+        return (
+            <div className="games-list" key={gameId}>
+                <div className="close-icon">
+                    <span onClick={closeGamesList}>X</span>
                 </div>
-            )
-        })
+                <GamesList />
+            </div>
+        )
     }
     if (showGamesList && Array.isArray(gamesList) && gamesList.length < 1) {
         <p>No Games available in your list.</p>
@@ -88,25 +108,22 @@ const GamesList = ({gameId}) => {
 }
 
 
-const GamesExchangingLinks = ({gameId, userId}) => {
+const GamesExchangingLinks = ({gameId, closeGamesList}) => {
     const {dispatchUsersGames} = useContext(UsersGamesContext);
+    const router = useRouter();
    
     const showGamesList = async() => {
-        const games = await sendDataFromClient("/api/gameslist", {
-            userId, 
-            status: "inList"
-        });
-
+        const games = await sendDataFromClient("/api/gameslist", {status: "inList"});
+       
         if (games) {
             const gamesList = games.gamesList;
 
-            dispatchUsersGames({type: "UPDATE_GAMES_LIST", payload: gamesList});
+            if (Array.isArray(gamesList)) {
+                dispatchUsersGames({type: "UPDATE_GAMES_LIST", payload: gamesList});
+                dispatchUsersGames({type: "SHOW_GAMES_LIST", payload: gameId});
+            }
+            if (games.login === false) { router.push("/account/login")}
         }
-        dispatchUsersGames({type: "SHOW_GAMES_LIST", payload: gameId});
-    }
-
-    const closeGamesList = () => {
-        dispatchUsersGames({type: "SHOW_GAMES_LIST", payload: false});
     }
 
     return (
@@ -140,7 +157,7 @@ const GameExchanging = ({gameArray}) => {
                 shortName = reduceNameLength(name);
                 coverUrl = cover;
             } 
-
+           
             if (gameClass === "game-2" && gameFromListToExchange) {
                 platform = gameFromListToExchange[0];
                 coverUrl = gameFromListToExchange[1];
@@ -162,22 +179,28 @@ const GameExchanging = ({gameArray}) => {
 }
 
 const GamesExchanging = ({games}) => {
+    const {dispatchUsersGames} = useContext(UsersGamesContext);
     let gameKey = 0;
+
+    const closeGamesList = () => {
+        dispatchUsersGames({type: "SHOW_GAMES_LIST", payload: false});
+    }
 
     if (games.length > 0 && games[0].length > 0) {
         return games.map(gameArray => {
             const nickName = gameArray[0].nickName;
             const gameId = gameArray[0].id;
-            const userId = gameArray[0].list_id;
             gameKey++;
     
             return (
                 <div className="users-exchanging-game" key={gameKey}>
                     <BasicUserInfo nickName={nickName} />
-                    <GamesList gameId={gameId} />
+                    <GamesListSearch 
+                        gameId={gameId} 
+                        closeGamesList={closeGamesList} />
                     <GameExchanging gameArray={gameArray} />
-                    <GamesExchangingLinks 
-                        userId={userId}
+                    <GamesExchangingLinks
+                        closeGamesList={closeGamesList}  
                         gameId={gameId} />
                 </div>
             )
@@ -187,9 +210,6 @@ const GamesExchanging = ({games}) => {
 }
 
 const Games = ({games, type}) => {
-    if (Array.isArray(games) && games.length < 1 || games[0].length < 1) {
-        return <p className="no-results-text">No Results</p>
-    }
     if (type === "exchanging") {
         return <GamesExchanging games={games} />
     }

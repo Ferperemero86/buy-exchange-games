@@ -15,10 +15,15 @@ const GamesLists = require("../db/models/games-lists");
 router.post("/gameslist",
     jsonParser,
     async (req, res) => {
-        const userId = req.body.userId ? req.body.userId : req.user.id;
+        let userId; 
         const status = req.body.status;
+
+        if (req.body.userId) { userId = req.body.userId }
+        if (req.user && req.user.id) { userId = req.user.id } 
         
         return new Promise((resolve, reject) => {
+            if (!userId) { return reject({login: false}) }
+
             return GamesLists
                 .where({id: userId})
                 .fetch({require: false})
@@ -45,10 +50,11 @@ router.post("/gameslist",
             })
         })
         .then(result => {
+            console.log("RESULT", result);
             return res.json(result);
         })
         .catch(err => {
-            if (err.listExists === false) {
+            if (err.listExists === false || err.login === false) {
                 return res.status(400).json(err);
             }
             return res.status(500).json({internalError: true});

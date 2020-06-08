@@ -232,21 +232,36 @@
     float: left;
 }
 
+.users-exchanging-game .game {
+    max-width: 100%;
+}
+
+.users-exchanging-game .game .cover {
+    max-height: 250px;
+}
+
 .users-exchanging-game .games-list {
-    position: absolute;
+    position: relative;
     z-index: 1;
     background: #fff;
-    width: 86%;
+    width: 96%;
     padding: 50px 2%;
     transform: translateX(-50%);
     left: 50%;
-    height: 200px;
+    height: 250px;
     color: #000;
+    overflow: auto;
+}
+
+.users-exchanging-game .games-list .close-icon {
+    position: absolute;
+    right: 20px;
+    top: 20px;
 }
 
 .users-exchanging-game .games-list .games-list-game {
     float: left;
-    width: 15%;
+    max-width: 15%;
 }
 
 .users-exchanging-game .games-list .button {
@@ -257,6 +272,10 @@
 .users-exchanging-game .games-list .game {
     max-width: 100%;
     text-align: center;
+}
+
+.users-exchanging-game .games-list .game .cover {
+    height: 100px;
 }
 
 .users-exchanging-game .heading {
@@ -278,16 +297,18 @@
     margin: 0 2%;
 }
 
-.users-exchanging-game .game-1 {
+.users-exchanging-game .game-1,
+.users-exchanging-game .game-2 {
    width: 35%;
-   float: left;
    text-align: center;
 }
 
+.users-exchanging-game .game-1 {
+    float: left;
+}
+
 .users-exchanging-game .game-2 {
-    width: 35%;
     float: right;
-    text-align: center;
 }
 
 .no-results-text,

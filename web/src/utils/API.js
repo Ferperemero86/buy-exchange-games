@@ -44,7 +44,9 @@ module.exports = {
         return result.data
       })
       .catch(err => {
-        console.log(err);
+        if (err.response) {
+          return err.response.data;
+        }
       })
   },
   uploadFile: async (file) => {
@@ -55,7 +57,8 @@ module.exports = {
       data: file
     })
     .then(result => {
-      console.log(result)
+      console.log(result);
+      return result;
     })
     .catch(err => {
       console.log(JSON.stringify(err));
