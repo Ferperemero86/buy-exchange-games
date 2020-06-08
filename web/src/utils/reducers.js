@@ -198,6 +198,15 @@ module.exports = {
 
             case "UPDATE_SEARCH_INPUT_VALUE" :
                 return {...state, searchInputValue: action.payload}
+
+            case "SHOW_GAMES_LIST" :
+                return {...state, showGamesList: action.payload}
+
+            case "UPDATE_GAMES_LIST" :
+                return {...state, gamesList: action.payload}
+            
+            case "GAME_FROM_LIST_TO_EXCHANGE" :
+                return {...state, gameFromListToExchange: action.payload}
         }
     },
     messagesReducer: (state, action) => {

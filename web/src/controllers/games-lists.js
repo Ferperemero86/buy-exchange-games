@@ -17,7 +17,7 @@ router.post("/gameslist",
     async (req, res) => {
         const userId = req.body.userId ? req.body.userId : req.user.id;
         const status = req.body.status;
-
+        
         return new Promise((resolve, reject) => {
             return GamesLists
                 .where({id: userId})

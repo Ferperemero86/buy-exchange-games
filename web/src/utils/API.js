@@ -33,10 +33,19 @@ module.exports = {
    
     if (Array.isArray(result) !== true) {
       const data = await result.json();
+
       return data;
     }
     return result;
-    
+  },
+  sendDataFromClient: (Url, query) => {
+    return axios.post(Url, query)
+      .then(result => {
+        return result.data
+      })
+      .catch(err => {
+        console.log(err);
+      })
   },
   uploadFile: async (file) => {
     await axios({

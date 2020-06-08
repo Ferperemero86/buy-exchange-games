@@ -232,6 +232,52 @@
     float: left;
 }
 
+.users-exchanging-game .games-list {
+    position: absolute;
+    z-index: 1;
+    background: #fff;
+    width: 86%;
+    padding: 50px 2%;
+    transform: translateX(-50%);
+    left: 50%;
+    height: 200px;
+    color: #000;
+}
+
+.users-exchanging-game .games-list .games-list-game {
+    float: left;
+    width: 15%;
+}
+
+.users-exchanging-game .games-list .button {
+    display: block;
+    margin: 0 auto;
+}
+
+.users-exchanging-game .games-list .game {
+    max-width: 100%;
+    text-align: center;
+}
+
+.users-exchanging-game .heading {
+   position: relative;
+   bottom: 15px;
+   color: #8c92ac;
+}
+
+.users-exchanging-game .links {
+  margin: 15px 0;
+  width: 100%;
+  border: 1px solid;
+  display: block;
+  text-align: center;
+  float: left;
+}
+
+.users-exchanging-game .links .button {
+    margin: 0 2%;
+}
+
 .users-exchanging-game .game-1 {
    width: 35%;
    float: left;

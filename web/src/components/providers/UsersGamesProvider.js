@@ -27,7 +27,10 @@ const UsersGamesProvider = ({children, pageProps}) => {
         citySelected,
         stateSelected: "",
         searchInputValue: "",
-        messages
+        messages,
+        showGamesList: false, 
+        gameList: [],
+        gameFromListToExchange: null
     }
     
     const [usersGamesState, dispatchUsersGames] = useReducer(usersGamesReducer, initialValues);
