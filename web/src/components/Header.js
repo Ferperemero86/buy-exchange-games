@@ -73,6 +73,9 @@ const HeaderAccountNav = () => {
                 <Link href="/account/gameslist">
                     <li className="list-element">Games List</li>
                 </Link>
+                <Link href="/account/messages">
+                    <li className="list-element">Messages</li>
+                </Link>
                 <li
                     className="list-element"
                     onClick={logOut}>Log Out</li>

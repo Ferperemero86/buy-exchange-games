@@ -8,8 +8,10 @@
 @import "./forms/user-form.css";
 @import "./account/gameslist.css";
 @import "./account/sell-a-game.css";
+@import "./account/users-messages.css";
 @import "./account/exchange-a-game.css";
 @import "./messages/messages.css";
 @import "./messages/validation.css";
 @import "./users-games.css";
+
 

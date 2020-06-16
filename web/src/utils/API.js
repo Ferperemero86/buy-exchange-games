@@ -22,6 +22,7 @@ module.exports = {
                                       headers: {'Content-Type': 'application/json'} });
     if (Array.isArray(result) !== true) {
       const data = await result.json();
+      console.log("RESULT", data);
       return data;
     }
     return result;
@@ -30,10 +31,10 @@ module.exports = {
     const result = await fetch(Url, {
       headers: {'Accept': 'application/json'} 
     });
-   
+    
     if (Array.isArray(result) !== true) {
       const data = await result.json();
-
+      
       return data;
     }
     return result;
@@ -41,6 +42,7 @@ module.exports = {
   sendDataFromClient: (Url, query) => {
     return axios.post(Url, query)
       .then(result => {
+        console.log(result);
         return result.data
       })
       .catch(err => {

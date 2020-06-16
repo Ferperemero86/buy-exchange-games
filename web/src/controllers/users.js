@@ -13,6 +13,9 @@ const userAuthentication = require("../authentication");
 
 const User = require("../db/models/user");
 const UserProfile = require("../db/models/user-profile");
+//const UsersMessages = require("../db/models/users-messages");
+const UsersConversations = require("../db/models/users-conversations");
+//const Conversations = require("../db/models/conversations");
 
 
 router.post("/user/new", 
@@ -103,6 +106,84 @@ router.post('/session',
 
               return res.json({login: true, userId});
 });
+
+router.post("/user/message/save",
+            jsonParser,
+            userAuthentication,
+            async (req, res) => {
+              const sender = parseInt(req.user ? req.user.id : null);
+
+              //await Bookshelf.transaction(t => {
+                return new Promise((resolve) => {
+                  return UsersConversations
+                          .where({user_id: sender})
+                          .fetchAll({withRelated: ["usersMessages"]})
+                          .then(conversations => {
+                            return resolve({conversations})  
+                          })
+                })
+              //})
+              .then(conversations => {
+                return res.json(conversations);
+              })
+              .catch(err => {
+                console.log("ERR", err);
+                if (err.login === false) { return res.status(401).json(err) }
+                return res.status(500).json({internalError: true})
+              })
+  
+});
+
+router.post("/user/messages",
+            jsonParser,
+            (req, res) => {
+              const userId = req.body ? req.body.userId : req.user.id; 
+              
+                UsersConversations
+                  .where({user_id: userId})
+                  .fetchAll({
+                    withRelated: ["users", "messages"]
+                  })                
+                  .then(conversations => {  
+                    let usersArray = [];
+
+                    conversations.map(conversation => {
+                      const users = conversation.related("users");
+                      users.map(user => {
+                        const id = user.get("user_id");
+
+                        if (usersArray.indexOf(id) === -1) {
+                          usersArray.push(id);
+                        }
+                      })
+                    })
+                    UserProfile
+                      .where("id", "IN", usersArray)
+                      .fetchAll()
+                      .then(users => {
+                        return res.json({conversations, users})   
+                      })
+                  })
+                  .catch(err => {
+                    console.log("ERROR", err);
+                    return res.json({internalError: true})
+                  })
+});
+
+router.post("/user/profiles",
+        jsonParser,
+        (req, res) => {
+          const {profilesArray} = req.body;
+
+          UserProfile
+            .where("id", "IN", profilesArray)
+            .fetchAll()
+            .then(profiles => {
+              console.log("PROFILES", profiles);
+              return res.json({profiles})
+            })
+
+})
 
 
 router.post(

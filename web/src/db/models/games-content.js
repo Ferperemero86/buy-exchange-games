@@ -1,6 +1,6 @@
 const bookshelf = require("../bookshelf");
 
-const GamesContent = bookshelf.Model.extend({
+const GamesContent = bookshelf.model("GamesContent", {
     tableName: "games_content"
 });
 

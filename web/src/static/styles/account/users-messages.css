@@ -1,0 +1,22 @@
+.users-messages {
+    width: 90%;
+    margin: 50px auto;
+    border: 1px solid;
+    min-height: 300px;
+    background: #009aef;
+}
+
+.users-messages .conversations {
+    float: left;
+    border-right: 1px solid;
+    height: 300px;
+    width: 20%;
+    background: #fff;
+}
+
+.users-messages .conversation {
+    border-bottom: 1px solid;
+    padding: 5px 0;
+    text-align: center;
+    background: #ca6525;
+}

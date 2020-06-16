@@ -1,14 +1,10 @@
 const bookshelf = require("../bookshelf");
 
-const User = bookshelf.Model.extend({
-  tableName: "users"
-  //getAdmin: function(user) {
-  //  if (user) {
-  //    return user.get("isAdmin");
-  //  } else {
-  //    return null;
-  //  }
-  //},
+const User = bookshelf.model("User", {
+  tableName: "users",
+  conversations() {
+    return this.hasMany("UsersConversations", "user_id", "id")
+  }
 });
 
 module.exports = User;

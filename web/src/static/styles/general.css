@@ -30,6 +30,22 @@ input:focus {
     outline: none;
 }
 
+.align-left { 
+    text-align: left;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.background-red {
+    background-color: red;
+}
+
+.background-blue {
+    background-color: blue;
+}
+
 
 
 

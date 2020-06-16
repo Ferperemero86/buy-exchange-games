@@ -241,8 +241,8 @@
 }
 
 .users-exchanging-game .games-list {
-    position: relative;
-    z-index: 1;
+    position: absolute;
+    z-index: 9999;
     background: #fff;
     width: 96%;
     padding: 50px 2%;
@@ -315,6 +315,59 @@
 .select-location-text {
     text-align: center;
 }
+
+.users-messages-text-container { 
+    width: 50%;
+    margin: 100px auto;
+    height: 500px;
+    border: 1px solid #fff;
+    overflow: hidden;
+    background: #ff7420;
+}
+
+.users-messages .content {
+    margin: 2px 0;
+}
+
+.user1-message-styles {
+    color: #fff;
+    overflow: hidden;
+}
+
+.user1-message-styles .message {
+    float: left;
+    width: 50%;
+    text-align: left;
+    background: blue;
+    border-radius: 5px;
+    padding: 5px 1%;
+    margin: 5px 1%;
+}
+
+.user2-messages-styles {
+    color: #fff;
+    overflow: hidden;
+}
+
+.user2-message-styles .message {
+    float: right;
+    background: red;
+    border-radius: 5px;
+    width: 50%;
+    text-align: left;
+    padding: 5px 1%;
+    margin: 5px 1%;
+}
+
+.no-users-messages-text {
+    position: relative;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    text-align: center;
+    color: #fff;
+}
+
 
 
 
