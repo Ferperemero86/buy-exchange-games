@@ -34,12 +34,19 @@ const GamesExchangingLinks = ({gameId, closeGamesList, userId}) => {
         closeGamesList();
     }
 
+    const showMessageForm = (e) => {
+        const userId = e.target.getAttribute("data-user-id");
+
+        dispatchUsersGames({type: "SHOW_MESSAGE_FORM", payload: userId})
+    }
+
     return (
         <div className="links">
             <button className="button proposal"
                     data-user-id={userId}
                     onClick={submitProposal}>Submit Proposal</button>
             <button className="button send-message"
+                    onClick={showMessageForm}
                     data-user-id={userId}>Send Message</button>
             <button className="button offer-game"
                     data-game-id={gameId}

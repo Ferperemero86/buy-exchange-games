@@ -1,12 +1,14 @@
 const bookshelf = require("../bookshelf");
 
+const UsersMessages = require("./users-messages");
+
 const UsersConversations = bookshelf.model("UsersConversations", {
   tableName: "users_conversations",
   users() {
     return this.hasMany("UsersConversations", "conversation_id", "conversation_id")
   },
   messages() {
-    return this.hasMany("UsersMessages", "conversation_id", "conversation_id" )
+    return this.hasMany(UsersMessages, "conversation_id", "conversation_id" )
   }
 })
 

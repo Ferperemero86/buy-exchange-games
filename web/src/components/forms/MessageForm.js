@@ -4,7 +4,7 @@ import {sendDataFromClient} from "../../utils/API";
 
 const SendMessageForm = ({recipient}) => {
     const FormRef = useRef(null);
-
+    console.log(recipient);
     const sendMessage = (e) => {
         e.preventDefault();
 
@@ -12,7 +12,6 @@ const SendMessageForm = ({recipient}) => {
 
         sendDataFromClient("/api/user/message/save", {
             message, 
-            type: "text",
             recipient
         })
     }
@@ -20,8 +19,11 @@ const SendMessageForm = ({recipient}) => {
     return (
         <div className="send-message-form">
             <form ref={FormRef}>
-                <input type="text" name="message"/>
-                <button onClick={sendMessage}>Send</button>
+                <input type="text"
+                       name="message"
+                       className="text-input" />
+                <button onClick={sendMessage}
+                        className="button-input">Send</button>
             </form>
         </div>
     )

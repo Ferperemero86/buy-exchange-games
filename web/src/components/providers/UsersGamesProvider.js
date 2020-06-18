@@ -30,7 +30,8 @@ const UsersGamesProvider = ({children, pageProps}) => {
         messages,
         showGamesList: false, 
         gameList: [],
-        gameFromListToExchange: null
+        gameFromListToExchange: null,
+        messageForm: false
     }
     
     const [usersGamesState, dispatchUsersGames] = useReducer(usersGamesReducer, initialValues);

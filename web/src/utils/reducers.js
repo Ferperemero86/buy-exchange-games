@@ -207,15 +207,24 @@ module.exports = {
             
             case "GAME_FROM_LIST_TO_EXCHANGE" :
                 return {...state, gameFromListToExchange: action.payload}
+
+            case "SHOW_MESSAGE_FORM" :
+                return {...state, messageForm: action.payload}
         }
     },
     messagesReducer: (state, action) => {
         switch(action.type) {
-            case "SHOW_CONFIRM_QUESTION": 
+            case "SHOW_CONFIRM_QUESTION" : 
                 return {...state, confirmQuestion: action.payload}
 
-            case "UPDATE_CONFIRMATION_MESSAGE": 
+            case "UPDATE_CONFIRMATION_MESSAGE" : 
                 return {...state, confirmMessage: action.payload}
+        }
+    },
+    usersMessagesReducer: (state, action) => {
+        switch(action.type) {
+            case "UPDATE_CURRENT_CONVERSATION" :
+                return {...state, currentConversation: action.payload}
         }
     }
 }

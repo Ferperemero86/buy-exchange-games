@@ -13,10 +13,9 @@ const userAuthentication = require("../authentication");
 
 const User = require("../db/models/user");
 const UserProfile = require("../db/models/user-profile");
-//const UsersMessages = require("../db/models/users-messages");
 const UsersConversations = require("../db/models/users-conversations");
-//const Conversations = require("../db/models/conversations");
-
+const Conversations = require("../db/models/conversations");
+const UsersMessages = require("../db/models/users-messages");
 
 router.post("/user/new", 
             jsonParser, 
@@ -112,26 +111,70 @@ router.post("/user/message/save",
             userAuthentication,
             async (req, res) => {
               const sender = parseInt(req.user ? req.user.id : null);
+              const {recipient, message} = req.body;
 
-              //await Bookshelf.transaction(t => {
-                return new Promise((resolve) => {
-                  return UsersConversations
-                          .where({user_id: sender})
-                          .fetchAll({withRelated: ["usersMessages"]})
-                          .then(conversations => {
-                            return resolve({conversations})  
-                          })
-                })
-              //})
-              .then(conversations => {
-                return res.json(conversations);
-              })
-              .catch(err => {
-                console.log("ERR", err);
-                if (err.login === false) { return res.status(401).json(err) }
-                return res.status(500).json({internalError: true})
-              })
+              UsersConversations
+                .where({user_id: sender})
+                .fetchAll({withRelated: ["users"]})
+                .then(conversations => {
+                  return new Promise((resolve) => {
+                    if (conversations.length < 1) { return resolve("save new") }
+
+                    const convMatch = conversations.filter(conv => {
+                      const users = conv.related("users");
+
+                      return users.find(user => { return user.get("user_id") === recipient})
+                    })
+                    if (convMatch.length > 0) {
+                      const conversationId = convMatch[0].get("conversation_id");
+                      return resolve(conversationId);
+                    }
+                    return resolve("save new");
+                  })
+                }) 
+                .then(conversationId => {
+                  return new Promise((resolve) => {
+                    if (conversationId === "save new") {
+                      return Conversations
+                        .forge()
+                        .save()
+                        .then(conv => {
+                          const convId = conv.get("id");
   
+                          const usersConv = ([
+                              {user_id: sender, conversation_id: convId},
+                              {user_id: recipient, conversation_id: convId}
+                          ]);
+
+                          return UsersConversations
+                            .collection(usersConv)
+                            .invokeThen("save", null, {method: "insert"})
+                            .then(() => {
+                              console.log("saved!!!", convId); 
+                              return resolve(convId)                                              
+                            })
+                        })
+                    }
+                    return resolve(conversationId);
+                  })  
+                })    
+                .then(convId => {
+                  UsersMessages
+                    .forge({
+                      conversation_id: convId,
+                      user_id: sender,
+                      message
+                    }) 
+                    .save()
+                    .then(() => {
+                      return res.json({messageSent: true});
+                    })    
+                })
+                .catch(err => {
+                  console.log("ERR", err);
+                  if (err.login === false) { return res.status(401).json(err) }
+                  return res.status(500).json({internalError: true})
+                })
 });
 
 router.post("/user/messages",

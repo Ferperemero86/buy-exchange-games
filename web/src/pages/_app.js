@@ -10,6 +10,7 @@ import UserProvider from "../components/providers/UserProvider";
 import ExploreGamesProvider from "../components/providers/ExploreGamesProvider";
 import UsersGamesProvider from "../components/providers/UsersGamesProvider";
 import MessagesProvider from "../components/providers/MessagesProvider";
+import UserMessagesProvider from "../components/providers/UsersMessagesProvider";
 import Header from "../components/Header";
 
 const Page = ({pageProps, Component, router}) => {
@@ -22,6 +23,15 @@ const Page = ({pageProps, Component, router}) => {
             </ExploreGamesProvider>
         )
     }
+
+    if (path.includes("/account/messages") ) {
+        return (
+            <UserMessagesProvider pageProps={pageProps}>
+                 <Component {...pageProps} />
+            </UserMessagesProvider>
+        )
+    }
+
 
     if (path.includes("/account/exchange-a-game") ) {
         return (

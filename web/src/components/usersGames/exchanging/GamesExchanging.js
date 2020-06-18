@@ -6,7 +6,27 @@ import BasicUserInfo from "../BasicUserInfo";
 import GamesListSearch from "../exchanging/GamesListSearch";
 import GameExchanging from "../exchanging/GameExchanging";
 import GamesExchangingLinks from "../exchanging/GamesExchangingLinks";
-import SendMessageForm from "../../../components/messages/SendMessageForm";
+import MessageForm from "../../../components/forms/MessageForm";
+
+const MessageToSend = ({recipient}) => {
+    const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
+    const {messageForm} = usersGames;
+
+    const closeMessageForm = () => {
+        dispatchUsersGames({type: "SHOW_MESSAGE_FORM", payload: false})
+    } 
+    
+    if (parseInt(messageForm) === recipient) {
+        return (
+            <div className="message-to-send">
+                <span className="close-icon"
+                      onClick={closeMessageForm}>X</span>
+                <MessageForm recipient={recipient} />
+            </div>
+        )
+    }
+    return null;
+}
 
 const GamesExchanging = ({games, reduceNameLength}) => {
     const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
@@ -22,7 +42,7 @@ const GamesExchanging = ({games, reduceNameLength}) => {
             const nickName = gameArray[0].nickName;
             const gameId = gameArray[0].id;
             const userId = parseInt(gameArray[0].list_id);
-            console.log("GAME", gameArray[0]);
+            console.log("RECIPIENT", userId);
             gameKey++;
     
             return (
@@ -40,7 +60,7 @@ const GamesExchanging = ({games, reduceNameLength}) => {
                         closeGamesList={closeGamesList}  
                         userId={userId}
                         gameId={gameId} />
-                    <SendMessageForm recipient={userId} />
+                    <MessageToSend recipient={userId} />
                 </div>
             )
         })
