@@ -25,6 +25,8 @@
     float: left;
     width: 76%;
     padding-left: 2%;
+    height: 300px;
+    overflow: auto;
 }
 
 .users-messages .messages .message {
@@ -32,6 +34,10 @@
     margin: 10px 0;
     width: 55%;
     border-radius: 10px;
+}
+
+.messages .message .time {
+    text-align: right;
 }
 
 .messages .message.user-left {
