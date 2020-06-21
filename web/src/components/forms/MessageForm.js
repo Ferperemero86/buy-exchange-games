@@ -4,7 +4,7 @@ import {sendDataFromClient} from "../../utils/API";
 
 const SendMessageForm = ({recipient}) => {
     const FormRef = useRef(null);
-    console.log(recipient);
+   
     const sendMessage = (e) => {
         e.preventDefault();
 

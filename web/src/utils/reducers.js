@@ -225,6 +225,9 @@ module.exports = {
         switch(action.type) {
             case "UPDATE_CURRENT_CONVERSATION" :
                 return {...state, currentConversation: action.payload}
+            
+            case "UPDATE_CURRENT_RECIPIENT" :
+                return {...state, currentRecipient: action.payload}
         }
     }
 }

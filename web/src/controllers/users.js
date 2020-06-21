@@ -228,6 +228,19 @@ router.post("/user/profiles",
 
 })
 
+router.post("/user/profile",
+            jsonParser,
+            (req, res) => {
+              const {userId} = req.body;  
+              console.log("USERID", userId);
+              UserProfile
+                .where({id: userId})
+                .fetch()
+                .then(profile => {
+                  res.json({profile})
+                })
+            })
+
 
 router.post(
   "/editpass",

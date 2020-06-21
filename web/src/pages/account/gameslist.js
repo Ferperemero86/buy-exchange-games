@@ -1,10 +1,10 @@
 import React, {useContext, useEffect} from "react";
 
-import fetch from "node-fetch";
 import axios from "axios";
 import {useRouter} from "next/router";
 
 import {GamesListContext} from "../../components/providers/GamesListProvider";
+import {sendLocalData} from "../../utils/API";
 
 import DeleteListQuestion from "../../components/messages/DeleteListQuestion";
 import GamesSection from "../../components/games/GamesSection";
@@ -13,27 +13,27 @@ import EditList from "../../components/gameslist/EditList";
 
 
 export async function getServerSideProps(ctx) {
-    const userId = await ctx.req.user ? ctx.req.user.id : null;
-    const URLBase = await ctx.req.headers.host;
+    let userId = ctx.req.user ? ctx.req.user.id : null;
+    const {id} = ctx.query;
+    
+    const URLBase = ctx.req.headers.host;
     const Url = new URL("/api/gameslist", `http://${URLBase}`).href;
     const page = "gameslist";
     let data;
+
+    if (id) { userId = id }
     
     if (userId) {
-        const result = await fetch(Url, { method: 'POST', 
-                                          body: JSON.stringify({userId}), 
-                                          headers: {'Content-Type': 'application/json'} 
-                                    });
-        const content = await result.json();
+        const content = await sendLocalData(Url, {userId});
        
         if (content) { data = content }
        
-        return { props: {gamesList: data.gamesList, 
-                         gamesListName: data.gamesListName,
-                         listExists: data.listExists,
-                         page, 
-                         login: true, 
-                         userId} };
+        return { props: { gamesList: data.gamesList, 
+                          gamesListName: data.gamesListName,
+                          listExists: data.listExists,
+                          page, 
+                          login: true, 
+                          userId} };
     }
 
     return { props: {login: false, userId} };

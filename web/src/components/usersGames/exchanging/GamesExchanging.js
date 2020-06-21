@@ -47,7 +47,9 @@ const GamesExchanging = ({games, reduceNameLength}) => {
     
             return (
                 <div className="users-exchanging-game" key={gameKey}>
-                    <BasicUserInfo nickName={nickName} />
+                    <BasicUserInfo 
+                        userId={userId}
+                        nickName={nickName} />
                     <GamesListSearch
                         reduceNameLength={reduceNameLength} 
                         gameId={gameId} 

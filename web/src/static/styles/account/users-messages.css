@@ -4,6 +4,7 @@
     border: 1px solid;
     min-height: 300px;
     background: #009aef;
+    overflow: hidden;
 }
 
 .users-messages .conversations {
@@ -53,4 +54,23 @@
 .no-conversations-text {
     text-align: center;
     margin-top: 100px;
+}
+
+.text-input {
+   width: 90%;
+   margin: 0 auto;
+   overflow: hidden;
+}
+
+.text-input .text {
+    width: 90%;
+    height: 30px;
+    float: left;
+}
+
+.text-input .button {
+    width: 8%;
+    height: 22px;
+    float: right;
+    margin-top: 5px;
 }

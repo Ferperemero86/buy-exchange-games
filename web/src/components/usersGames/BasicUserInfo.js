@@ -1,11 +1,14 @@
 import React from "react";
 import {useRouter} from "next/router";
 
-const BasicUserInfo = ({nickName}) => {
+const BasicUserInfo = ({nickName, userId}) => {
     const router = useRouter();
-
+   
     const goToUserProfile = () => {
-        router.push("/account/userProfile");
+        router.push({
+            pathname: "/account/user-profile", 
+            query: {userId} 
+        });
     }
     
     return (

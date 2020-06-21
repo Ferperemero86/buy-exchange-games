@@ -91,7 +91,6 @@ const Locations = ({userId, getUserGames, type}) => {
     }
    
     useEffect(() => {
-        console.log("GETTING FROM AXIOS...");
         addSelectedAttribute(selectCountriesRef, selectedCountryName);
         addSelectedAttribute(selectCitiesRef, citySelected);
 
