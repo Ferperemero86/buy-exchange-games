@@ -232,5 +232,11 @@ module.exports = {
             case "UPDATE_CURRENT_RECIPIENT" :
                 return {...state, currentRecipient: action.payload}
         }
+    },
+    userProfileReducer: (state, action) => {
+        switch(action.type) {
+            case "SHOW_MESSAGE_FORM" :
+                return {...state, messageForm: action.payload}
+        }
     }
 }

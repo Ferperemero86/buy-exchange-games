@@ -10,11 +10,20 @@ import UserProvider from "../components/providers/UserProvider";
 import ExploreGamesProvider from "../components/providers/ExploreGamesProvider";
 import UsersGamesProvider from "../components/providers/UsersGamesProvider";
 import MessagesProvider from "../components/providers/MessagesProvider";
+import UserProfileProvider from "../components/providers/UserProfileProvider";
 import UserMessagesProvider from "../components/providers/UsersMessagesProvider";
 import Header from "../components/Header";
 
 const Page = ({pageProps, Component, router}) => {
     const path = router.pathname;
+
+    if (path.includes("account/user-profile")) {
+        return (
+            <UserProfileProvider>
+                <Component {...pageProps} />
+            </UserProfileProvider>
+        )
+    }
 
     if (path.includes("/explore/") ) {
         return (

@@ -2,9 +2,10 @@
     width: 90%;
     margin: 50px auto;
     overflow: hidden;
+    border: 1px solid #fff;
 }
 
-.user-profile .user-info {
+.user-profile .user-profile-info {
     float: left;
 }
 
@@ -25,10 +26,29 @@
     color: #8c92ac;
 }
 
-.user-profile .user-list {
+.user-profile .user-profile-list {
     float: left;
-    position: relative;
-    top: 60px;
-    left: 10%;
+    margin: 70px 2% 0 10%;
     color: #8c92ac;
+}
+
+.user-profile .user-profile-message {
+    margin: 70px 0 0 0;
+    width: 400px;
+    float: left;
+    overflow: visible;
+    border: 1px solid;
+    position: relative;
+}
+
+.user-profile-message .send-message-form {
+    margin: 0;
+    width: 100%;
+}
+
+.user-profile-message .close-icon {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    z-index: 9999;
 }
