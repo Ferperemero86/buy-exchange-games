@@ -24,6 +24,13 @@
     border: 1px solid #8c92ac;
 }
 
+.users-selling-game .basic-user-info {
+    position: relative;
+    width: 50%;
+    border: 1px solid;
+    overflow: hidden;
+}
+
 .users-selling-game .game {
     width: 100%;
     text-align: center;
@@ -86,7 +93,7 @@
     margin: 10px auto 0 auto;
 }
 
-.users-selling-game-details {
+.users-selling-details {
     width: 80%;
     margin: 20px auto;
     border-top: 1px solid #8c92ac;

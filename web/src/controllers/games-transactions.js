@@ -61,7 +61,7 @@ router.post("/usersgames",
                 } else {
                     query = knex("user_profile")
                                 .select("user_profile.country", "user_profile.id", "user_profile.nickName", "games_content.name", "games_content.cover", 
-                                        "games_content.platform", "games_selling.id", "games_selling.game_id", 
+                                        "games_content.platform", "games_selling.game_id", 
                                         "games_selling.price", "games_selling.currency", "games_selling.condition", 
                                         "games_selling.description")
                                 .join("games_selling", "games_selling.list_id", "=", "user_profile.id")

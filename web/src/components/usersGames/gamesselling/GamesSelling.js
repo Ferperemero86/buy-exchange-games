@@ -5,11 +5,11 @@ import Game from "../../games/Game";
 import GameInfo from "../GameInfo";
 
 const GamesSelling = ({games, reduceNameLength}) => {
-    console.log(games);
     if (games && Array.isArray(games) && games.length > 0) {
         if (Array.isArray(games[0])) { return null }
 
         return games.map(game => {
+            console.log(game);
             const {name, cover, price, platform, currency, id, nickName} = game;
             const capitalPlatform = platform.toUpperCase();
 
@@ -17,7 +17,9 @@ const GamesSelling = ({games, reduceNameLength}) => {
            
             return (
                 <div className="users-selling-game" key={game.id}>
-                    <BasicUserInfo nickName={nickName} />
+                    <BasicUserInfo 
+                        nickName={nickName} 
+                        userId={id} />
                     <Game 
                         title={shortName}
                         Url={cover} 
