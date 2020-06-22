@@ -9,7 +9,6 @@ const GamesSelling = ({games, reduceNameLength}) => {
         if (Array.isArray(games[0])) { return null }
 
         return games.map(game => {
-            console.log(game);
             const {name, cover, price, platform, currency, id, nickName} = game;
             const capitalPlatform = platform.toUpperCase();
 

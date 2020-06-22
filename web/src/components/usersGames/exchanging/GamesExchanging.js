@@ -42,7 +42,6 @@ const GamesExchanging = ({games, reduceNameLength}) => {
             const nickName = gameArray[0].nickName;
             const gameId = gameArray[0].id;
             const userId = parseInt(gameArray[0].list_id);
-            console.log("RECIPIENT", userId);
             gameKey++;
     
             return (

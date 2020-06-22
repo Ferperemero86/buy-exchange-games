@@ -15,28 +15,28 @@ import EditList from "../../components/gameslist/EditList";
 export async function getServerSideProps(ctx) {
     let userLogged = ctx.req.user ? ctx.req.user.id : null;
     const userId = ctx.query.id ? ctx.query.id : null;
-    console.log("USERID", userId);
     const URLBase = ctx.req.headers.host;
     const Url = new URL("/api/gameslist", `http://${URLBase}`).href;
     const page = "gameslist";
     let data;
 
     if (userId) { userLogged = userId }
-    console.log("USERLOGGED", userLogged);
+    
     if (userLogged) {
-        console.log("sending....")
         const content = await sendLocalData(Url, {userId: userLogged});
        
         if (content) { data = content }
        
-        return { props: { gamesInList: data.gamesList, 
-                          gamesListName: data.gamesListName,
-                          listExists: data.listExists,
-                          page, 
-                          login: true, 
-                          userId,
-                          userLogged
-                        } };
+        return { 
+            props: { gamesInList: data.gamesList, 
+                     gamesListName: data.gamesListName,
+                     listExists: data.listExists,
+                     page, 
+                     login: true, 
+                     userId,
+                     userLogged
+                   } 
+        };
     }
 
     return { props: {login: false} };

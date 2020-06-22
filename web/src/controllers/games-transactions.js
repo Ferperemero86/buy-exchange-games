@@ -93,7 +93,6 @@ router.post("/usersgames",
                             } else {
                                 gamesArray = games;
                             }
-                            console.log("TESTTT", gamesArray)
                             return res.json({games: gamesArray});
                         })
 
