@@ -73,7 +73,7 @@ const GameMenuIcon = ({displayGameMenu, gameId, status}) => {
     const {gamesList} = useContext(GamesListContext);
     const {userId} = gamesList;
     
-    if (status === "inList" || userId !== null) {
+    if (status !== "inList" || userId !== null) {
         return null;
     }
     return <span className="game-menu-icon"
@@ -125,6 +125,13 @@ const GameMenu = ({game, hideGameMenu}) => {
 }
 
 const DeleteGameIcon = ({game, askForListDelete}) => {
+    const {gamesList} = useContext(GamesListContext);
+    const {userId} = gamesList;
+    
+    if (userId !== null) {
+        return null;
+    }
+
     return (
         <div className="delete-icon" 
              onClick={askForListDelete}
