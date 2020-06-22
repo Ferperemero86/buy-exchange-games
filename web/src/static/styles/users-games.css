@@ -106,23 +106,18 @@
     }
 }
 
-.basic-user-info {
-    position: absolute;
-    color: #fff;
-    border: 1px solid #fff;
-    padding: 4px 8px;
-}
-
 .users-selling-game .basic-user-info {
     top: -50px;
 }
 
 .users-exchanging-game .basic-user-info {
-   position: relative;
    overflow: hidden;
-   top: -50px;
+   margin: 10px 0 30px 5%;
    display: block;
    width: 150px;
+   color: #fff;
+   border: 1px solid #fff;
+   padding: 4px 8px;
 }
 
 .basic-user-info:hover {
@@ -226,10 +221,10 @@
 }
 
 .users-exchanging-game {
-    width: 90%;
-    margin: 50px 5%;
+    max-width: 700px;
+    margin: 50px auto;
     border: 1px solid #fff;
-    float: left;
+    overflow: hidden;
 }
 
 .users-exchanging-game .game {

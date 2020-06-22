@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 
 import axios from "axios";
 
@@ -7,30 +7,37 @@ import {GamesListContext} from "../providers/GamesListProvider";
 
 import {useRouter} from "next/router";
 
-
-const GameStatus = ({status, gameId}) => {
-    const {dispatchGamesList} = useContext(GamesListContext);
-
-    let heading = null;
-    let Url = null;
+const GameStatusButton = ({Url, heading, gameId}) => {
+    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
+    const {userId, userLogged} = gamesList;
 
     const changeStatus = async (e) => {
         e.preventDefault();
         
         await axios.post(`/api/${Url}`, {gameId})
             .then(result => {
-                const gamesList = result.data.gamesList;
+                const {gamesList} = result.data;
+                dispatchGamesList({type: "UPDATE_GAMES", payload: gamesList})
                 
-                if (Array.isArray(gamesList) ) {
-                    dispatchGamesList({type: "UPDATE_GAMES", payload: gamesList})
-                } else {
-                    //setMessage(result.data);
-                }
             })
             .catch(() => {
                 //setMessage(err.response.data);
             })
     }
+    if (userId !== userLogged) {
+        return null;
+    }
+    
+    return (
+        <button className="button"
+                onClick={changeStatus}>Stop {heading}</button>
+    )
+}
+
+
+const GameStatus = ({status, gameId}) => {
+    let heading = null;
+    let Url = null;
     
     if (status === "exchanging") {
         heading = "Exchanging";
@@ -46,8 +53,10 @@ const GameStatus = ({status, gameId}) => {
         return (
             <div className="game-status" key={gameId}>
                 <h3 className="heading">{heading}</h3>
-                <button className="button"
-                        onClick={changeStatus}>Stop {heading}</button>
+                <GameStatusButton
+                    Url={Url}
+                    gameId={gameId}
+                    heading={heading} />
             </div>
         )
     }
@@ -55,12 +64,15 @@ const GameStatus = ({status, gameId}) => {
 }
 
 const GameMenuIcon = ({displayGameMenu, gameId, status}) => { 
-   if (status === "inList") {
-       return <span className="game-menu-icon"
-                    data-key-game-id={gameId} 
-                    onClick={displayGameMenu}>....</span>;
-   }
-   return null;
+    const {gamesList} = useContext(GamesListContext);
+    const {userId, userLogged} = gamesList;
+
+    if (status === "inList" || userId !== userLogged) {
+        return null;
+    }
+    return <span className="game-menu-icon"
+                     data-key-game-id={gameId} 
+                     onClick={displayGameMenu}>....</span>;
 }
 
 const GameMenu = ({game, hideGameMenu}) => {
@@ -190,7 +202,8 @@ const Game = ({games}) => {
                <DeleteGameQuestion gameId={game.id}
                                    action={deleteGame} 
                                    element={elementToDelete} /> 
-               <GameStatus status={game.status} gameId={game.id} />
+               <GameStatus status={game.status} 
+                           gameId={game.id} />
                <GameMenu hideGameMenu={hideGameMenu} 
                          game={game} /> 
                <div className="game-header">
@@ -219,36 +232,40 @@ const Games = ({games}) => {
    )
 };
 
-const GamesSection = () => {
-   const {gamesList} = useContext(GamesListContext);
+const GamesSection = ({gamesInList}) => {
+   const {gamesList, dispatchGamesList} = useContext(GamesListContext);
    const {games} = gamesList;
    let platform = null;
    let organizedGames = {};
-    
-   if (Array.isArray(games) ) {
-       games.map(game => {
-           if(!organizedGames[game.platform]) {
-              organizedGames[game.platform] = [];
-           }
-           organizedGames[game.platform].push(game);
-       });
-      
-       return Object.keys(organizedGames).map(index => {
-          
-           return organizedGames[index].map(game => {
-              if(game.platform && game.platform !== platform) {
-                  platform = game.platform;
-                  
-                  return (
-                      <section className="games-list-section" key={game.id}>
-                          <h3 className="heading">{platform.toUpperCase()}</h3>
-                          <Games games={organizedGames[platform]} />
-                      </section>
-                  )
-              }
-           })
-       })
-   }
+
+    useEffect(() => {
+        dispatchGamesList({type: "UPDATE_GAMES", payload: gamesInList})
+    }, [gamesInList])
+   
+    if (Array.isArray(games) ) {
+        games.map(game => {
+            if(!organizedGames[game.platform]) {
+               organizedGames[game.platform] = [];
+            }
+            organizedGames[game.platform].push(game);
+        });
+       
+        return Object.keys(organizedGames).map(index => {
+           
+            return organizedGames[index].map(game => {
+               if(game.platform && game.platform !== platform) {
+                   platform = game.platform;
+                   
+                   return (
+                       <section className="games-list-section" key={game.id}>
+                           <h3 className="heading">{platform.toUpperCase()}</h3>
+                           <Games games={organizedGames[platform]} />
+                       </section>
+                   )
+               }
+            })
+        })
+    }
    return null;
 };
 

@@ -5,11 +5,11 @@ import {gamesListReducer} from "../../utils/reducers";
 export const GamesListContext = createContext(null);
 
 const GamesListProvider =({children, pageProps}) => {
-    const games = pageProps.gamesList;
-    const listExists = pageProps.listExists;
-    const login = pageProps.login;
+    const games = pageProps.gamesInList;
     const listName = pageProps.gamesListName;
-
+    const userId = pageProps.userId ? pageProps.userId : null;
+    const {login, listExists, userLogged} = pageProps;
+    console.log(games);
     const initialValues = {
         games,
         listExists,
@@ -28,7 +28,9 @@ const GamesListProvider =({children, pageProps}) => {
         showDeleteListQuestion: false,
         showDeleteGameQuestion: false,
         gameToDelete: null,
-        elementToDelete: null
+        elementToDelete: null,
+        userId,
+        userLogged 
     };
 
     const [GamesListState, dispatchGamesList] = useReducer(gamesListReducer, initialValues);

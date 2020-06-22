@@ -13,22 +13,23 @@ import EditList from "../../components/gameslist/EditList";
 
 
 export async function getServerSideProps(ctx) {
-    let userId = ctx.req.user ? ctx.req.user.id : null;
-    const {id} = ctx.query;
-    
+    let userLogged = ctx.req.user ? ctx.req.user.id : null;
+    const userId = ctx.query.id ? ctx.query.id : null;
+    console.log("USERID", userId);
     const URLBase = ctx.req.headers.host;
     const Url = new URL("/api/gameslist", `http://${URLBase}`).href;
     const page = "gameslist";
     let data;
 
-    if (id) { userId = id }
-    
-    if (userId) {
-        const content = await sendLocalData(Url, {userId});
+    if (userId) { userLogged = userId }
+    console.log("USERLOGGED", userLogged);
+    if (userLogged) {
+        console.log("sending....")
+        const content = await sendLocalData(Url, {userId: userLogged});
        
         if (content) { data = content }
        
-        return { props: { gamesList: data.gamesList, 
+        return { props: { gamesInList: data.gamesList, 
                           gamesListName: data.gamesListName,
                           listExists: data.listExists,
                           page, 
@@ -36,14 +37,14 @@ export async function getServerSideProps(ctx) {
                           userId} };
     }
 
-    return { props: {login: false, userId} };
+    return { props: {login: false, userId, userLogged} };
 }
 
-const GamesList = () => {
+const GamesList = ({gamesInList}) => {
     const {gamesList, dispatchGamesList} = useContext(GamesListContext);
     const {login, listExists, editListName, listName, elementToDelete} = gamesList;
     const router = useRouter();
-
+    console.log("GamesInList", gamesInList);
     const deleteList = async () => {
 
         dispatchGamesList({type: "SET_ELEMENT_TO_DELETE", payload: "list"});
@@ -101,7 +102,7 @@ const GamesList = () => {
             <ListInput />
             <h3 className="gameslist-heading">{listName}</h3>
             <EditList />
-            <GamesSection />
+            <GamesSection gamesInList={gamesInList}/>
         </div>
     )
 
