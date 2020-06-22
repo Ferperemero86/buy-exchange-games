@@ -16,6 +16,12 @@
     font-size: 1.4em;
     color: #8c92ac;
  }
+
+.user-list .go-back-link {
+    color: #fff;
+    float: right;
+    margin-right: 10%;
+}
  
 .edit-list {
     float: right;

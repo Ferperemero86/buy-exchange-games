@@ -34,17 +34,19 @@ export async function getServerSideProps(ctx) {
                           listExists: data.listExists,
                           page, 
                           login: true, 
-                          userId} };
+                          userId,
+                          userLogged
+                        } };
     }
 
-    return { props: {login: false, userId, userLogged} };
+    return { props: {login: false} };
 }
 
-const GamesList = ({gamesInList}) => {
+const GamesList = ({gamesInList, userId}) => {
     const {gamesList, dispatchGamesList} = useContext(GamesListContext);
     const {login, listExists, editListName, listName, elementToDelete} = gamesList;
     const router = useRouter();
-    console.log("GamesInList", gamesInList);
+    
     const deleteList = async () => {
 
         dispatchGamesList({type: "SET_ELEMENT_TO_DELETE", payload: "list"});
@@ -102,7 +104,9 @@ const GamesList = ({gamesInList}) => {
             <ListInput />
             <h3 className="gameslist-heading">{listName}</h3>
             <EditList />
-            <GamesSection gamesInList={gamesInList}/>
+            <GamesSection 
+                gamesInList={gamesInList}
+                userId={userId} />
         </div>
     )
 

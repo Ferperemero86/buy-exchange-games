@@ -1,4 +1,5 @@
 import React, {useContext} from "react";
+import Link from "next/link";
 
 import {GamesListContext} from "../providers/GamesListProvider";
 
@@ -31,8 +32,7 @@ const List = () => {
 
 const EditList = () => {
     const {gamesList, dispatchGamesList} = useContext(GamesListContext);
-    const {editList} = gamesList;
-    const {editListMenuActive} = gamesList;
+    const {editList, editListMenuActive, userId} = gamesList;
   
     const toggleEditMenu = () => {
         if (!editList) {
@@ -42,7 +42,7 @@ const EditList = () => {
     };
 
 
-    if(editListMenuActive) {
+    if(editListMenuActive && userId === null) {
         return (
             <div className="edit-list">
                 <span
@@ -52,7 +52,11 @@ const EditList = () => {
             </div>
         )
     }
-    return null;
+    return (
+            <Link href={{pathname: "/account/user-profile", query: {userId}}}>
+                <a className="go-back-link">Go Back</a>
+            </Link>
+    )
 };
 
 export default EditList;

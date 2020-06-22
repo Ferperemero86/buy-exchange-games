@@ -126,6 +126,9 @@ module.exports = {
 
             case "EDIT_NAME" :
                 return {...state, editName: action.payload}
+            
+            case "UPDATE_USER_ID" :
+                return {...state, userId: action.payload}
         }
     },
     transactionsReducer: (state, action) => {

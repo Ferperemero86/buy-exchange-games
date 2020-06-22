@@ -9,8 +9,8 @@ import {useRouter} from "next/router";
 
 const GameStatusButton = ({Url, heading, gameId}) => {
     const {gamesList, dispatchGamesList} = useContext(GamesListContext);
-    const {userId, userLogged} = gamesList;
-
+    const {userId} = gamesList;
+    
     const changeStatus = async (e) => {
         e.preventDefault();
         
@@ -24,7 +24,7 @@ const GameStatusButton = ({Url, heading, gameId}) => {
                 //setMessage(err.response.data);
             })
     }
-    if (userId !== userLogged) {
+    if (userId !== null) {
         return null;
     }
     
@@ -36,9 +36,11 @@ const GameStatusButton = ({Url, heading, gameId}) => {
 
 
 const GameStatus = ({status, gameId}) => {
+    const {gamesList} = useContext(GamesListContext);
+    const {userId} = gamesList;
     let heading = null;
     let Url = null;
-    
+    console.log(status, userId);
     if (status === "exchanging") {
         heading = "Exchanging";
         Url = "gamesinlist/game/stopexchanging";
@@ -47,6 +49,10 @@ const GameStatus = ({status, gameId}) => {
     if (status === "selling") {
         heading = "Selling";
         Url = "gamesinlist/game/stopselling";  
+    }
+
+    if (status === "inList" && userId) {
+        heading = "Selling/Exchanging"
     }
 
     if (heading) {
@@ -65,9 +71,9 @@ const GameStatus = ({status, gameId}) => {
 
 const GameMenuIcon = ({displayGameMenu, gameId, status}) => { 
     const {gamesList} = useContext(GamesListContext);
-    const {userId, userLogged} = gamesList;
-
-    if (status === "inList" || userId !== userLogged) {
+    const {userId} = gamesList;
+    
+    if (status === "inList" || userId !== null) {
         return null;
     }
     return <span className="game-menu-icon"
@@ -232,14 +238,15 @@ const Games = ({games}) => {
    )
 };
 
-const GamesSection = ({gamesInList}) => {
+const GamesSection = ({gamesInList, userId}) => {
    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
    const {games} = gamesList;
    let platform = null;
    let organizedGames = {};
 
     useEffect(() => {
-        dispatchGamesList({type: "UPDATE_GAMES", payload: gamesInList})
+        dispatchGamesList({type: "UPDATE_GAMES", payload: gamesInList});
+        dispatchGamesList({type: "UPDATE_USER_ID", payload: userId})
     }, [gamesInList])
    
     if (Array.isArray(games) ) {
