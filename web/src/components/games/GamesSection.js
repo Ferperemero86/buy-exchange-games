@@ -40,7 +40,7 @@ const GameStatus = ({status, gameId}) => {
     const {userId} = gamesList;
     let heading = null;
     let Url = null;
-    console.log(status, userId);
+    
     if (status === "exchanging") {
         heading = "Exchanging";
         Url = "gamesinlist/game/stopexchanging";
