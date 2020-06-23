@@ -72,7 +72,6 @@ const GameDetails = ({gameDetails}) => {
 
 const UsersSellingDetails = ({gameDetails}) => {
     const {games} = gameDetails;
-    console.log(games);
     
     return (
         <div className="users-selling-game-details">
