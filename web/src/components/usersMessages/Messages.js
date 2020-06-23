@@ -20,7 +20,7 @@ const Messages = () => {
                     }
                     return val;
                 }
-
+                
                 const user = users.filter(user => { return user.id === msg.user_id });
                 const hours = addZero(new Date(msg.time).getHours());
                 const minutes = addZero(new Date(msg.time).getMinutes());

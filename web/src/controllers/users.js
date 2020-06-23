@@ -160,15 +160,15 @@ router.post("/user/message/save",
                 })    
                 .then(convId => {
                   UsersMessages
-                  .forge({
-                    conversation_id: convId,
-                    user_id: sender,
-                    message
-                  }) 
-                  .save()
-                  .then(() => {
-                    return res.json({messageSent: true});
-                  })    
+                    .forge({
+                      conversation_id: convId,
+                      user_id: sender,
+                      message
+                    }) 
+                    .save()
+                    .then(() => {
+                      return res.json({messageSent: true});
+                    })    
                 })
                 .catch(err => {
                   console.log("ERR", err);

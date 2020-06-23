@@ -5,7 +5,7 @@ exports.up = function (knex) {
         table.integer("conversation_id");
         table.integer("user_id").notNullable();
         table.string("message").defaultTo("not text");
-        table.string("time").defaultTo(knex.fn.now());
+        table.timestamp("time").defaultTo(knex.fn.now());
       })
   };
   
