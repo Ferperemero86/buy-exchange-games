@@ -3,17 +3,21 @@ import React, {useRef, useContext} from "react";
 import {UsersMessagesContext} from "../providers/UsersMessagesProvider";
 import {sendLocalData} from "../../utils/API";
 
-const TextInput = () => {
-    const {usersMessages} = useContext(UsersMessagesContext);
+const TextInput = ({userId}) => {
+    const {usersMessages, dispatchUsersMessages} = useContext(UsersMessagesContext);
     const {currentRecipient} = usersMessages;
     const formRef = useRef(null);
-    const sendMessage = (e) => {
+   
+    const sendMessage = async (e) => {
         e.preventDefault();
         
         const message = formRef.current["message"].value;
 
-        const result = sendLocalData("/api/user/message/save", {recipient: currentRecipient, message});
-        console.log(result);
+        await sendLocalData("/api/user/message/save", {recipient: currentRecipient, message});
+        const messages = await sendLocalData("/api/user/messages", {userId});
+        const{conversations} = messages;
+
+        dispatchUsersMessages({type: "UPDATE_CONVERSATIONS", payload: conversations});
     }
 
     return (     

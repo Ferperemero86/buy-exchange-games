@@ -231,6 +231,9 @@ module.exports = {
             
             case "UPDATE_CURRENT_RECIPIENT" :
                 return {...state, currentRecipient: action.payload}
+
+            case "UPDATE_CONVERSATIONS" :
+                return {...state, conversations: action.payload}
         }
     },
     userProfileReducer: (state, action) => {

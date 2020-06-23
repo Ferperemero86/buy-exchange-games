@@ -13,27 +13,21 @@ export async function getServerSideProps(ctx) {
 
     const data = await sendLocalData(Url, {userId});
    
-    return { props: {data} }
+    return { props: {data, userId} }
 }
 
-const UsersMessages = ({data}) => {
-    const {conversations, users} = data;
-    
+const UsersMessages = ({userId}) => {
     return (
         <div>
             <div className="users-messages">
                 <div className="conversations">
-                    <Conversations 
-                        conversations={conversations} 
-                        users={users} />
+                    <Conversations userId={userId} />
                 </div>
                 <div className="messages">
-                    <Messages
-                        conversations={conversations} 
-                        users={users} />
+                    <Messages />
                 </div>
             </div>
-            <TextInput />
+            <TextInput userId={userId} />
         </div>
     )
 }

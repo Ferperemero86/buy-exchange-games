@@ -19,13 +19,15 @@ const getRecipientId = (conversations) => {
 
 const UsersMessagesProvider = ({children, pageProps}) => {
     console.log("pageProps", pageProps);
-    const {conversations} = pageProps.data;
+    const {conversations, users} = pageProps.data;
     const conversationId = conversations.length > 0 ? conversations[0].conversation_id : null;
     const recipientId = getRecipientId(conversations);
    
     const initialValues = {
         currentConversation: conversationId,
-        currentRecipient: recipientId
+        currentRecipient: recipientId,
+        conversations,
+        users
     }
     
     const [usersMessagesState, dispatchUsersMessages] = useReducer(usersMessagesReducer, initialValues);

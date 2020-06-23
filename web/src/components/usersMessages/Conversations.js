@@ -1,8 +1,22 @@
-import React, {useContext} from "react";
-import {UsersMessagesContext} from "../providers/UsersMessagesProvider";
+import React, {useContext, useEffect} from "react";
 
-const Conversations = ({conversations, users}) => {
-    const {dispatchUsersMessages} = useContext(UsersMessagesContext);
+import {UsersMessagesContext} from "../providers/UsersMessagesProvider";
+import {sendLocalData} from "../../utils/API";
+
+const Conversations = ({userId}) => {
+    const {usersMessages, dispatchUsersMessages} = useContext(UsersMessagesContext);
+    const {conversations, users} = usersMessages;
+
+    useEffect(() => {
+        const timer = setInterval(async () => {
+            const result = await sendLocalData("/api/user/messages", {userId});
+            const {conversations} = result;
+
+            dispatchUsersMessages({type: "UPDATE_CONVERSATIONS", payload: conversations});
+            console.log(result);
+          }, 2000);
+          return () => clearTimeout(timer);
+    }, [])
 
     const showUserMessages = (e) => {
         const conversation = parseInt(e.currentTarget.getAttribute("data-conv-id"));
@@ -12,7 +26,7 @@ const Conversations = ({conversations, users}) => {
         dispatchUsersMessages({type: "UPDATE_CURRENT_CONVERSATION", payload: conversation})
     }
 
-    if(conversations && Array.isArray(conversations)) {
+    if (conversations && Array.isArray(conversations)) {
         return conversations.map(conversation => {
             const userLogged = conversation.user_id;
             const {conversation_id} = conversation;
