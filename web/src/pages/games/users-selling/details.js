@@ -8,11 +8,11 @@ import ConfirmQuestion from "../../../components/messages/ConfirmQuestion";
 import {MessagesContext} from "../../../components/providers/MessagesProvider";
 
 export async function getServerSideProps(ctx) {
-    const id = ctx.query.id;
+    const {id, gameId} = ctx.query;
     const URLBase = await ctx.req.headers.host;
     const Url = new URL("/api/usersselling/game", `http://${URLBase}`).href;
-
-    const gameDetails = await sendLocalData(Url, {id});
+    console.log("WEAAA", id, gameId)
+    const gameDetails = await sendLocalData(Url, {id, gameId});
 
     return { props: {gameDetails} };
 }
@@ -44,7 +44,9 @@ const SellingLinks = () => {
 }
 
 const SellingDetails = ({gameDetails}) => {
-    const {price, condition, description, platform} = gameDetails.games[0];
+    const {price, condition, description} = gameDetails;
+    const {platform} = gameDetails.content;
+
     return (
         <div className="selling-details">
             <p>Price: {price}</p>
@@ -56,7 +58,8 @@ const SellingDetails = ({gameDetails}) => {
 }
 
 const GameDetails = ({gameDetails}) => {
-    const {name, cover} = gameDetails.games[0];
+    const {name, cover} = gameDetails.content;
+
     return (
         <div className="game-info">
             <Game 
@@ -68,10 +71,13 @@ const GameDetails = ({gameDetails}) => {
 }
 
 const UsersSellingDetails = ({gameDetails}) => {
+    const {games} = gameDetails;
+    console.log(games);
+    
     return (
         <div className="users-selling-game-details">
             <ConfirmQuestion />
-            <GameDetails gameDetails={gameDetails} />
+            <GameDetails gameDetails={games} />
             <SellingLinks />
         </div>
     )

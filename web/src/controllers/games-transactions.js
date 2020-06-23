@@ -9,8 +9,9 @@ const knex = require("../db/knex");
 //const acl = require("./acl");
 //const validation = require("../validation");
 
-//const GamesSelling = require("../db/models/games-selling");
+const GamesSelling = require("../db/models/games-selling");
 const UserProfile = require("../db/models/user-profile");
+//const GamesContent = require("../db/models/games-content");
 
 router.post("/usersgames",
             jsonParser,
@@ -163,18 +164,20 @@ router.post("/usersgames",
 router.post("/usersselling/game",
             jsonParser,
             async (req, res) => {
-                const id = req.body.id;
-
-                knex("games_selling")
-                    .select("games_content.name", "games_content.cover", "games_content.platform", "games_selling.id", "games_selling.game_id", "games_selling.price", "games_selling.currency", "games_selling.condition", "games_selling.description")
-                    .where({"games_selling.id": id})
-                    .join("games_content", "games_content.id", "=", "games_selling.game_id")
-                    .then(games => {
-                        return res.json({games})
-                }) 
-                .catch(err=> {
-                    console.log(err);
-                })
+                const {id, gameId} = req.body
+                
+                return GamesSelling
+                        .query({ 
+                            where: {list_id: id},                                  
+                            andWhere: {game_id: gameId} 
+                        })
+                        .fetch({withRelated: ["content"]})
+                        .then(games => {
+                            return res.json({games})
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
                 
 });
 

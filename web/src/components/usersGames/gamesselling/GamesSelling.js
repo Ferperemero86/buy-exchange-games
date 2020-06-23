@@ -9,7 +9,7 @@ const GamesSelling = ({games, reduceNameLength}) => {
         if (Array.isArray(games[0])) { return null }
 
         return games.map(game => {
-            const {name, cover, price, platform, currency, id, nickName} = game;
+            const {name, cover, price, platform, currency, game_id, id, nickName} = game;
             const capitalPlatform = platform.toUpperCase();
 
             const shortName = reduceNameLength(name);
@@ -25,6 +25,7 @@ const GamesSelling = ({games, reduceNameLength}) => {
                         price={price} />
                     <GameInfo 
                         id={id}
+                        gameId={game_id}
                         price={price} 
                         currency={currency}
                         platform={capitalPlatform} />

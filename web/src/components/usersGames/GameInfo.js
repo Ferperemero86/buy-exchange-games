@@ -1,11 +1,11 @@
 import React from "react";
 import {useRouter} from "next/router";
 
-const GameInfo = ({price, platform, currency, id}) => {
+const GameInfo = ({price, platform, currency, id, gameId}) => {
     const router = useRouter();
-
+    console.log(gameId);
     const goToGameDetails = () => {
-        router.push({pathname: "/games/users-selling/details", query: {id} });
+        router.push({pathname: "/games/users-selling/details", query: {id, gameId} });
     }
 
     const sendProposal = () => {
