@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, {useContext, useEffect, useRef} from "react";
 
 import {UsersMessagesContext} from "../providers/UsersMessagesProvider";
 import {sendLocalData} from "../../utils/API";
@@ -6,6 +6,7 @@ import {sendLocalData} from "../../utils/API";
 const Conversations = ({userId}) => {
     const {usersMessages, dispatchUsersMessages} = useContext(UsersMessagesContext);
     const {conversations, users} = usersMessages;
+    let convRef = useRef();
 
     useEffect(() => {
         const timer = setInterval(async () => {
@@ -13,7 +14,6 @@ const Conversations = ({userId}) => {
             const {conversations} = result;
 
             dispatchUsersMessages({type: "UPDATE_CONVERSATIONS", payload: conversations});
-            console.log(result);
           }, 2000);
           return () => clearTimeout(timer);
     }, [])
@@ -42,6 +42,7 @@ const Conversations = ({userId}) => {
             return (
                 <div className="conversation"
                     key={conversation_id}
+                    ref={convRef}
                     data-conv-id={conversation_id}
                     data-recipient-id={id}
                     onClick={showUserMessages}><p>{nickName}</p></div>

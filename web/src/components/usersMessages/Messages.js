@@ -5,7 +5,7 @@ import {UsersMessagesContext} from "../providers/UsersMessagesProvider";
 const Messages = () => {
     const {usersMessages} = useContext(UsersMessagesContext);
     const {currentConversation, conversations, users} = usersMessages;
-    console.log(conversations);
+   
     if(conversations && Array.isArray(conversations) && conversations.length > 0) {
         const conversation_id = currentConversation;
         const conversation = conversations.filter(conv => { return conv.conversation_id === conversation_id });

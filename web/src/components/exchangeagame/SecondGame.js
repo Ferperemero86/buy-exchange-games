@@ -11,7 +11,7 @@ const PlatformsOptions = () => {
 
     if (platforms && Array.isArray(platforms)) {
         return platforms.map(platform => {
-            return <option value={platform}
+            return <option value={platform.code}
                            key={platform.code}>{platform.name}</option>
         })
     }
@@ -23,7 +23,7 @@ const PlatformSelect = () => {
 
     const getPlatformValue = (e) => {
         const platform = e.target.value;
-
+        
         dispatchTransactions({type: "UPDATE_SELECTED_PLATFORM", payload: platform})
     }
 
@@ -39,7 +39,7 @@ const PlatformSelect = () => {
 const SecondGame = () => {
     const {transactions, dispatchTransactions} = useContext(TransactionsContext);
     const {gameToExchange, platformSelected} = transactions; 
-
+    
     const openSearchWindow = () => {
         dispatchTransactions({type: "SHOW_EXCHANGE_SEARCH_WINDOW", payload: true})
         dispatchTransactions({type: "SET_GAME_TO_FIND", payload: "game2"})
