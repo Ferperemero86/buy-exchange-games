@@ -32,7 +32,7 @@ const MessageToSend = ({recipient}) => {
 const GamesExchanging = ({games, reduceNameLength}) => {
     const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
     const {gameFromListToExchange} = usersGames;
-    const {game_2} = gameFromListToExchange;
+    const game2= gameFromListToExchange ? gameFromListToExchange.game_2 : null;
     let gameKey = 0;
 
     const closeGamesList = () => {
@@ -46,7 +46,7 @@ const GamesExchanging = ({games, reduceNameLength}) => {
             const userId = parseInt(gameArray[0].list_id);
             let data ={
                 gameId,
-                game2: game_2,
+                game2,
                 recipientId: userId
             };
             

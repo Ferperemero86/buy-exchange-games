@@ -18,7 +18,6 @@ const getRecipientId = (conversations) => {
 
 
 const UsersMessagesProvider = ({children, pageProps}) => {
-    console.log("pageProps", pageProps);
     const {conversations, users} = pageProps.data;
     const conversationId = conversations.length > 0 ? conversations[0].conversation_id : null;
     const recipientId = getRecipientId(conversations);
