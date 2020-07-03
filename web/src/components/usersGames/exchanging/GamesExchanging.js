@@ -7,6 +7,7 @@ import GamesListSearch from "../exchanging/GamesListSearch";
 import GameExchanging from "../exchanging/GameExchanging";
 import GamesExchangingLinks from "../exchanging/GamesExchangingLinks";
 import MessageForm from "../../../components/forms/MessageForm";
+import ConfirmQuestion from "../../messages/ConfirmQuestion";
 
 const MessageToSend = ({recipient}) => {
     const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
@@ -31,6 +32,7 @@ const MessageToSend = ({recipient}) => {
 const GamesExchanging = ({games, reduceNameLength}) => {
     const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
     const {gameFromListToExchange} = usersGames;
+    const {game_2} = gameFromListToExchange;
     let gameKey = 0;
 
     const closeGamesList = () => {
@@ -42,8 +44,22 @@ const GamesExchanging = ({games, reduceNameLength}) => {
             const nickName = gameArray[0].nickName;
             const gameId = gameArray[0].id;
             const userId = parseInt(gameArray[0].list_id);
+            let data ={
+                gameId,
+                game2: game_2,
+                recipientId: userId
+            };
+            
+            if (Array.isArray(gameFromListToExchange)) {
+                data = {
+                    gameId,
+                    game2: gameFromListToExchange[3],
+                    recipientId: userId
+                };
+            }
+            
             gameKey++;
-    
+            
             return (
                 <div className="users-exchanging-game" key={gameKey}>
                     <BasicUserInfo 
@@ -53,6 +69,10 @@ const GamesExchanging = ({games, reduceNameLength}) => {
                         reduceNameLength={reduceNameLength} 
                         gameId={gameId} 
                         closeGamesList={closeGamesList} />
+                    <ConfirmQuestion 
+                        Url="/api/usersexchanging/proposal"
+                        redUrl="/games/users-exchanging"
+                        data={data}/>
                     <GameExchanging 
                         gameArray={gameArray} 
                         gameFromListToExchange={gameFromListToExchange}

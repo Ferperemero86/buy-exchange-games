@@ -20,8 +20,13 @@ const GameExchanging = ({gameArray, reduceNameLength, gameFromListToExchange}) =
                 shortName = reduceNameLength(name);
                 coverUrl = cover;
             } 
-           
-            if (gameClass === "game-2" && gameFromListToExchange) {
+            
+            if (gameClass === "game-2" && gameFromListToExchange instanceof Array === false) {
+                platform = gameFromListToExchange.platform;
+                coverUrl = gameFromListToExchange.cover;
+                shortName = reduceNameLength(gameFromListToExchange.name);
+            }
+            if (gameClass === "game-2" && gameFromListToExchange instanceof Array === true) {
                 platform = gameFromListToExchange[0];
                 coverUrl = gameFromListToExchange[1];
                 shortName = reduceNameLength(gameFromListToExchange[2]);

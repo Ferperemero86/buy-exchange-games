@@ -112,10 +112,12 @@ const MyApp = ({Component, pageProps, router}) => {
     return (
         <div id="app">
             <UserProvider>
-                <Header />
-                <Page pageProps={pageProps} 
-                      Component={Component} 
-                      router={router} />
+                <MessagesProvider>
+                    <Header />
+                    <Page pageProps={pageProps} 
+                          Component={Component} 
+                          router={router} />
+                </MessagesProvider>
             </UserProvider>
         </div>
     )

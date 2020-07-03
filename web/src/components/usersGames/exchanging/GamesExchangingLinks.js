@@ -3,8 +3,12 @@ import {useRouter} from "next/router";
 
 import {UsersGamesContext} from "../../providers/UsersGamesProvider";
 import {sendDataFromClient} from "../../../utils/API";
+import {MessagesContext} from "../../providers/MessagesProvider";
+
+import Button from "../../forms/Button";
 
 const GamesExchangingLinks = ({gameId, closeGamesList, userId}) => {
+    const {dispatchMessages} = useContext(MessagesContext);
     const {dispatchUsersGames} = useContext(UsersGamesContext);
     const router = useRouter();
    
@@ -22,35 +26,34 @@ const GamesExchangingLinks = ({gameId, closeGamesList, userId}) => {
         }
     }
 
-    const submitProposal = (e) => {
-        const userId = e.target.getAttribute("data-user-id");
-
-        sendDataFromClient("/api/user/message/save", {
-            recipient: userId,
-            type: "number",
-            message: gameId
-        });
+    const submitProposal = () => {
+        dispatchMessages({type: "SHOW_CONFIRM_QUESTION", payload: true})
 
         closeGamesList();
     }
 
     const showMessageForm = (e) => {
-        const userId = e.target.getAttribute("data-user-id");
-
+        const userId = e.target.getAttribute("data");
         dispatchUsersGames({type: "SHOW_MESSAGE_FORM", payload: userId})
     }
 
     return (
         <div className="links">
-            <button className="button proposal"
-                    data-user-id={userId}
-                    onClick={submitProposal}>Submit Proposal</button>
-            <button className="button send-message"
-                    onClick={showMessageForm}
-                    data-user-id={userId}>Send Message</button>
-            <button className="button offer-game"
-                    data-game-id={gameId}
-                    onClick={showGamesList}>Offer Game</button>
+            <Button
+                className="button proposal"
+                data={userId}
+                onClick={submitProposal}
+                text="Submit Proposal" />
+             <Button
+                className="button send-message"
+                onClick={showMessageForm}
+                data={userId}
+                text="Send Message" />
+             <Button
+                className="button offer-game"
+                onClick={showGamesList}
+                data={gameId}
+                text="Offer Game" />
         </div>
     )
 }

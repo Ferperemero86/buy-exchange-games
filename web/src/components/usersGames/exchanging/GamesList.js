@@ -19,10 +19,10 @@ const GamesList = ({reduceNameLength}) => {
         if (gamesList.length > 0) {
             return gamesList.map(game => {
                 let shortName;
-                const {platform, cover, name} = game;
+                const {platform, cover, name, game_id} = game;
                 shortName = reduceNameLength(name);
-                const gameData = [platform, cover, shortName];
-        
+                const gameData = [platform, cover, shortName, game_id];
+                
                 return (
                     <div className="games-list-game" key={game.id}>
                         <Game

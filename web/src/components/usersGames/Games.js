@@ -4,7 +4,6 @@ import GamesExchanging from "./exchanging/GamesExchanging";
 import GamesSelling from "./gamesselling/GamesSelling";
 
 const Games = ({games, type}) => {
-    
     const reduceNameLength = (name) => {
         let stringName = name.split();
         let shortName;
