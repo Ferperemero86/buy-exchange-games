@@ -19,7 +19,7 @@ const TransactionsProvider =({children, pageProps}) => {
         showGameExchangeWindow: false,
         exchangeGamesSearch: [],
         searchGameToExchangeInputValue: "",
-        platformSelected: {name: "ps4", code: 48}
+        platformSelected: 48
     };
 
     const [exploreGamesState, dispatchTransactions] = useReducer(transactionsReducer, initialValues);
