@@ -11,6 +11,7 @@ const knex = require("../db/knex");
 
 const GamesSelling = require("../db/models/games-selling");
 const UserProfile = require("../db/models/user-profile");
+const GamesSellingProposals = require("../db/models/games-selling-proposals");
 //const GamesContent = require("../db/models/games-content");
 
 router.post("/usersgames",
@@ -180,6 +181,44 @@ router.post("/usersselling/game",
                         })
                 
 });
+
+router.post("/usersselling/proposal",
+            jsonParser,
+            (req, res) => {
+                const senderId = req.user ? req.user.id : null;
+                const {price, gameId, recipientId} = req.body;
+            
+                return GamesSellingProposals
+                    .where({
+                        id: gameId,
+                        recipient_id: recipientId,
+                        sender_id: senderId
+                    })
+                    .fetch({require: false})
+                    .then(game => {
+                        return new Promise((resolve) => {
+                            if (game) { return resolve("update") }
+                            return resolve("insert")
+                        })
+                    })
+                    .then(method => {
+                        return GamesSellingProposals
+                        .forge({
+                            id: gameId,
+                            price,
+                            recipient_id: recipientId,
+                            sender_id: senderId
+                        })
+                        .save(null, {method})
+                        .then(() => {
+                            return res.json({proposalSaved: true})
+                        })
+                    })
+                    .catch(() => {
+                        return res.json({internalError: true})
+                    })
+
+})
 
 
 module.exports = router;

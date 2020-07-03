@@ -1,13 +1,19 @@
 import React, {useContext} from "react";
+import {useRouter} from "next/router";
+
 import {MessagesContext} from "../providers/MessagesProvider";
 
-const ConfirmQuestion = () => {
+import {sendDataFromClient} from "../../utils/API";
+
+const ConfirmQuestion = ({Url, data, redUrl}) => {
     const {messages, dispatchMessages} = useContext(MessagesContext);
     const {confirmQuestion, confirmMessage} = messages;
+    const router = useRouter();
 
     const sendData = () => {
-        console.log("data sent");
-        dispatchMessages({type: "SHOW_CONFIRM_QUESTION", payload: false})
+        dispatchMessages({type: "SHOW_CONFIRM_QUESTION", payload: false});
+        sendDataFromClient(Url, data);
+        router.push(redUrl);
     }
 
     const cancel = () => {

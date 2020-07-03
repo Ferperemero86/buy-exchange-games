@@ -4,14 +4,18 @@ import {useRouter} from "next/router";
 import {sendLocalData} from "../../../utils/API";
 
 import Game from "../../../components/games/Game";
+import Button from "../../../components/forms/Button";
+
 import ConfirmQuestion from "../../../components/messages/ConfirmQuestion";
+import NewOfferForm from "../../../components/forms/NewOfferForm";
 import {MessagesContext} from "../../../components/providers/MessagesProvider";
+import {UsersGamesContext} from "../../../components/providers/UsersGamesProvider";
 
 export async function getServerSideProps(ctx) {
     const {id, gameId} = ctx.query;
     const URLBase = await ctx.req.headers.host;
     const Url = new URL("/api/usersselling/game", `http://${URLBase}`).href;
-    console.log("WEAAA", id, gameId)
+    
     const gameDetails = await sendLocalData(Url, {id, gameId});
 
     return { props: {gameDetails} };
@@ -19,9 +23,10 @@ export async function getServerSideProps(ctx) {
 
 
 const SellingLinks = () => {
-    const {dispatchMessages} = useContext(MessagesContext)
+    const {dispatchUsersGames} = useContext(UsersGamesContext);
+    const {dispatchMessages} = useContext(MessagesContext);
     const router = useRouter();
-
+   
     const goToPreviousPage = () => {
         router.push("/games/users-selling");
     }
@@ -33,23 +38,47 @@ const SellingLinks = () => {
         dispatchMessages({type: "UPDATE_CONFIRMATION_MESSAGE", payload: message})
     }
 
+    const showNewOfferForm = () => {
+        dispatchUsersGames({type: "SHOW_NEW_OFFER_FORM", payload: true});
+    }
+
     return (
         <div className="selling-links">
-            <button className="selling-links-button proposal"
-                    onClick={askConfirmation}>Send Proposal</button>
-            <button className="selling-links-button cancel"
-                    onClick={goToPreviousPage}>Cancel</button>
+            <Button 
+                className="selling-links-button proposal"
+                text="Send proposal"
+                onClick={askConfirmation} />
+            <Button 
+                className="selling-links-button new-offer"
+                text="New Offer"
+                onClick={showNewOfferForm} />
+            <Button 
+                className="selling-links-button cancel"
+                text="Cancel"
+                onClick={goToPreviousPage} />
         </div>
     )
 }
 
 const SellingDetails = ({gameDetails}) => {
-    const {price, condition, description} = gameDetails;
+    const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
+    const {gameSellingPrice, newOfferForm} = usersGames;
+    const {condition, description, currency} = gameDetails;
     const {platform} = gameDetails.content;
+
+    const updatePrice = (e) => {
+        const price = e.target.value;
+        dispatchUsersGames({type: "UPDATE_GAME_SELLING_PRICE", payload: price});
+    }
 
     return (
         <div className="selling-details">
-            <p>Price: {price}</p>
+            <NewOfferForm
+                newOfferForm={newOfferForm}
+                onChange={updatePrice}
+                value={gameSellingPrice}
+                currency={currency}
+                price={gameSellingPrice} />
             <p>Condition: {condition}</p>
             <p>Platform: {platform.toUpperCase()}</p>
             <p>Description: {description}</p>
@@ -71,11 +100,21 @@ const GameDetails = ({gameDetails}) => {
 }
 
 const UsersSellingDetails = ({gameDetails}) => {
+    const {usersGames} = useContext(UsersGamesContext);
+    const {gameSellingPrice} = usersGames;
     const {games} = gameDetails;
+    const data = {
+        price: gameSellingPrice,
+        gameId: games.id,
+        recipientId: games.list_id
+    };
     
     return (
         <div className="users-selling-game-details">
-            <ConfirmQuestion />
+            <ConfirmQuestion 
+                Url="/api/usersselling/proposal"
+                redUrl="/games/users-selling"
+                data={data} />
             <GameDetails gameDetails={games} />
             <SellingLinks />
         </div>

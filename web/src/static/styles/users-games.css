@@ -173,11 +173,19 @@
     padding-left: 5%;
     width: 45%;
     padding: 30px 0 0 5%;
+    color: #fff;
+}
+
+.users-selling-game-details .selling-details .price-input {
+    color: #000;
+}
+
+.users-selling-game-details .selling-details .label {
+    margin-left: 3%;
 }
 
 .users-selling-game-details .selling-details p {
-    margin: 10px;
-    color: #fff;
+    margin: 10px 0 0 0;
     display: block;
     text-align: left;
 }

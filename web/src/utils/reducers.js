@@ -213,6 +213,12 @@ module.exports = {
 
             case "SHOW_MESSAGE_FORM" :
                 return {...state, messageForm: action.payload}
+
+            case "UPDATE_GAME_SELLING_PRICE" :
+                return {...state, gameSellingPrice: action.payload}
+
+            case "SHOW_NEW_OFFER_FORM" :
+                return {...state, newOfferForm: action.payload}
         }
     },
     messagesReducer: (state, action) => {

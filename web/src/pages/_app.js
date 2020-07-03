@@ -61,7 +61,9 @@ const Page = ({pageProps, Component, router}) => {
     if (path.includes("/users-selling/details")) {
         return (
             <MessagesProvider>
-                <Component {...pageProps} />  
+                <UsersGamesProvider pageProps={pageProps}>
+                    <Component {...pageProps} />  
+                </UsersGamesProvider>
             </MessagesProvider>
         )
     }

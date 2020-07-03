@@ -11,7 +11,7 @@ const GamesSelling = ({games, reduceNameLength}) => {
         return games.map(game => {
             const {name, cover, price, platform, currency, game_id, id, nickName} = game;
             const capitalPlatform = platform.toUpperCase();
-
+        
             const shortName = reduceNameLength(name);
            
             return (

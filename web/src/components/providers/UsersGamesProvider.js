@@ -7,13 +7,15 @@ export const UsersGamesContext = createContext();
 
 
 const UsersGamesProvider = ({children, pageProps}) => {
-    const games = pageProps.data.games ? pageProps.data.games : [];
-    const selectedCountryName = pageProps.data.countryName ? pageProps.data.countryName : "";
-    const citySelected = pageProps.data.city ? pageProps.data.city : "";
+    const games = pageProps.data && pageProps.data.games ? pageProps.data.games : [];
+    const selectedCountryName = pageProps.data && pageProps.data.countryName ? pageProps.data.countryName : "";
+    const citySelected = pageProps.data && pageProps.data.city ? pageProps.data.city : "";
     const {countries, countryNames, cities, countryCode} = pageProps;
+    const cityValues = cities ? cities.cities : "";
+    const gameSellingPrice = pageProps.gameDetails ? pageProps.gameDetails.games.price : "";
     let messages = "";
 
-    if (pageProps.data.locationsEmpty) {
+    if (pageProps.data && pageProps.data.locationsEmpty) {
         messages = handleMessages(pageProps.data);
     }
     
@@ -22,7 +24,7 @@ const UsersGamesProvider = ({children, pageProps}) => {
         countries,
         countryNames,
         selectedCountryName,
-        cities: cities.cities,
+        cities: cityValues,
         countrySelected: countryCode,
         citySelected,
         stateSelected: "",
@@ -31,7 +33,9 @@ const UsersGamesProvider = ({children, pageProps}) => {
         showGamesList: false, 
         gameList: [],
         gameFromListToExchange: null,
-        messageForm: false
+        messageForm: false,
+        newOfferForm: false,
+        gameSellingPrice
     }
     
     const [usersGamesState, dispatchUsersGames] = useReducer(usersGamesReducer, initialValues);
