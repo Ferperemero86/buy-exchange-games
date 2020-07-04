@@ -53,7 +53,7 @@ const HeaderAccountNav = () => {
 
     useEffect(() => {
         dispatchUser({type: "UPDATE_COMPONENT_MOUNT_STATUS", payload: true})
-    }, [])
+    }, [userLogged])
 
     if (!hasMounted) {
         return null;
@@ -78,15 +78,24 @@ const HeaderAccountNav = () => {
         <div className="account-menu">
             <span>Account</span>
             <ul className="account-menu-list">
+            <li className="list-element">
                 <Link href="/account/gameslist">
-                    <li className="list-element">Games List</li>
+                    <a>Games List</a>
                 </Link>
+            </li>
+            <li className="list-element">
                 <Link href="/account/messages">
-                    <li className="list-element">Messages</li>
+                    <a>Messages</a>
                 </Link>
-                <li
-                    className="list-element"
-                    onClick={logOut}>Log Out</li>
+            </li>
+            <li className="list-element">
+                <Link href="/account/proposals">
+                    <a>Proposals</a>
+                </Link>
+            </li>
+            <li
+               className="list-element"
+               onClick={logOut}>Log Out</li>
             </ul>
         </div>
     )
