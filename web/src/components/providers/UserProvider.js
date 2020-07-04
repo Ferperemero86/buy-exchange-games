@@ -12,7 +12,8 @@ const UserProvider = ({children}) => {
 
     const initialValues = {
         userId: cookie.load("user_id"),
-        userLogged
+        userLogged,
+        hasMounted: false
     }
     
     const [userState, dispatchUser] = useReducer(userReducer, initialValues);

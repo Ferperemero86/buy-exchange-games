@@ -9,6 +9,9 @@ module.exports = {
 
             case "UPDATE_USER_ID" :
                 return {...state, userId: action.payload}
+
+            case "UPDATE_COMPONENT_MOUNT_STATUS" :
+                return {...state, hasMounted: action.payload}
         }
     },
     registerReducer: (state, action) => {

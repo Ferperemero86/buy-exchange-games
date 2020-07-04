@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import Link from 'next/link';
 import cookie from 'react-cookies';
 import {useRouter} from "next/router";
@@ -7,8 +7,8 @@ import {UserContext} from "../components/providers/UserProvider";
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
-import LogoImage from "../static/images/controller-logo.png";
 
+import LogoImage from "../static/images/controller-logo.png";
 
 const Logo = () => (
     <div className="header-logo">
@@ -39,16 +39,24 @@ const HeaderMainNav = () => (
     </nav>
 );
 
-
 const HeaderAccountNav = () => {
     const {user, dispatchUser} = useContext(UserContext);
-    const {userLogged} = user;
+    const {userLogged, hasMounted} = user;
     const router = useRouter();
     
     const logOut = () => {
         cookie.remove("user_id", { path: "/" });
         router.push("/");
         dispatchUser({ type: "USER_LOGGED_OUT"});
+        dispatchUser({type: "UPDATE_COMPONENT_MOUNT_STATUS", payload: false})
+    }
+
+    useEffect(() => {
+        dispatchUser({type: "UPDATE_COMPONENT_MOUNT_STATUS", payload: true})
+    }, [])
+
+    if (!hasMounted) {
+        return null;
     }
 
     if (!userLogged) {

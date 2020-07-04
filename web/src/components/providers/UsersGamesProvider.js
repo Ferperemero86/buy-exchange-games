@@ -13,7 +13,7 @@ const UsersGamesProvider = ({children, pageProps}) => {
     const {countries, countryNames, cities, countryCode} = pageProps;
     const cityValues = cities ? cities.cities : "";
     const gameSellingPrice = pageProps.gameDetails ? pageProps.gameDetails.games.price : "";
-    const gameFromListToExchange = pageProps.data.games ? pageProps.data.games[0][1] : null;
+    const gameFromListToExchange = pageProps.data.games &&  pageProps.data.games[0] ? pageProps.data.games[0][1] : null;
     let messages = "";
     
     if (pageProps.data && pageProps.data.locationsEmpty) {
