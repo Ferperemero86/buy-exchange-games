@@ -92,7 +92,8 @@
 /***CONFIRMATION MESSAGES***/
 
 .confirm-question {
-    position: absolute;
+    position: relative;
+    z-index: 9999;
     width: 200px;
     padding: 20px 0;
     background-color: #000;

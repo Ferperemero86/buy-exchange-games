@@ -6,7 +6,7 @@ import GamesList from "./GamesList";
 const GamesListSearch = ({gameId, closeGamesList, reduceNameLength}) => {
     const {usersGames} = useContext(UsersGamesContext);
     const {showGamesList, gamesList} = usersGames;
-
+   
     if (showGamesList === gameId) {
         return (
             <div className="games-list" key={gameId}>
@@ -14,6 +14,7 @@ const GamesListSearch = ({gameId, closeGamesList, reduceNameLength}) => {
                     <span onClick={closeGamesList}>X</span>
                 </div>
                 <GamesList 
+                    id={gameId}
                     reduceNameLength={reduceNameLength} />
             </div>
         )

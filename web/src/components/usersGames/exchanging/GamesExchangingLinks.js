@@ -26,14 +26,16 @@ const GamesExchangingLinks = ({gameId, closeGamesList, userId}) => {
         }
     }
 
-    const submitProposal = () => {
-        dispatchMessages({type: "SHOW_CONFIRM_QUESTION", payload: true})
+    const submitProposal = (e) => {
+        const gameId = parseInt(e.currentTarget.getAttribute("data"));
+        
+        dispatchMessages({type: "SHOW_CONFIRM_QUESTION", payload: gameId})
 
         closeGamesList();
     }
 
     const showMessageForm = (e) => {
-        const userId = e.target.getAttribute("data");
+        const userId = e.currentTarget.getAttribute("data-user-id");
         dispatchUsersGames({type: "SHOW_MESSAGE_FORM", payload: userId})
     }
 
@@ -41,7 +43,7 @@ const GamesExchangingLinks = ({gameId, closeGamesList, userId}) => {
         <div className="links">
             <Button
                 className="button proposal"
-                data={userId}
+                data={gameId}
                 onClick={submitProposal}
                 text="Submit Proposal" />
              <Button

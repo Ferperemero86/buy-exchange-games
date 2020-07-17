@@ -3,7 +3,7 @@ import React, {useContext} from "react";
 import {UsersGamesContext} from "../../providers/UsersGamesProvider";
 import Game from "../../../components/games/Game";
 
-const GamesList = ({reduceNameLength}) => {
+const GamesList = ({reduceNameLength, id}) => {
     const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
     const {gamesList} = usersGames;
 
@@ -21,7 +21,7 @@ const GamesList = ({reduceNameLength}) => {
                 let shortName;
                 const {platform, cover, name, game_id} = game;
                 shortName = reduceNameLength(name);
-                const gameData = [platform, cover, shortName, game_id];
+                const gameData = [platform, cover, shortName, game_id, id];
                 
                 return (
                     <div className="games-list-game" key={game.id}>

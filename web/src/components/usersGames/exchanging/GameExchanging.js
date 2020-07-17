@@ -8,25 +8,18 @@ const GameExchanging = ({gameArray, reduceNameLength, gameFromListToExchange}) =
     if (gameArray && Array.isArray(gameArray) && gameArray.length > 0) {
         return gameArray.map(game => {
             gameKey++;
-            let platform, shortName, coverUrl;
-
+            
             const gameClass = `game-${gameKey}`;
             const heading = gameClass === "game-1" ? "Game Owning" : "Looking For";
+            const gameFromListToExchangeId = gameFromListToExchange ? parseInt(gameFromListToExchange[4]) : null;
+            let platform = game.platform.toUpperCase();
+            let shortName = reduceNameLength(game.name);
+            let coverUrl = game.cover;
 
-            if (!gameFromListToExchange || gameFromListToExchange && gameClass === "game-1") {
-                const {name, cover} = game;
+            if (gameClass === "game-2" && 
+                gameFromListToExchange instanceof Array === true && 
+                gameFromListToExchangeId === game.id) {
 
-                platform = game.platform.toUpperCase();
-                shortName = reduceNameLength(name);
-                coverUrl = cover;
-            } 
-            
-            if (gameClass === "game-2" && gameFromListToExchange instanceof Array === false) {
-                platform = gameFromListToExchange.platform;
-                coverUrl = gameFromListToExchange.cover;
-                shortName = reduceNameLength(gameFromListToExchange.name);
-            }
-            if (gameClass === "game-2" && gameFromListToExchange instanceof Array === true) {
                 platform = gameFromListToExchange[0];
                 coverUrl = gameFromListToExchange[1];
                 shortName = reduceNameLength(gameFromListToExchange[2]);

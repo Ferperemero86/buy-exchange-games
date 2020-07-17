@@ -22,7 +22,7 @@ export async function getServerSideProps(ctx) {
 }
 
 
-const SellingLinks = () => {
+const SellingLinks = ({gameId}) => {
     const {dispatchUsersGames} = useContext(UsersGamesContext);
     const {dispatchMessages} = useContext(MessagesContext);
     const router = useRouter();
@@ -31,10 +31,11 @@ const SellingLinks = () => {
         router.push("/games/users-selling");
     }
 
-    const askConfirmation = () => {
+    const askConfirmation = (e) => {
+        const gameId = parseInt(e.currentTarget.getAttribute("data"));
         const message = "Send Proposal?";
 
-        dispatchMessages({type: "SHOW_CONFIRM_QUESTION", payload: true})
+        dispatchMessages({type: "SHOW_CONFIRM_QUESTION", payload: gameId})
         dispatchMessages({type: "UPDATE_CONFIRMATION_MESSAGE", payload: message})
     }
 
@@ -46,6 +47,7 @@ const SellingLinks = () => {
         <div className="selling-links">
             <Button 
                 className="selling-links-button proposal"
+                data={gameId}
                 text="Send proposal"
                 onClick={askConfirmation} />
             <Button 
@@ -103,20 +105,28 @@ const UsersSellingDetails = ({gameDetails}) => {
     const {usersGames} = useContext(UsersGamesContext);
     const {gameSellingPrice} = usersGames;
     const {games} = gameDetails;
+    const router = useRouter();
     const data = {
         price: gameSellingPrice,
         gameId: games.id,
         recipientId: games.list_id
     };
-    
+
+    const sendGamesData = (Url, data, redUrl) => {
+        sendLocalData(Url, data);
+        router.push(redUrl);
+    }
+
     return (
         <div className="users-selling-game-details">
             <ConfirmQuestion 
                 Url="/api/usersselling/proposal"
                 redUrl="/games/users-selling"
+                gameId={games.id}
+                customFunct={sendGamesData}
                 data={data} />
             <GameDetails gameDetails={games} />
-            <SellingLinks />
+            <SellingLinks gameId={games.id} />
         </div>
     )
 }

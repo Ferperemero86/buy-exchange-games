@@ -14,6 +14,7 @@ const UserProfile = require("../db/models/user-profile");
 const GamesSellingProposals = require("../db/models/games-selling-proposals");
 const GamesExchangingProposals = require("../db/models/games-exchanging-proposals");
 //const GamesContent = require("../db/models/games-content");
+const GamesExchanging = require("../db/models/games-exchanging");
 
 router.post("/usersgames",
             jsonParser,
@@ -241,23 +242,80 @@ router.post("/usersexchanging/proposal",
                         })
                     })
                     .then(method => {
-                        return GamesExchangingProposals
-                        .forge({
-                            id: gameId,
-                            game_2: game2,
-                            recipient_id: recipientId,
-                            sender_id: senderId
+                        return new Promise((resolve) => {
+                            return GamesExchangingProposals
+                                .forge({
+                                    id: gameId,
+                                    game_2: game2,
+                                    recipient_id: recipientId,
+                                    sender_id: senderId
+                                })
+                                .save(null, {method})
+                                .then(() => {
+                                    return resolve()
+                                })
                         })
-                        .save(null, {method})
-                        .then(() => {
-                            return res.json({proposalSaved: true})
-                        })
+                    })
+                    .then(() => {
+                        return GamesExchanging
+                            .forge({id: gameId})
+                            .save(
+                                {user_2: senderId},
+                                {method: "update"}
+                            )
+                            .then(() => {
+                                return res.json({proposalSaved: true})
+                            })
                     })
                     .catch(() => {
                         return res.json({internalError: true})
                     })
 
 })
+
+router.post("/proposals",
+            jsonParser,
+            (req, res) => {
+                const {userId} = req.body;
+                console.log("USERID", userId);
+                if (!userId) { return res.json({login: false}) }
+
+                return GamesExchangingProposals
+                    .query({
+                        where:{sender_id: userId}, 
+                        orWhere: {recipient_id: userId} 
+                    })
+                    .fetchAll({withRelated: [
+                            "proposals.gameContent1", 
+                            //"proposals.gameContent2",
+                            "gameContent2",
+                            "proposals.userProfile1",
+                            "proposals.userProfile2"
+                        ]
+                    })
+                    .then(exProp => {
+                        console.log("EXPROP", exProp);
+                        return new Promise((resolve) => {
+                            resolve(exProp)
+                        })
+                    })
+                    .then(exProp => {
+                        return GamesSellingProposals
+                        .query({
+                            where:{sender_id: userId}, 
+                            orWhere: {recipient_id: userId} 
+                        })
+                        .fetchAll()
+                        .then(sellProp => {
+                            console.log(exProp, sellProp);
+                            return res.json({sellProp, exProp})
+                        })
+                    })
+                    .catch(err => {
+                        console.log("ERROR", JSON.stringify(err));
+                        return res.json()
+                    })
+            })
 
 
 module.exports = router;

@@ -1,6 +1,8 @@
 import React, {useContext} from "react";
+import {useRouter} from "next/router";
 
 import {UsersGamesContext} from "../../providers/UsersGamesProvider";
+import {sendLocalData} from "../../../utils/API";
 
 import BasicUserInfo from "../BasicUserInfo";
 import GamesListSearch from "../exchanging/GamesListSearch";
@@ -32,25 +34,35 @@ const MessageToSend = ({recipient}) => {
 const GamesExchanging = ({games, reduceNameLength}) => {
     const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
     const {gameFromListToExchange} = usersGames;
-    const game2= gameFromListToExchange ? gameFromListToExchange.game_2 : null;
+    
     let gameKey = 0;
+    const router = useRouter();
 
     const closeGamesList = () => {
         dispatchUsersGames({type: "SHOW_GAMES_LIST", payload: false});
     }
 
+    const sendGamesData = (Url, data, redUrl) => {
+        sendLocalData(Url, data);
+        router.push(redUrl);
+    }
+
     if (games.length > 0 && games[0].length > 0) {
         return games.map(gameArray => {
             const nickName = gameArray[0].nickName;
-            const gameId = gameArray[0].id;
+            const gameId = parseInt(gameArray[0].id);
             const userId = parseInt(gameArray[0].list_id);
-            let data ={
+            let game2 = gameArray[0].game_2;
+
+            let data = {
                 gameId,
                 game2,
                 recipientId: userId
             };
             
             if (Array.isArray(gameFromListToExchange)) {
+                game2 = gameFromListToExchange.game_2;
+
                 data = {
                     gameId,
                     game2: gameFromListToExchange[3],
@@ -72,7 +84,9 @@ const GamesExchanging = ({games, reduceNameLength}) => {
                     <ConfirmQuestion 
                         Url="/api/usersexchanging/proposal"
                         redUrl="/games/users-exchanging"
-                        data={data}/>
+                        gameId={gameId}
+                        data={data}
+                        customFunct={sendGamesData}/>
                     <GameExchanging 
                         gameArray={gameArray} 
                         gameFromListToExchange={gameFromListToExchange}
