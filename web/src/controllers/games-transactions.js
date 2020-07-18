@@ -305,7 +305,10 @@ router.post("/proposals",
                             where:{sender_id: userId}, 
                             orWhere: {recipient_id: userId} 
                         })
-                        .fetchAll()
+                        .fetchAll({withRelated: [
+                            "proposals.content", 
+                            "proposals.userProfile"
+                        ]})
                         .then(sellProp => {
                             console.log(exProp, sellProp);
                             return res.json({sellProp, exProp})

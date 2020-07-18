@@ -24,9 +24,12 @@
     float: left;
 }
 
+.exchanging-proposal .proposal-game .cover{
+    max-height: 150px;
+}
+
 .proposal-game .basic-user-info {
     position: absolute;
-    width: 90%;
     text-align: left;
     z-index: 1;
     border: 1px solid #fff;
@@ -39,4 +42,35 @@
     margin: 40px 10% 0 0; 
     height: auto;
     color: #fff;
+}
+
+.exchanging-proposal .game .title {
+    margin-top: 5px;
+}
+
+.selling-proposals {
+    overflow: hidden;
+    width: 100%;
+}
+
+.proposals-selling-game {
+    float: left;
+    position: relative;
+    margin: 0 2%;
+}
+
+.proposals-selling-game .basic-user-info {
+    position: absolute;
+    border: 1px solid #fff;
+    width: 90%;
+}
+
+.proposals-selling-game .game {
+    max-width: 150px;
+    margin-top: 40px;
+    color: #fff;
+}
+
+.proposals-selling-game .game .cover {
+    max-height: 150px;
 }

@@ -10,8 +10,9 @@ const Games = ({games, type}) => {
     
         if (stringName[0].length > 15) {
             shortName = stringName[0].slice(0, 15) + "...";
+            return shortName;
         }
-        return shortName;
+        return name;
     };
 
     if (type === "exchanging") {

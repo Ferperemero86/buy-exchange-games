@@ -18,6 +18,33 @@ export async function getServerSideProps(ctx) {
 
 }
 
+const Heading = ({title}) => {
+    return <h2 className="proposals-heading">{title}</h2>
+}
+
+const SellingGames = ({proposals}) => {
+    console.log("PROPOSALS SELLING", proposals);
+    if (Array.isArray(proposals) && proposals.length > 0) {
+        return proposals.map(proposal => {
+            const game = proposal.proposals.content;
+            const profile = proposal.proposals.userProfile;
+           
+            return (
+                <div className="proposals-selling-game"
+                     key={game.id}>
+                    <BasicUserInfo
+                        nickName={profile.nickName}
+                        userId={profile.id} />
+                    <Game
+                        Url={game.cover}
+                        title={game.name} />
+                </div>
+            )
+        })
+    }
+    return null;
+}
+
 const ExchangingGames = ({proposals, userLogged}) => {
     if (Array.isArray(proposals) && proposals.length > 0) {
         return proposals.map((proposal, index) => {
@@ -51,10 +78,6 @@ const ExchangingGames = ({proposals, userLogged}) => {
     return null;
 }
 
-const Heading = ({title}) => {
-    return <h2 className="proposals-heading">{title}</h2>
-}
-
 const ExchangingProposals = ({proposals, heading, userLogged}) => {
     return (
         <div className="exchanging-proposals">
@@ -66,20 +89,37 @@ const ExchangingProposals = ({proposals, heading, userLogged}) => {
     )
 }
 
+const SellingProposals = ({proposals, heading}) => {
+    return (
+        <div className="selling-proposals">
+            {proposals.length > 0 && <Heading title={heading} />}
+            <SellingGames 
+                heading={heading}
+                proposals={proposals} />
+        </div>
+    )
+}
+
 
 const Proposals = ({proposals, userLogged}) => {
+    console.log(proposals);
     const organizeProposals = (proposals, userLogged) => {
         const exchangeProposalsSent = proposals.exProp.filter(prop => { return prop.sender_id === userLogged});
         const exchangeProposalsReceived = proposals.exProp.filter(prop => { return prop.recipient_id === userLogged});
+        const sellingProposalsSent = proposals.sellProp.filter(prop => { return prop.sender_id === userLogged});
+        const sellingProposalsReceived = proposals.sellProp.filter(prop => { return prop.recipient_id === userLogged});
     
         return {
             exchangeProposalsSent,
-            exchangeProposalsReceived
+            exchangeProposalsReceived,
+            sellingProposalsSent,
+            sellingProposalsReceived
         }
     }
 
     const organizedProposals = organizeProposals(proposals, userLogged);
-    const {exchangeProposalsSent, exchangeProposalsReceived} = organizedProposals;
+    const {exchangeProposalsSent, exchangeProposalsReceived, 
+           sellingProposalsSent, sellingProposalsReceived} = organizedProposals;
     
     return (
         <div className="proposals">
@@ -92,6 +132,12 @@ const Proposals = ({proposals, userLogged}) => {
                 heading="Exchanging Proposals Received"
                 proposals={exchangeProposalsReceived} 
                 userLogged={userLogged} />
+            <SellingProposals
+                heading="Selling Proposals Sent"
+                proposals={sellingProposalsSent} />
+            <SellingProposals
+                heading="Selling Proposals Received"
+                proposals={sellingProposalsReceived} />
         </div>
     )
 }
