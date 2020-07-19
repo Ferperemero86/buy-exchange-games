@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useRef, useEffect} from "react";
 
 import {UsersMessagesContext} from "../providers/UsersMessagesProvider";
 
@@ -11,6 +11,11 @@ const Messages = () => {
         const conversation = conversations.filter(conv => { return conv.conversation_id === conversation_id });
         const messages = conversation.length > 0 ? conversation[0].messages : [];
         const currentUser = conversation.length > 0 ? conversation[0].users[0].user_id : [];
+        const textRef = useRef(null);
+
+        useEffect(() => {
+            textRef.current.scrollIntoView({behavior: "smooth", block: "end"})
+        }, [messages.length])
        
         if (messages && Array.isArray(messages)) {
             return messages.map(msg => {
@@ -31,7 +36,9 @@ const Messages = () => {
                 const messageStyles = currentUser === msg.user_id ? "user-left" : "user-right";
 
                 return (
-                    <div className={`message ${messageStyles}`} key={msg.id}>
+                    <div className={`message ${messageStyles}`} 
+                         key={msg.id}
+                         ref={textRef}>
                         <p className="name">{user[0].nickName}</p>
                         <p className="text">{msg.message}</p>
                         <p className="time">{time}</p>
