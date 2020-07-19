@@ -24,7 +24,7 @@ router.post("/gamesinlist/game/add",
         const userId = req.user.id;
         const nameString = gameDetails.title;
         const {cover, id, summary, platform} = gameDetails;
-        const name = nameString.replace("'", "");
+        const name = nameString.replace("'", "").toLowerCase();
         
         await Bookshelf.transaction(t => {
             return new Promise((resolve, reject) => {            

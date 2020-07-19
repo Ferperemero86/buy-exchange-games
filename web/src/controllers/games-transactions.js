@@ -49,7 +49,7 @@ router.post("/usersgames",
                 if (textSearch !== "") {
                     textSearch = textSearch.toLowerCase();
                 }
-                console.log("TYPE", type);
+               
                 if (type === "exchanging") {
                     query = knex("user_profile")
                                 .select("user_profile.country", "user_profile.id", "user_profile.nickName", "games_content.name", "games_content.cover", 
@@ -86,7 +86,7 @@ router.post("/usersgames",
                             query.andWhere("city", cityName);
                         }
                         if(textSearch !== "") {
-                            query.andWhere("games_content.name", "like", `%${textSearch}%`);
+                            query.andWhere("games_content.name", "like", `${textSearch}%`);
                         }
 
                         query.then(games => {
@@ -122,7 +122,8 @@ router.post("/usersgames",
                         query.whereNot("user_profile.id", userId);
                         
                         if(textSearch !== "") {
-                            query.andWhere("games_content.name", "like", `%${textSearch}%`);
+                            console.log("TEXT SEARCH", textSearch);
+                            query.andWhere("games_content.name", "like", `${textSearch}%`);
                         }
                         if (country !== "" && city === "not selected") {
                             query.andWhere("country", country)
