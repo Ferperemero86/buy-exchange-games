@@ -122,7 +122,6 @@ router.post("/usersgames",
                         query.whereNot("user_profile.id", userId);
                         
                         if(textSearch !== "") {
-                            console.log("TEXT SEARCH", textSearch);
                             query.andWhere("games_content.name", "like", `${textSearch}%`);
                         }
                         if (country !== "" && city === "not selected") {
