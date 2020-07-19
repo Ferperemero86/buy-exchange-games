@@ -78,7 +78,7 @@ const Games = () => {
     if (index > 0) {
         index--;
     }
-
+    console.log("INDEX", index);
     if (exploreGames.games[index]) {
         return exploreGames.games[index].map(game=> {
             return <Game game={game} key={game.id}/>
@@ -90,7 +90,7 @@ const Games = () => {
 };
 
 const Pagination = () => {
-    const {exploreGames} = useContext(ExploreGamesContext);
+    const {exploreGames, dispatchExploreGames} = useContext(ExploreGamesContext);
     const listRef = useRef(null);
     let indexNav = 0;
 
@@ -123,6 +123,14 @@ const Pagination = () => {
         return selected;
     };
 
+    const updatePage = (e) => {
+        const page = e.target.getAttribute("data-page");
+        
+        dispatchExploreGames({type: "UPDATE_PAGE", payload: page});
+
+        changeStyle(e);
+    }
+
     if(exploreGames.games.length > 0) {
 
         return(  
@@ -140,7 +148,7 @@ const Pagination = () => {
                                     key={indexNav} >
                                     <li className={`pagination-list-element ${selected}`}
                                         data-page={indexNav}
-                                        onClick={changeStyle}>{indexNav}</li>
+                                        onClick={updatePage}>{indexNav}</li>
                                 </Link>
                             )
                         })
