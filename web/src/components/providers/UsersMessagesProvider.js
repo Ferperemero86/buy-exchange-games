@@ -26,7 +26,8 @@ const UsersMessagesProvider = ({children, pageProps}) => {
         currentConversation: conversationId,
         currentRecipient: recipientId,
         conversations,
-        users
+        users,
+        chatTextInput: ""
     }
     
     const [usersMessagesState, dispatchUsersMessages] = useReducer(usersMessagesReducer, initialValues);

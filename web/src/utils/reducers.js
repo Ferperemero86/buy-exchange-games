@@ -243,6 +243,9 @@ module.exports = {
 
             case "UPDATE_CONVERSATIONS" :
                 return {...state, conversations: action.payload}
+
+            case "UPDATE_CHAT_TEXT_INPUT" :
+                return {...state, chatTextInput: action.payload}
         }
     },
     userProfileReducer: (state, action) => {

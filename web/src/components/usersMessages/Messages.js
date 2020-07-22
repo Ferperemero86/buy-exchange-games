@@ -14,7 +14,7 @@ const Messages = () => {
         const textRef = useRef(null);
 
         useEffect(() => {
-            textRef.current.scrollIntoView({behavior: "smooth", block: "end"})
+            textRef.current.scrollIntoView({block: "end"})
         }, [messages.length])
        
         if (messages && Array.isArray(messages)) {
