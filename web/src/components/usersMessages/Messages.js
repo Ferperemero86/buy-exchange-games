@@ -25,13 +25,13 @@ const Messages = () => {
                     }
                     return val;
                 }
-                
+               
                 const user = users.filter(user => { return user.id === msg.user_id });
                 const hours = addZero(new Date(msg.time).getHours());
                 const minutes = addZero(new Date(msg.time).getMinutes());
-                const day = addZero(new Date(msg.time).getDay());
-                const month = addZero(new Date(msg.time).getMonth());               
-
+                const day = addZero(new Date(msg.time).getDate());
+                const month = addZero(new Date(msg.time).getMonth() + 1);               
+                
                 const time = `${hours}:${minutes} ${day}/${month}`;
                 const messageStyles = currentUser === msg.user_id ? "user-left" : "user-right";
 
