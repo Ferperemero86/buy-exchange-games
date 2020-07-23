@@ -16,6 +16,46 @@ const GamesExchangingProposals = require("../db/models/games-exchanging-proposal
 //const GamesContent = require("../db/models/games-content");
 const GamesExchanging = require("../db/models/games-exchanging");
 
+const getProposals = (res, userId) => {
+    return GamesExchangingProposals
+                    .query({
+                        where:{sender_id: userId}, 
+                        orWhere: {recipient_id: userId} 
+                    })
+                    .fetchAll({withRelated: [
+                            "proposals.gameContent1", 
+                            "gameContent2",
+                            "proposals.userProfile1",
+                            "proposals.userProfile2"
+                        ]
+                    })
+                    .then(exProp => {
+                        console.log("EXPROP", exProp);
+                        return new Promise((resolve) => {
+                            resolve(exProp)
+                        })
+                    })
+                    .then(exProp => {
+                        return GamesSellingProposals
+                        .query({
+                            where:{sender_id: userId}, 
+                            orWhere: {recipient_id: userId} 
+                        })
+                        .fetchAll({withRelated: [
+                            "proposals.content", 
+                            "proposals.userProfile"
+                        ]})
+                        .then(sellProp => {
+                            console.log(exProp, sellProp);
+                            return res.json({sellProp, exProp})
+                        })
+                    })
+                    .catch(err => {
+                        console.log("ERROR", JSON.stringify(err));
+                        return res.json()
+                    })
+}
+
 router.post("/usersgames",
             jsonParser,
             (req, res) => {
@@ -273,6 +313,42 @@ router.post("/usersexchanging/proposal",
 
 })
 
+router.post("/usersexchanging/proposal/delete",
+            jsonParser,
+            (req, res) => {
+                const {id} = req.body;
+                const userId = req.user.id;
+
+                return GamesExchangingProposals
+                    .forge({id})
+                    .destroy()
+                    .then(() => {
+                        return getProposals(res, userId);
+                    })
+                    .catch(err => {
+                        console.log(JSON.stringify(err));
+                    })
+
+})
+
+router.post("/usersselling/proposal/delete",
+            jsonParser,
+            (req, res) => {
+                const {id} = req.body;
+                const userId = req.user.id;
+
+                return GamesSellingProposals
+                    .forge({id})
+                    .destroy()
+                    .then(() => {
+                        return getProposals(res, userId);
+                    })
+                    .catch(err => {
+                        console.log(JSON.stringify(err));
+                    })
+                            
+})
+
 router.post("/proposals",
             jsonParser,
             (req, res) => {
@@ -280,44 +356,7 @@ router.post("/proposals",
                 console.log("USERID", userId);
                 if (!userId) { return res.json({login: false}) }
 
-                return GamesExchangingProposals
-                    .query({
-                        where:{sender_id: userId}, 
-                        orWhere: {recipient_id: userId} 
-                    })
-                    .fetchAll({withRelated: [
-                            "proposals.gameContent1", 
-                            //"proposals.gameContent2",
-                            "gameContent2",
-                            "proposals.userProfile1",
-                            "proposals.userProfile2"
-                        ]
-                    })
-                    .then(exProp => {
-                        console.log("EXPROP", exProp);
-                        return new Promise((resolve) => {
-                            resolve(exProp)
-                        })
-                    })
-                    .then(exProp => {
-                        return GamesSellingProposals
-                        .query({
-                            where:{sender_id: userId}, 
-                            orWhere: {recipient_id: userId} 
-                        })
-                        .fetchAll({withRelated: [
-                            "proposals.content", 
-                            "proposals.userProfile"
-                        ]})
-                        .then(sellProp => {
-                            console.log(exProp, sellProp);
-                            return res.json({sellProp, exProp})
-                        })
-                    })
-                    .catch(err => {
-                        console.log("ERROR", JSON.stringify(err));
-                        return res.json()
-                    })
+                getProposals(res, userId);
             })
 
 
