@@ -12,10 +12,19 @@ import UsersGamesProvider from "../components/providers/UsersGamesProvider";
 import MessagesProvider from "../components/providers/MessagesProvider";
 import UserProfileProvider from "../components/providers/UserProfileProvider";
 import UserMessagesProvider from "../components/providers/UsersMessagesProvider";
+import ProposalsProvider from "../components/providers/ProposalsProvider";
 import Header from "../components/Header";
 
 const Page = ({pageProps, Component, router}) => {
     const path = router.pathname;
+
+    if (path.includes("account/proposals")) {
+        return (
+            <ProposalsProvider pageProps={pageProps}>
+                <Component {...pageProps} />
+            </ProposalsProvider>
+        )
+    }
 
     if (path.includes("account/user-profile")) {
         return (
