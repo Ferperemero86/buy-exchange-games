@@ -1,9 +1,12 @@
-import React from "react";
+import React, {useContext} from "react";
 
 import {sendLocalData} from "../../utils/API";
 
+import {ProposalsContext} from "../../components/providers/ProposalsProvider";
+
 import Game from "../../components/games/Game";
 import BasicUserInfo from "../../components/usersGames/BasicUserInfo";
+import CloseIcon from "../../components/CloseIcon";
 
 export async function getServerSideProps(ctx) {
     let userLogged = ctx.req.user ? ctx.req.user.id : null;
@@ -15,7 +18,21 @@ export async function getServerSideProps(ctx) {
     const proposals = await sendLocalData(Url, {userId: userLogged});
     
     return { props: {proposals, userLogged} }
+}
 
+
+const organizeProposals = (proposals, userLogged) => {
+    const exchangeProposalsSent = proposals.exProp.filter(prop => { return prop.sender_id === userLogged});
+    const exchangeProposalsReceived = proposals.exProp.filter(prop => { return prop.recipient_id === userLogged});
+    const sellingProposalsSent = proposals.sellProp.filter(prop => { return prop.sender_id === userLogged});
+    const sellingProposalsReceived = proposals.sellProp.filter(prop => { return prop.recipient_id === userLogged});
+
+    return {
+        exchangeProposalsSent,
+        exchangeProposalsReceived,
+        sellingProposalsSent,
+        sellingProposalsReceived
+    }
 }
 
 const Heading = ({title}) => {
@@ -23,15 +40,31 @@ const Heading = ({title}) => {
 }
 
 const SellingGames = ({proposals}) => {
-    console.log("PROPOSALS SELLING", proposals);
+    const {dispatchProposals} = useContext(ProposalsContext);
+
+    const clearGame = async (e) => {
+        const id = e.target.getAttribute("data");
+    
+        const proposalsData = await sendLocalData("/api/usersselling/proposal/delete", {id});
+    
+        if (proposalsData) {
+            dispatchProposals({type: "UPDATE_PROPOSALS", payload: proposalsData})
+        }
+    }
+
     if (Array.isArray(proposals) && proposals.length > 0) {
         return proposals.map(proposal => {
             const game = proposal.proposals.content;
             const profile = proposal.proposals.userProfile;
-           
+
             return (
                 <div className="proposals-selling-game"
                      key={game.id}>
+                    <CloseIcon 
+                        data={proposal.id}
+                        text="Clear"
+                        className="clear-selling-game-icon"
+                        onClick={clearGame} />
                     <BasicUserInfo
                         nickName={profile.nickName}
                         userId={profile.id} />
@@ -46,6 +79,17 @@ const SellingGames = ({proposals}) => {
 }
 
 const ExchangingGames = ({proposals, userLogged}) => {
+    const {dispatchProposals} = useContext(ProposalsContext);
+
+    const clearGame = async (e) => {
+        const id = e.target.getAttribute("data");
+    
+        const proposalsData = await sendLocalData("/api/usersexchanging/proposal/delete", {id});
+    
+        dispatchProposals({type: "UPDATE_PROPOSALS", payload: proposalsData})
+    
+    }
+
     if (Array.isArray(proposals) && proposals.length > 0) {
         return proposals.map((proposal, index) => {
                 const game1 = proposal.proposals.gameContent1;
@@ -59,6 +103,12 @@ const ExchangingGames = ({proposals, userLogged}) => {
                             {userLogged !== profile1.id && <BasicUserInfo
                                 nickName={profile1.nickName}
                                 userId={profile1.id} />}
+                            <CloseIcon 
+                                data={proposal.id}
+                                text="Clear"
+                                className="clear-exchanging-game-icon"
+                                dispatchFunc={dispatchProposals}
+                                onClick={clearGame} />
                             <Game
                                 Url={game1.cover}
                                 title={game1.name} />
@@ -101,23 +151,11 @@ const SellingProposals = ({proposals, heading}) => {
 }
 
 
-const Proposals = ({proposals, userLogged}) => {
-    console.log(proposals);
-    const organizeProposals = (proposals, userLogged) => {
-        const exchangeProposalsSent = proposals.exProp.filter(prop => { return prop.sender_id === userLogged});
-        const exchangeProposalsReceived = proposals.exProp.filter(prop => { return prop.recipient_id === userLogged});
-        const sellingProposalsSent = proposals.sellProp.filter(prop => { return prop.sender_id === userLogged});
-        const sellingProposalsReceived = proposals.sellProp.filter(prop => { return prop.recipient_id === userLogged});
-    
-        return {
-            exchangeProposalsSent,
-            exchangeProposalsReceived,
-            sellingProposalsSent,
-            sellingProposalsReceived
-        }
-    }
+const Proposals = ({userLogged}) => {
+    const {proposals} = useContext(ProposalsContext);
+    const {proposalsData} = proposals;
 
-    const organizedProposals = organizeProposals(proposals, userLogged);
+    const organizedProposals = organizeProposals(proposalsData, userLogged);
     const {exchangeProposalsSent, exchangeProposalsReceived, 
            sellingProposalsSent, sellingProposalsReceived} = organizedProposals;
     
