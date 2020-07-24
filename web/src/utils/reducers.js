@@ -253,5 +253,11 @@ module.exports = {
             case "SHOW_MESSAGE_FORM" :
                 return {...state, messageForm: action.payload}
         }
+    },
+    proposalsReducer: (state, action) => {
+        switch(action.type) {
+            case "UPDATE_PROPOSALS" :
+                return {...state, proposalsData: action.payload}
+        }
     }
 }
