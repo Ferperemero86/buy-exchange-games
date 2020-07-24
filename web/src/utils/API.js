@@ -22,6 +22,7 @@ module.exports = {
                                       headers: {'Content-Type': 'application/json'} });
     if (Array.isArray(result) !== true) {
       const data = await result.json();
+
       return data;
     }
     return result;
