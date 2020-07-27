@@ -37,15 +37,18 @@ const LoginForm = () => {
     axios.post(`/api/session`, userData)
         .then((result) => {
             const success = result.data;
-           
+          
             if (success && success.login) {
-                dispatchUser({ type: "USER_LOGGED_IN"});
+                const userId = success.userId;
+               
+                dispatchUser({type: "USER_LOGGED_IN"});
+                dispatchUser({type: "UPDATE_USER_ID", payload: userId})
             }
         })
         .catch(err => {
             if (err.response) {
                 const messages = handleMessages(err.response.data);
-                console.log(messages);
+
                 dispatchLogin({type: "UPDATE_MESSAGE", payload: messages});
             }
         });
