@@ -9,7 +9,7 @@ const GamesListProvider =({children, pageProps}) => {
     const listName = pageProps.gamesListName;
     const userId = pageProps.userId ? pageProps.userId : null;
     const {login, listExists, userLogged} = pageProps;
-    console.log(games);
+    
     const initialValues = {
         games,
         listExists,
