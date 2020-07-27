@@ -41,9 +41,9 @@ const HeaderMainNav = () => (
 
 const HeaderAccountNav = () => {
     const {user, dispatchUser} = useContext(UserContext);
-    const {userLogged, hasMounted} = user;
+    const {userLogged, userId, hasMounted} = user;
     const router = useRouter();
-    
+   
     const logOut = () => {
         cookie.remove("user_id", { path: "/" });
         router.push("/");
@@ -91,6 +91,14 @@ const HeaderAccountNav = () => {
             <li className="list-element">
                 <Link href="/account/proposals">
                     <a>Proposals</a>
+                </Link>
+            </li>
+            <li className="list-element">
+                <Link href={{ 
+                        pathname: "/account/user-profile", 
+                        query: {userId: userId} 
+                }}>
+                    <a>Profile</a>
                 </Link>
             </li>
             <li
