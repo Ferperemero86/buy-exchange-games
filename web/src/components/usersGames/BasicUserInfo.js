@@ -1,6 +1,11 @@
 import React from "react";
 import {useRouter} from "next/router";
 
+import Paragraph from "../../components/Paragraph";
+import Div from "../../components/Div";
+import Span from "../../components/Span";
+
+
 const BasicUserInfo = ({nickName, userId}) => {
     const router = useRouter();
    
@@ -12,12 +17,14 @@ const BasicUserInfo = ({nickName, userId}) => {
     }
     
     return (
-        <div className="basic-user-info" onClick={goToUserProfile}>
-            <div className="picture-name">
-                <span className="image"></span>
-                <p className="name">{nickName}</p>
-            </div>
-        </div>
+        <Div className="basic-user-info" onClick={goToUserProfile}>
+            <Div className="picture-name">
+                <Span className="image" />
+                <Paragraph
+                    className="name"
+                    text={nickName} />
+            </Div>
+        </Div>
     )
 }
 
