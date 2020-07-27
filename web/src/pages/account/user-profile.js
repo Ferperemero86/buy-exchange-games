@@ -5,6 +5,9 @@ import {UserProfileContext} from "../../components/providers/UserProfileProvider
 import SendMessageForm from "../../components/forms/MessageForm";
 import {sendLocalData} from "../../utils/API";
 
+import Paragraph from "../../components/Paragraph";
+import Span from "../../components/Span";
+
 export async function getServerSideProps(ctx) {
     const {userId} = ctx.query;
     const URLBase = await ctx.req.headers.host;
@@ -47,9 +50,27 @@ const UserProfile = ({profile}) => {
         <div className="user-profile">
             <div className="user-profile-info">
                 <div className="picture"></div>
-                <p className="nickname parag"><span className="span">Nickname:</span> {nickName}</p>
-                <p className="country parag"><span className="span">Country:</span> {country}</p>
-                <p className="city parag"><span className="span">City:</span> {city}</p>
+                <Paragraph 
+                    className={"nickname parag"}
+                    text={nickName}>
+                    <Span 
+                        text="nickName:" 
+                        className="span" />
+                </Paragraph>
+                <Paragraph 
+                    className={"country parag"}
+                    text={country}>
+                    <Span 
+                        text="Country:" 
+                        className="span" />
+                </Paragraph>
+                <Paragraph 
+                    className={"city parag"}
+                    text={city}>
+                    <Span 
+                        text="City:" 
+                        className="span" />
+                </Paragraph>
             </div>           
             <Link href={{ pathname: "/account/gameslist", query: {id} }}>
                 <a className="user-profile-list">See games list</a>
