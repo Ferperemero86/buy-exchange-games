@@ -1,4 +1,7 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
+
+import {UserContext} from "../components/providers/UserProvider";
+import {getDataFromClient} from "../utils/API";
 
 import "../static/styles/styles.css";
 import RegisterProvider from "../components/providers/forms/RegisterProvider";
@@ -17,6 +20,22 @@ import Header from "../components/Header";
 
 const Page = ({pageProps, Component, router}) => {
     const path = router.pathname;
+    const {dispatchUser} = useContext(UserContext);
+   
+    useEffect(() => {
+        const user = getDataFromClient("/api/session");
+
+        user.then(result => { 
+            if (result.login === false) {
+                dispatchUser({type: "USER_LOGGED_OUT"});
+            } else {
+                dispatchUser({type: "USER_LOGGED_IN"});
+                dispatchUser({type: "UPDATE_USER_ID", payload: result.userId})
+            } 
+            
+        });
+    }, [])
+
 
     if (path.includes("account/proposals")) {
         return (
