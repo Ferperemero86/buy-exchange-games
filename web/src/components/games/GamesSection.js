@@ -1,15 +1,25 @@
 import React, {useContext, useEffect} from "react";
+import {useRouter} from "next/router";
 
 import axios from "axios";
 
-import DeleteGameQuestion from "../messages/DeleteGameQuestion";
 import {GamesListContext} from "../providers/GamesListProvider";
+import {UserContext} from "../providers/UserProvider";
 
-import {useRouter} from "next/router";
+import DeleteGameQuestion from "../messages/DeleteGameQuestion";
+import Button from "../forms/Button";
+import Span from "../Span";
+import Heading from "../Heading";
+import Div from "../Div";
+import List from "../List";
+import ListElement from "../ListElement";
+import Image from "../Image";
+import Paragraph from "../Paragraph";
+import Section from "../Section";
+
 
 const GameStatusButton = ({Url, heading, gameId}) => {
-    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
-    const {userId} = gamesList;
+    const {dispatchGamesList} = useContext(GamesListContext);
     
     const changeStatus = async (e) => {
         e.preventDefault();
@@ -24,20 +34,21 @@ const GameStatusButton = ({Url, heading, gameId}) => {
                 //setMessage(err.response.data);
             })
     }
-    if (userId !== null) {
-        return null;
-    }
     
     return (
-        <button className="button"
-                onClick={changeStatus}>Stop {heading}</button>
+        <Button
+            className="button"
+            onClick={changeStatus}
+            text={`Stop ${heading}`} />
     )
 }
 
 
 const GameStatus = ({status, gameId}) => {
     const {gamesList} = useContext(GamesListContext);
-    const {userId} = gamesList;
+    const {user} = useContext(UserContext);
+    const userLogged = user.userId;
+    const userId = parseInt(gamesList.userLogged);
     let heading = null;
     let Url = null;
     
@@ -57,13 +68,20 @@ const GameStatus = ({status, gameId}) => {
 
     if (heading) {
         return (
-            <div className="game-status" key={gameId}>
-                <h3 className="heading">{heading}</h3>
-                <GameStatusButton
+            <Div 
+             className="game-status" 
+             key={gameId}>
+                <Heading
+                    className="heading"
+                    type="h3"
+                    text={heading} />
+                {userLogged === userId 
+                 && heading !== "Selling/Exchanging" 
+                 && <GameStatusButton
                     Url={Url}
                     gameId={gameId}
-                    heading={heading} />
-            </div>
+                    heading={heading} />}
+            </Div>
         )
     }
     return null;
@@ -71,57 +89,71 @@ const GameStatus = ({status, gameId}) => {
 
 const GameMenuIcon = ({displayGameMenu, gameId, status}) => { 
     const {gamesList} = useContext(GamesListContext);
-    const {userId} = gamesList;
+    const {user} = useContext(UserContext);
+    const userLogged = user.userId;
+    const userId = gamesList.userLogged;
     
-    if (status !== "inList" || userId !== null) {
+    if (status !== "inList" || userId !== userLogged) {
         return null;
     }
-    return <span className="game-menu-icon"
-                     data-key-game-id={gameId} 
-                     onClick={displayGameMenu}>....</span>;
+    return <Span 
+             className="game-menu-icon"
+             data={gameId}
+             text="..."
+             onClick={displayGameMenu} />
 }
 
 const GameMenu = ({game, hideGameMenu}) => {
-   const {gamesList, dispatchGamesList} = useContext(GamesListContext)
-   const {showGameMenu} = gamesList;
-   let gameId = game.id;
-   let id;
-   const router = useRouter();
-   
-   const goToNextPage = (Url, status) => {
-       dispatchGamesList({type: "SHOW_GAME_MENU"})
-      
-       router.push({pathname: `/account/${Url}`, 
-                    query: {id, 
-                            status,
-                            name: game.name, 
-                            platform: game.platform, 
-                            cover: game.cover}})
-   }
-   const goToSellaGame = () => {
-       id = game.game_id;
-       goToNextPage("sell-a-game", "selling");
-   }
-   const goToExchangeaGame = () => {
-        id = game.id;
-       goToNextPage("exchange-a-game", "exchanging")
-   }
+    const {gamesList, dispatchGamesList} = useContext(GamesListContext)
+    const {showGameMenu} = gamesList;
+    let gameId = game.id;
+    let id;
+    const router = useRouter();
+    
+    const goToNextPage = (Url, status) => {
+        dispatchGamesList({type: "SHOW_GAME_MENU"})
+       
+        router.push({pathname: `/account/${Url}`, 
+                     query: {id, 
+                             status,
+                             name: game.name, 
+                             platform: game.platform, 
+                             cover: game.cover}})
+    }
+    const goToSellaGame = () => {
+        id = game.game_id;
+        goToNextPage("sell-a-game", "selling");
+    }
+    const goToExchangeaGame = () => {
+         id = game.id;
+        goToNextPage("exchange-a-game", "exchanging")
+    }
 
-   if (parseInt(showGameMenu) === gameId) {
-       return (
-           <ul className="game-menu">
-               <li className="list-element">
-                   <span className="close-menu-icon" 
-                         onClick={hideGameMenu}>X</span>
-               </li>
-               <li className="list-element" 
-                   onClick={goToSellaGame}>Sell</li>
-               <li className="list-element"
-                   onClick={goToExchangeaGame}>Exchange</li>
-           </ul>
-       )
-   }
-   return null;
+
+    if (parseInt(showGameMenu) === gameId) {
+        return (
+            <List className="game-menu">
+                <ListElement className="list-element">
+                    <Span 
+                     className="close-menu-icon"
+                     text="X"
+                     onClick={hideGameMenu} />
+                </ListElement>
+                <ListElement 
+                 className="list-element"
+                 onClick={goToSellaGame} >
+                    <Span text="Sell"/>
+                </ListElement>
+                <ListElement 
+                 className="list-element"
+                 onClick={goToExchangeaGame} >
+                    <Span text="Exchange"/>
+                </ListElement>
+ 
+            </List>
+        )
+    }
+    return null;
 }
 
 const DeleteGameIcon = ({game, askForListDelete}) => {
@@ -133,27 +165,31 @@ const DeleteGameIcon = ({game, askForListDelete}) => {
     }
 
     return (
-        <div className="delete-icon" 
-             onClick={askForListDelete}
-             data-key-game-id={game.id}>
-            <span className="icon">x</span>
-        </div>
+        <Div 
+         className="delete-icon"
+         onClick={askForListDelete}
+         data={game.id}>
+            <Span 
+             className="icon"
+             text="X" />
+
+        </Div>
     )
 }
 
-const Cover = ({Url}) => {
-    return (
-        <div className="cover-container">
-            <img src={`${Url}`} className="cover" />
-        </div>
-    )
-}
+const Cover = ({Url}) => (
+    <Div className="cover-container">
+        <Image
+         className="cover"
+         Url={`${Url}`} />
+    </Div>
+)
 
-const Title = ({title}) => {
-    return (
-        <p className="title">{title}</p>
-    )
-}
+const Title = ({title}) => (
+    <Paragraph
+     className="title"
+     text={title} />
+)
 
 const Game = ({games}) => {
    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
@@ -162,46 +198,46 @@ const Game = ({games}) => {
    let gameId = 0;
 
     return games.map(game => {
-       if (game.cover) {
-         const gameCoverString = game.cover;
-         coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
-       }
+        if (game.cover) {
+            const gameCoverString = game.cover;
+            coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
+        }
         const id = gameId + 1;
         gameId++;
 
         const displayGameMenu = (e) => {
-            const gameId = parseInt(e.currentTarget.getAttribute("data-key-game-id") );
+            const gameId = parseInt(e.currentTarget.getAttribute("data") );
            
             dispatchGamesList({type: "SHOW_GAME_MENU", payload: gameId});
         }
 
         const hideGameMenu = () => {
-         dispatchGamesList({type: "SHOW_GAME_MENU", payload: null});
+            dispatchGamesList({type: "SHOW_GAME_MENU", payload: null});
         }
 
         const deleteGame = (gameId) => {
 
-         axios.post("/api/gamesinlist/game/delete", {gameId})
-             .then(result => {
-                 const gamesList = result.data.gamesList;
-                
-                 dispatchGamesList({type: "SHOW_DELETE_GAME_QUESTION", payload: false});
-                
-                 if (Array.isArray(gamesList)) {
-                     dispatchGamesList({type: "UPDATE_GAMES", payload: gamesList});
-                 } else {
-                     //setMessage({internalError: true});
-                 }
-             })
-             .catch(() => {
-               dispatchGamesList({type: "SHOW_DELETE_GAME_QUESTION", payload: false})
-                 //setMessage(err.response.data);
-             })
+        axios.post("/api/gamesinlist/game/delete", {gameId})
+            .then(result => {
+                const gamesList = result.data.gamesList;
+               
+                dispatchGamesList({type: "SHOW_DELETE_GAME_QUESTION", payload: false});
+               
+                if (Array.isArray(gamesList)) {
+                    dispatchGamesList({type: "UPDATE_GAMES", payload: gamesList});
+                } else {
+                    //setMessage({internalError: true});
+                }
+            })
+            .catch(() => {
+              dispatchGamesList({type: "SHOW_DELETE_GAME_QUESTION", payload: false})
+                //setMessage(err.response.data);
+            })
             
         };
 
         const askForListDelete = (e) => {
-            const gameId = parseInt(e.currentTarget.getAttribute("data-key-game-id"));
+            const gameId = parseInt(e.currentTarget.getAttribute("data"));
            
             if(gameId === game.id) {
                dispatchGamesList({type: "SET_ELEMENT_TO_DELETE", payload: "game"})
@@ -211,37 +247,37 @@ const Game = ({games}) => {
         }
 
         return (
-            <div className="game" key={id}>
-               <DeleteGameQuestion gameId={game.id}
-                                   action={deleteGame} 
-                                   element={elementToDelete} /> 
-               <GameStatus status={game.status} 
-                           gameId={game.id} />
-               <GameMenu hideGameMenu={hideGameMenu} 
-                         game={game} /> 
-               <div className="game-header">
-                   <DeleteGameIcon game={game} 
-                                   data-key-game-id={game.id}
-                                   askForListDelete={askForListDelete} />
-                   <GameMenuIcon displayGameMenu={displayGameMenu} 
-                                 data-game-id={game.id}
-                                 gameId={game.id}
-                                 status={game.status} />
-               </div>
-               <div className="game-info">
-                   <Cover Url={coverURL} />
-                   <Title title={game.name}/>
-               </div>
-            </div> 
+            <Div className="game" key={id}>
+                <DeleteGameQuestion gameId={game.id}
+                                    action={deleteGame} 
+                                    element={elementToDelete} /> 
+                <GameStatus status={game.status} 
+                            gameId={game.id} />
+                <GameMenu hideGameMenu={hideGameMenu} 
+                          game={game} /> 
+                <Div className="game-header">
+                    <DeleteGameIcon game={game} 
+                                    data-key-game-id={game.id}
+                                    askForListDelete={askForListDelete} />
+                    <GameMenuIcon displayGameMenu={displayGameMenu} 
+                                  data-game-id={game.id}
+                                  gameId={game.id}
+                                  status={game.status} />
+                </Div>
+                <Div className="game-info">
+                    <Cover Url={coverURL} />
+                    <Title title={game.name}/>
+                </Div>
+            </Div> 
         )
     })
 }
 
 const Games = ({games}) => {
    return (
-       <div className="gameslist">
+       <Div className="gameslist">
            <Game games={games} />
-       </div>
+       </Div>
    )
 };
 
@@ -271,10 +307,13 @@ const GamesSection = ({gamesInList, userId}) => {
                    platform = game.platform;
                    
                    return (
-                       <section className="games-list-section" key={game.id}>
-                           <h3 className="heading">{platform.toUpperCase()}</h3>
+                       <Section className="games-list-section" key={game.id}>
+                           <Heading 
+                            className="heading"
+                            text={platform.toUpperCase()}
+                            type="h3" />
                            <Games games={organizedGames[platform]} />
-                       </section>
+                       </Section>
                    )
                }
             })
