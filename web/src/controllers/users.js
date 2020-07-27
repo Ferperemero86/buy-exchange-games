@@ -100,9 +100,19 @@ router.post("/user/new",
 
 router.post('/session', 
             jsonParser,   
-            userAuthentication, (req, res) => {
+            userAuthentication, 
+            (req, res) => {
               const userId = req.user.id;
+              
+              return res.json({login: true, userId});
+});
 
+router.get('/session', 
+            jsonParser,   
+            userAuthentication, 
+            (req, res) => {
+              const userId = req.user.id;
+              
               return res.json({login: true, userId});
 });
 
@@ -222,7 +232,6 @@ router.post("/user/profiles",
             .where("id", "IN", profilesArray)
             .fetchAll()
             .then(profiles => {
-              console.log("PROFILES", profiles);
               return res.json({profiles})
             })
 
@@ -232,7 +241,7 @@ router.post("/user/profile",
             jsonParser,
             (req, res) => {
               const {userId} = req.body;  
-              console.log("USERID", userId);
+      
               UserProfile
                 .where({id: userId})
                 .fetch()
