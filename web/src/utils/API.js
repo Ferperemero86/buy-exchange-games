@@ -34,7 +34,6 @@ module.exports = {
     
     if (Array.isArray(result) !== true) {
       const data = await result.json();
-      
       return data;
     }
     return result;
@@ -42,7 +41,17 @@ module.exports = {
   sendDataFromClient: (Url, query) => {
     return axios.post(Url, query)
       .then(result => {
-        console.log(result);
+        return result.data
+      })
+      .catch(err => {
+        if (err.response) {
+          return err.response.data;
+        }
+      })
+  },
+  getDataFromClient: (Url) => {
+     return axios.get(Url)
+      .then(result => {
         return result.data
       })
       .catch(err => {
@@ -59,7 +68,6 @@ module.exports = {
       data: file
     })
     .then(result => {
-      console.log(result);
       return result;
     })
     .catch(err => {
