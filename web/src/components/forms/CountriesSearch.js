@@ -1,14 +1,17 @@
 import React from "react";
 
-const Countries = ({countries, countryNames}) => {
+import Option from "../Option";
+
+const Countries = ({countries, countryNames, onChange}) => {
 
     if (countryNames && (Array.isArray(countryNames)) ) {
         return countryNames.map(country => {
             const code = countries[country];
     
-            return <option 
+            return <Option 
                         value={code}
-                        key={country}>{country}</option>
+                        onChange={onChange}
+                        key={country}>{country}</Option>
         })
     }
    

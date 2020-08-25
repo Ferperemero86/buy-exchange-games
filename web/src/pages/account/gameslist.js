@@ -43,7 +43,7 @@ export async function getServerSideProps(ctx) {
 }
 
 const GamesList = ({gamesInList, userId}) => {
-    const {gamesList, dispatchGamesList} = useContext(GamesListContext);
+    const {gamesList, dispatchGamesList, closeDeleteQuestion} = useContext(GamesListContext);
     const {login, listExists, editListName, listName, elementToDelete} = gamesList;
     const router = useRouter();
     
@@ -100,6 +100,7 @@ const GamesList = ({gamesInList, userId}) => {
         <div className="user-list">
             <DeleteListQuestion 
                 action={deleteList} 
+                cancelDelete={closeDeleteQuestion}
                 element={elementToDelete} />
             <ListInput />
             <h3 className="gameslist-heading">{listName}</h3>

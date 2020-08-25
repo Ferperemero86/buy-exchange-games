@@ -63,7 +63,21 @@ const gameForSale = {
   }
 };
 
+const editPassword = {
+  password: {
+    presence: true,
+    format: {
+      pattern: /^.{8,72}$/,
+      message: () => {
+        return validate.format("^Please enter a valid Password");
+      }
+    }
+  }
+};
+
 module.exports = { register, 
                    createList, 
                    gameForSale,
-                   validate };
+                   validate,
+                   editPassword
+                  };

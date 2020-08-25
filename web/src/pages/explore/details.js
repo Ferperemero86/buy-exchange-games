@@ -10,14 +10,8 @@ export async function getServerSideProps ({query}) {
     return {props: {query}}
 }
 
-const Header = ({platform, page, title}) => (
+const Header = ({title}) => (
     <div className="header">
-        <div className="go-back-link">
-            <FontAwesomeIcon icon={faArrowCircleLeft} className="left-arrow" />
-            <Link href={{ pathname: `/explore/${platform}`, query: {page} }}>
-                <span className="header-link link">Back To Games</span>
-            </Link>
-        </div>
         <h2 className="title">{title}</h2>
     </div>
 );

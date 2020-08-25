@@ -1,5 +1,6 @@
 @import "./main-header.css";
 @import "./home.css";
+@import "./main-search.css";
 @import "./resset.css";
 @import "./styles.css";
 @import "./general.css";
@@ -11,6 +12,7 @@
 @import "./account/users-messages.css";
 @import "./account/exchange-a-game.css";
 @import "./account/user-profile.css";
+@import "./account/settings.css";
 @import "./account/proposals.css";
 @import "./messages/messages.css";
 @import "./messages/validation.css";

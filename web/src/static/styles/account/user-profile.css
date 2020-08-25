@@ -2,7 +2,6 @@
     width: 90%;
     margin: 50px auto;
     overflow: hidden;
-    border: 1px solid #fff;
 }
 
 .user-profile .user-profile-info {
@@ -10,11 +9,29 @@
 }
 
 .user-profile .picture {
+    width: 300px;
+    height: 250px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.user-profile .picture-image {
+    border-radius: 100%;
     width: 150px;
     height: 150px;
-    border-radius: 100%;
-    border: 1px solid;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    border: 1px solid #fff;
+}
+
+.user-profile .picture-update-image-input {
+    display: block;
+}
+
+.user-profile .picture-save-image-button,
+.user-profile .picture-cancel-image-button {
+    margin: 20px 2% 0 0;
+    float: left;
 }
 
 .user-profile .parag {
@@ -51,4 +68,8 @@
     top: -20px;
     right: 0;
     z-index: 9999;
+}
+
+.user-profile .send-message.button {
+    margin-top: 70px;
 }

@@ -1,8 +1,6 @@
-import React, {useContext} from "react";
-import {GamesListContext} from "../providers/GamesListProvider";
+import React from "react";
 
-const DeleteQuestion = ({action, element, gameId}) => {
-    const {dispatchGamesList} = useContext(GamesListContext);
+const DeleteQuestion = ({action, element, gameId, cancelDelete}) => {
     let title;
 
     if (element === "list") {
@@ -10,24 +8,24 @@ const DeleteQuestion = ({action, element, gameId}) => {
     }
 
     if (element === "game") {
-        title = "Delete Game?"
+        title = "Delete Game?";
+    }
+
+    if (element === "account") {
+        title = "Delete Account?";
     }
 
     const deleteItem = () => {
         if (element === "game") {
             return action(gameId);
         }
-        if (element === "list") {
-            return action()
-        }
-    }
 
-    const stopDelete = () => {
         if (element === "list") {
-            dispatchGamesList({type: "SHOW_DELETE_LIST_QUESTION", payload: false})
+            return action();
         }
-        if (element === "game") {
-            dispatchGamesList({type: "SHOW_DELETE_GAME_QUESTION", payload: false})
+
+        if (element === "account") {
+            return action();
         }
     }
 
@@ -35,7 +33,7 @@ const DeleteQuestion = ({action, element, gameId}) => {
         <div className={`delete-question ${element}`}>
             <h1 className="heading">{title}</h1>
             <button className="button" onClick={deleteItem}>Ok</button>
-            <button className="button" onClick={stopDelete}>Cancel</button>
+            <button className="button" onClick={cancelDelete}>Cancel</button>
         </div>
     )
 };

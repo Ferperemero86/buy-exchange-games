@@ -29,9 +29,9 @@ module.exports = {
   },
   getLocalData: async (Url) => {
     const result = await fetch(Url, {
-      headers: {'Accept': 'application/json'} 
+      method: "GET",
+      headers: {'Content-Type': 'application/json'} 
     });
-    
     if (Array.isArray(result) !== true) {
       const data = await result.json();
       return data;
@@ -60,15 +60,15 @@ module.exports = {
         }
       })
   },
-  uploadFile: async (file) => {
-    await axios({
+  uploadFile: (file) => {
+    return axios({
       url: "https://api.cloudinary.com/v1_1/dby4kdmbv/image/upload",
       method: "POST",
       headers: {"Content-type": "x-www-form-urlencoded"},
       data: file
     })
     .then(result => {
-      return result;
+      return result.data;
     })
     .catch(err => {
       console.log(JSON.stringify(err));

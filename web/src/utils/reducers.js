@@ -252,12 +252,54 @@ module.exports = {
         switch(action.type) {
             case "SHOW_MESSAGE_FORM" :
                 return {...state, messageForm: action.payload}
+
+            case "SHOW_EDIT_PROFILE_FIELD" :
+                return {...state, editProfileField: action.payload}
+
+            case "UPDATE_FIELD_VALUE" :
+                return {...state, fieldValue: action.payload}
+            
+            case "UPDATE_COUNTRY" :
+                return {...state, country: action.payload}
+
+            case "UPDATE_NICKNAME" :
+                return {...state, nickName: action.payload}
+
+            case "UPDATE_CITIES" :
+                return {...state, cities: action.payload}
+
+            case "UPDATE_CITY" :
+                return {...state, city: action.payload}
+
+            case "UPDATE_PROFILE_IMAGE" :
+                return {...state, profileImage: action.payload}
+
+            case "UPDATE_PROFILE_IMAGE_URL" :
+                return {...state, profileImageUrl: action.payload}
         }
     },
     proposalsReducer: (state, action) => {
         switch(action.type) {
             case "UPDATE_PROPOSALS" :
                 return {...state, proposalsData: action.payload}
+        }
+    },
+    settingsReducer: (state, action) => {
+        switch(action.type) {
+            case "UPDATE_PASSWORD_INPUT" :
+                return {...state, passwordInput: action.payload}
+
+            case "SHOW_DELETE_QUESTION" :
+                return {...state, deleteQuestion: action.payload}
+        }
+    },
+    mainSearchReducer: (state, action) => {
+        switch(action.type) {
+            case "UPDATE_TEXT_SEARCH_INPUT" :
+                return {...state, textSearchInput: action.payload}
+
+            case "UPDATE_GAMES_SEARCH" :
+                return {...state, games: action.payload}
         }
     }
 }

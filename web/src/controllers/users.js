@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const knex = require("../db/knex");
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json({type: "application/json"});
@@ -97,6 +96,23 @@ router.post("/user/new",
                   })
                 })
 });
+
+router.post("/user/delete",
+            jsonParser,
+            userAuthentication,
+            (req) => {
+            const {userId} = req.body;
+
+            return User
+              .forge({id: userId})
+              .destroy()
+              .then(result => {
+                console.log("ACCOUNT DELETED", result);
+              })
+              .catch(err => {
+                console.log("ERROR", err);
+              })
+})
 
 router.post('/session', 
             jsonParser,   
@@ -248,7 +264,48 @@ router.post("/user/profile",
                 .then(profile => {
                   res.json({profile})
                 })
-            })
+})
+
+router.post("/user/profile/save",
+            jsonParser,
+            (req, res) => {
+              const {userId, fieldName} = req.body;
+              let {fieldValue} = req.body;
+              let field;
+            
+              switch(fieldName) {
+                case "Nickname" :
+                  field = "nickName";
+
+                  break;
+
+                case "Country" :
+                  field = "country";
+
+                  break;
+
+                case "City" :
+                  field = "city";
+
+                  break;
+
+                case "Picture" :
+                  field = "picture";
+
+                  break;
+              }
+
+              return UserProfile
+                .forge({id: userId})
+                .save(field, fieldValue)
+                .then(() => {
+                    return res.json({fieldName, fieldValue})  
+                })
+                .catch(err => {
+                  console.log(JSON.stringify(err));
+                  return res.json({internalError: true});
+                })
+})
 
 
 router.post(
@@ -257,16 +314,27 @@ router.post(
   userAuthentication,
   acl(User, "edit"),
   (req, res) => {
-    const password = req.body.updatedPassword;
+    const password = req.body.password;
     const salt = bcrypt.genSaltSync(10);
 
+    const valuesValidation = validation.validate(
+      {password},
+      validation.editPassword
+    );
+
+    if (valuesValidation) {
+      return res.status(400).json({ inputValidation: valuesValidation });
+    }
+
     bcrypt.hash(password, salt, function (err, hash) {
-      knex("users")
-        .update({ password: hash })
+      return User
         .where("id", req.user.id)
-        .then(() => res.json({ updatedPassword: true }))
+        .save({password: hash}, {method: "update"})
+        .then(() => {
+          return res.json({ updatedPassword: true })
+        })
         .catch(() => {
-          res.status(500).json({ error: "Could not edit pass" });
+          return res.status(500).json({ error: "Could not edit pass" });
         });
     });
   }
@@ -276,12 +344,11 @@ router.post("/cities",
             jsonParser,
             (req, res) => {
               const {selectedCountryCode} = req.body;
-          
-              const cityNames= cities.filter(city => city.country === selectedCountryCode && city.population > 30000)
+              const cityNames = cities.filter(city => city.country === selectedCountryCode && city.population > 30000)
                                      .map(city => {return city.name});
 
               cityNames.sort();
-             
+        
               return res.json({cities: cityNames})
 });
 

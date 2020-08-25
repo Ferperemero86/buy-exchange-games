@@ -30,10 +30,11 @@ const FirstGame = () => {
     
         return (
             <div>
-                <Game Url={cover} 
-                    title={name} 
-                    gameToRemove="game1"
-                    page="exchange-a-game" />
+                <Game 
+                 Url={cover} 
+                 title={name} 
+                 gameToRemove="game1"
+                 page="exchange-a-game" />
                 <p className="game-1-text">{platform}</p>
             </div>
         )

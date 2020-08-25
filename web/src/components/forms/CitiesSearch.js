@@ -1,13 +1,18 @@
 import React from "react";
 
-const Cities = ({cities}) => {
+import Option from "../Option";
+
+const Cities = ({cities, onChange}) => {
     let keyVal = 0;
    
     if (cities && Array.isArray(cities)) {
         return cities.map(city => {
             keyVal++;
-            return <option 
-                        key={city + keyVal}>{city}</option>
+            return <Option 
+                    value={city}
+                    onChange={onChange}
+                    key={city + keyVal}>{city}</Option> 
+                    
             })
    }
 

@@ -4,12 +4,13 @@ import {GamesListContext} from "../providers/GamesListProvider";
 
 import DeleteQuestion from "./DeleteQuestion";
 
-const DeleteListQuestion = ({action, element}) => {
+const DeleteListQuestion = ({action, element, cancelDelete}) => {
     const {gamesList} = useContext(GamesListContext);
     const {showDeleteListQuestion} = gamesList;
 
     if (showDeleteListQuestion) {
         return <DeleteQuestion 
+                    cancelDelete={cancelDelete}
                     action={action}
                     element={element} />
     }

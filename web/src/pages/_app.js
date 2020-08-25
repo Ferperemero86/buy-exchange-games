@@ -1,9 +1,11 @@
 import React, {useContext, useEffect} from 'react';
 
 import {UserContext} from "../components/providers/UserProvider";
+import {MainSearchContext} from "../components/providers/MainSearchProvider";
 import {getDataFromClient} from "../utils/API";
 
 import "../static/styles/styles.css";
+import MainSearchProvider from "../components/providers/MainSearchProvider";
 import RegisterProvider from "../components/providers/forms/RegisterProvider";
 import LoginProvider from "../components/providers/forms/LoginProvider";
 import GamesListProvider from "../components/providers/GamesListProvider";
@@ -16,12 +18,16 @@ import MessagesProvider from "../components/providers/MessagesProvider";
 import UserProfileProvider from "../components/providers/UserProfileProvider";
 import UserMessagesProvider from "../components/providers/UsersMessagesProvider";
 import ProposalsProvider from "../components/providers/ProposalsProvider";
+import SettingsProvider from "../components/providers/SettingsProvider";
 import Header from "../components/Header";
+import MainSearch from "../components/MainSearch";
 
 const Page = ({pageProps, Component, router}) => {
     const path = router.pathname;
     const {dispatchUser} = useContext(UserContext);
-   
+    const {mainSearch} = useContext(MainSearchContext);
+    const {textSearchInput, games} = mainSearch;
+    
     useEffect(() => {
         const user = getDataFromClient("/api/session");
 
@@ -35,7 +41,10 @@ const Page = ({pageProps, Component, router}) => {
             
         });
     }, [])
-
+    
+    if (textSearchInput !== "") { 
+        return <MainSearch games={games} />
+    }
 
     if (path.includes("account/proposals")) {
         return (
@@ -47,7 +56,7 @@ const Page = ({pageProps, Component, router}) => {
 
     if (path.includes("account/user-profile")) {
         return (
-            <UserProfileProvider>
+            <UserProfileProvider pageProps={pageProps}>
                 <Component {...pageProps} />
             </UserProfileProvider>
         )
@@ -88,15 +97,20 @@ const Page = ({pageProps, Component, router}) => {
 
     if (path.includes("/users-selling/details")) {
         return (
-            <MessagesProvider>
-                <UsersGamesProvider pageProps={pageProps}>
-                    <Component {...pageProps} />  
-                </UsersGamesProvider>
-            </MessagesProvider>
+            <UsersGamesProvider pageProps={pageProps}>
+                <Component {...pageProps} />  
+            </UsersGamesProvider>
         )
     }
 
     switch (path) {
+        case "/account/settings" :
+            return (
+                <SettingsProvider pageProps={pageProps}>
+                    <Component {...pageProps} />
+                </SettingsProvider>
+            )
+
         case "/account/login" :
             return (
                 <LoginProvider pageProps={pageProps}>
@@ -141,15 +155,17 @@ const MyApp = ({Component, pageProps, router}) => {
         <div id="app">
             <UserProvider>
                 <MessagesProvider>
-                    <Header />
-                    <Page pageProps={pageProps} 
-                          Component={Component} 
-                          router={router} />
+                    <MainSearchProvider>
+                        <Header />
+                        <Page 
+                         pageProps={pageProps} 
+                         Component={Component} 
+                         router={router} />
+                    </ MainSearchProvider>
                 </MessagesProvider>
             </UserProvider>
         </div>
     )
-   
 }
 
 export default MyApp;

@@ -4,9 +4,12 @@ import cookie from 'react-cookies';
 import {useRouter} from "next/router";
 
 import {UserContext} from "../components/providers/UserProvider";
+import {MainSearchContext} from "../components/providers/MainSearchProvider";
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
+import Span from "../components/Span";
+import Input from "../components/forms/Input";
 
 import LogoImage from "../static/images/controller-logo.png";
 
@@ -101,6 +104,14 @@ const HeaderAccountNav = () => {
                     <a>Profile</a>
                 </Link>
             </li>
+            <li className="list-element">
+                <Link href={{ 
+                        pathname: "/account/settings", 
+                        query: {userId: userId} 
+                }}>
+                    <a>Settings</a>
+                </Link>
+            </li>
             <li
                className="list-element"
                onClick={logOut}>Log Out</li>
@@ -110,16 +121,22 @@ const HeaderAccountNav = () => {
     
 }
 
-const HeaderSearch = () => (
-    <div className="header-search">
-        <span className="search-icon">
-            <FontAwesomeIcon
-                icon={faSearch}
-                className="icon" />
-        </span>
-        <input type="search" />
-    </div>
-);
+const HeaderSearch = () => {
+    const {searchGames} = useContext(MainSearchContext);
+
+    return(
+        <div className="header-search">
+            <Span className="search-icon">
+                <FontAwesomeIcon
+                    icon={faSearch}
+                    className="icon" />
+            </ Span>
+            <Input 
+             type="search" 
+             onChange={searchGames} />
+        </div>
+    )
+};
 
 const Header = () => (
     <header className="main-header">

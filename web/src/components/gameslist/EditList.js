@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import Link from "next/link";
+//import Link from "next/link";
 
 import {GamesListContext} from "../providers/GamesListProvider";
 
@@ -52,11 +52,7 @@ const EditList = () => {
             </div>
         )
     }
-    return (
-            <Link href={{pathname: "/account/user-profile", query: {userId}}}>
-                <a className="go-back-link">Go Back</a>
-            </Link>
-    )
+    return null;
 };
 
 export default EditList;

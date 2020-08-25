@@ -35,11 +35,19 @@ const GamesListProvider =({children, pageProps}) => {
 
     const [GamesListState, dispatchGamesList] = useReducer(gamesListReducer, initialValues);
 
+    const closeDeleteQuestion = () => {
+        dispatchGamesList({type: "SHOW_DELETE_LIST_QUESTION", payload: false});
+    } 
+
     const store = useMemo(() => {
         return GamesListState
     }, [GamesListState]);
 
-    return <GamesListContext.Provider value={{gamesList: store, dispatchGamesList}}>{children}</GamesListContext.Provider>
+    return <GamesListContext.Provider value={{
+        gamesList: store, 
+        dispatchGamesList,
+        closeDeleteQuestion
+    }}>{children}</GamesListContext.Provider>
 }
 
 export default GamesListProvider;
