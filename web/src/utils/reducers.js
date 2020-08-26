@@ -301,5 +301,14 @@ module.exports = {
             case "UPDATE_GAMES_SEARCH" :
                 return {...state, games: action.payload}
         }
+    },
+    adminReducer: (state, action) => {
+        switch(action.type) {
+            case "SHOW_DELETE_QUESTION" :
+                return {...state, deleteQuestion: action.payload};
+            
+            case "UPDATE_USERS" :
+                return {...state, users: action.payload}
+        }
     }
 }

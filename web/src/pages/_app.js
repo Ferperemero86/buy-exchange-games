@@ -21,6 +21,7 @@ import ProposalsProvider from "../components/providers/ProposalsProvider";
 import SettingsProvider from "../components/providers/SettingsProvider";
 import Header from "../components/Header";
 import MainSearch from "../components/MainSearch";
+import AdminProvider from "../components/providers/AdminProvider";
 
 const Page = ({pageProps, Component, router}) => {
     const path = router.pathname;
@@ -104,6 +105,13 @@ const Page = ({pageProps, Component, router}) => {
     }
 
     switch (path) {
+        case "/admin" :
+            return(
+                <AdminProvider pageProps={pageProps}>
+                    <Component {...pageProps} />
+                </AdminProvider>
+            )
+
         case "/account/settings" :
             return (
                 <SettingsProvider pageProps={pageProps}>

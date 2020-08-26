@@ -16,6 +16,43 @@ const UsersConversations = require("../db/models/users-conversations");
 const Conversations = require("../db/models/conversations");
 const UsersMessages = require("../db/models/users-messages");
 
+const getUsers = (res) => {
+  return User
+    .fetchAll()
+    .then(users => {
+      return res.json({users})
+    })
+    .catch(() => {
+      return res.json({internalError: true})
+    })          
+}
+
+
+router.post("/user",
+            jsonParser,
+            (req, res) => {
+              const {userId} = req.body;
+
+              return User
+                .where({id: userId})
+                .fetch({require: false})
+                .then(user => {
+                  console.log("USER IN USER", user);
+                  if (!user) { return res.json({userDoesNotExist: true})}
+                  return res.json({user})
+                })
+                .catch(err => {
+                  console.log("ERROR", JSON.stringify(err));
+                  return res.json({internalError: true})
+                })
+});
+
+router.get("/users",
+            jsonParser,
+            (req, res) => {
+             return getUsers(res);
+})
+
 router.post("/user/new", 
             jsonParser, 
             async (req, res) => {
@@ -100,7 +137,7 @@ router.post("/user/new",
 router.post("/user/delete",
             jsonParser,
             userAuthentication,
-            (req) => {
+            (req, res) => {
             const {userId} = req.body;
 
             return User
@@ -108,6 +145,7 @@ router.post("/user/delete",
               .destroy()
               .then(result => {
                 console.log("ACCOUNT DELETED", result);
+                return getUsers(res);
               })
               .catch(err => {
                 console.log("ERROR", err);
@@ -119,8 +157,9 @@ router.post('/session',
             userAuthentication, 
             (req, res) => {
               const userId = req.user.id;
+              const isAdmin = req.user.get("isAdmin");
               
-              return res.json({login: true, userId});
+              return res.json({login: true, userId, isAdmin});
 });
 
 router.get('/session', 
