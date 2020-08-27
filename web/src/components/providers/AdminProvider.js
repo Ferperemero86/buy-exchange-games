@@ -20,10 +20,12 @@ const AdminProvider = ({children, pageProps}) => {
 
         const userId = parseInt(e.currentTarget.getAttribute("data"));
         dispatchAdmin({type: "SHOW_DELETE_QUESTION", payload: userId});
-    }
+    };
+
     const hideDeleteQuestion = () => {
         dispatchAdmin({type: "SHOW_DELETE_QUESTION", payload: false});
-    }
+    };
+
     const deleteUser = (userId) => {
         sendDataFromClient("/api/user/delete", {userId})
             .then(users => {
@@ -31,7 +33,7 @@ const AdminProvider = ({children, pageProps}) => {
                 dispatchAdmin({type: "UPDATE_USERS", payload: users});
             })
         hideDeleteQuestion();
-    }
+    };
 
     const admin = useMemo(() => {
         return adminState

@@ -1,5 +1,8 @@
 import React from "react";
 
+import Heading from "../../components/Heading";
+import Button from "../../components/forms/Button";
+
 const DeleteQuestion = ({action, element, gameId, userId, cancelDelete}) => {
     let title;
 
@@ -33,9 +36,17 @@ const DeleteQuestion = ({action, element, gameId, userId, cancelDelete}) => {
 
     return (
         <div className={`delete-question ${element}`}>
-            <h1 className="heading">{title}</h1>
-            <button className="button" onClick={deleteItem}>Ok</button>
-            <button className="button" onClick={cancelDelete}>Cancel</button>
+            <Heading 
+             className="heading"
+             text={title} />
+            <Button 
+             className="button" 
+             text="Ok"
+             onClick={deleteItem} />
+            <Button 
+             className="button"
+             text="Cancel" 
+             onClick={cancelDelete} />
         </div>
     )
 };

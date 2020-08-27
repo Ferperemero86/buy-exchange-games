@@ -1,0 +1,57 @@
+.admin-area {
+    width: 90%;
+    margin: 50px auto;
+}
+
+.admin-area .heading {
+    margin: 30px 0;
+    font-size: 1.4em;
+    color: #8c92ac;
+}
+
+.admin-area .users-table {
+    width: 100%;
+    overflow: hidden;
+}
+
+.users-table .headers {
+    width: 100%;
+    margin-bottom: 20px;
+    overflow: hidden;
+    color: #8c92ac;
+}
+
+.users-table .header-element {
+    float: left;
+    text-align: left;
+}
+
+.users-table .header-element.id {
+    width: 10%;
+}
+
+.users-table .user-field {
+    overflow: hidden;
+}
+
+.user-field-element {
+    float: left;
+    color: #fff;
+}
+
+.user-field-element.id {
+    width: 10%;
+}
+
+.user-field-element.email {
+    width: 60%;
+}
+
+.user-field-element.button,
+.user-field-element.profile {
+    width: 15%
+}
+
+.user-field-element .profile-link {
+    color: #8c92ac;
+}

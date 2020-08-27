@@ -3,6 +3,7 @@ import {useRouter} from "next/router";
 import {AdminContext} from "../components/providers/AdminProvider";
 import {getLocalData} from "../utils/API";
 
+import Link from "next/link";
 import Label from "../components/Label";
 import Button from "../components/forms/Button";
 import Heading from "../components/Heading";
@@ -28,8 +29,8 @@ export async function getServerSideProps(ctx) {
 const Headers = () => {
     return(
         <List className="headers">
-            <ListElement className="header-element">Id</ListElement>
-            <ListElement className="header-element">Email</ListElement>
+            <ListElement className="header-element id">Id</ListElement>
+            <ListElement className="header-element email">Email</ListElement>
         </List>
     )
 }
@@ -40,24 +41,42 @@ const UserField = ({user}) => {
     const {deleteQuestion} = admin;
     
     return(
-        <div className="user-field">
-            <Label text={id} />
-            <Label text={email} />
-            {deleteQuestion === id 
-             && <DeleteQuestion
-                 element="user"
-                 action={deleteUser}
-                 cancelDelete={hideDeleteQuestion}
-                 userId={id} />}
-            <Button 
-             text="Delete" 
-             data={id}
-             onClick={showDeleteQuestion} />
-            <Button 
-             text="Profile" 
-             data={id}
-             onClick={deleteUser} />
-        </div>
+        <List className="user-field">
+            <ListElement className="user-field-element id">
+                <Label 
+                 text={id} 
+                 className="label" />
+            </ListElement>
+            <ListElement className="user-field-element email">
+                <Label
+                 text={email} 
+                 className="label" />
+            </ListElement>
+            <ListElement className="user-field-element">
+                {deleteQuestion === id 
+                 && <DeleteQuestion
+                     element="user"
+                     action={deleteUser}
+                     cancelDelete={hideDeleteQuestion}
+                     userId={id} />}
+            </ListElement>
+            <ListElement className="user-field-element button">
+                <Button 
+                 text="Delete" 
+                 className="button"
+                 data={id}
+                 onClick={showDeleteQuestion} />
+            </ListElement>
+            <ListElement className="user-field-element profile">
+                <Link
+                  href={{ 
+                    pathname: "/account/user-profile", 
+                    query: {userId: id} 
+                  }}>
+                    <a className="profile-link">Profile</a>
+                 </Link>
+            </ListElement>  
+        </List>
     )
 }
 
@@ -103,6 +122,7 @@ const Admin = ({login, isAdmin}) => {
         <div className="admin-area">
             <Heading
              type="h1"
+             className="heading"
              text="Admin" />
             {users && <UsersTable />}
         </div>
