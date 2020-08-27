@@ -42,6 +42,7 @@
 .user-field-element {
     float: left;
     color: #fff;
+    margin: 5px 0;
 }
 
 .user-field-element.id {
