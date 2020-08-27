@@ -300,8 +300,8 @@ const UserInfo = ({countriesList, citiesList}) => {
 const UserProfile = ({profile, countriesList, citiesList}) => {
     const {userProfile, dispatchUserProfile} = useContext(UserProfileContext);
     const {country} = userProfile;
-    const {id} = profile;
-
+    const {id} = profile.profile;
+   
     useEffect(() => {
         const cities = sendDataFromClient("/api/cities", {selectedCountryCode: country});
         cities.then(result => { 
