@@ -13,6 +13,11 @@
     width: 100%;
     overflow: hidden;
 }
+@media screen and (min-width: 800px) {
+    .admin-area .users-table {
+        width: 50%;
+    }
+}
 
 .users-table .headers {
     width: 100%;
