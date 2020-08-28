@@ -38,7 +38,7 @@ export async function getServerSideProps(ctx) {
 const UsersExchangingGames = ({userId}) => {
     const {usersGames} = useContext(UsersGamesContext);
     const {games, messages} = usersGames;
-   
+    
     return (
         <div className="users-games-container">
             <h1 className="users-games-heading">Users Exchanging Games</h1>

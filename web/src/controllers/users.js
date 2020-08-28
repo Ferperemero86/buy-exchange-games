@@ -283,13 +283,15 @@ router.post("/user/profiles",
         (req, res) => {
           const {profilesArray} = req.body;
 
-          UserProfile
+          return UserProfile
             .where("id", "IN", profilesArray)
             .fetchAll()
             .then(profiles => {
               return res.json({profiles})
             })
-
+            .catch(() => {
+              return res.json({internalError: true});
+            })
 })
 
 router.post("/user/profile",
@@ -297,11 +299,14 @@ router.post("/user/profile",
             (req, res) => {
               const {userId} = req.body;  
       
-              UserProfile
+              return UserProfile
                 .where({id: userId})
                 .fetch()
                 .then(profile => {
                   res.json({profile})
+                })
+                .catch(() => {
+                  return res.json({internalError: true});
                 })
 })
 

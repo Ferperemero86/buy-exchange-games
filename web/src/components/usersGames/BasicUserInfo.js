@@ -2,11 +2,10 @@ import React from "react";
 import {useRouter} from "next/router";
 
 import Paragraph from "../../components/Paragraph";
-import Div from "../../components/Div";
-import Span from "../../components/Span";
+import Image from "../../components/Image";
 
 
-const BasicUserInfo = ({nickName, userId}) => {
+const BasicUserInfo = ({nickName, userId, imageUrl}) => {
     const router = useRouter();
    
     const goToUserProfile = () => {
@@ -14,17 +13,20 @@ const BasicUserInfo = ({nickName, userId}) => {
             pathname: "/account/user-profile", 
             query: {userId} 
         });
-    }
+    };
     
     return (
-        <Div className="basic-user-info" onClick={goToUserProfile}>
-            <Div className="picture-name">
-                <Span className="image" />
+        <div className="basic-user-info" 
+             onClick={goToUserProfile}>
+            <div className="picture-name">
+                <Image 
+                 className="image" 
+                 Url={imageUrl} />
                 <Paragraph
                     className="name"
                     text={nickName} />
-            </Div>
-        </Div>
+            </div>
+        </div>
     )
 }
 

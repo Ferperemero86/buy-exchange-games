@@ -1,6 +1,7 @@
 import React from "react";
 
 import Game from "../../games/Game";
+import Heading from "../../Heading";
 
 const GameExchanging = ({gameArray, reduceNameLength, gameFromListToExchange}) => {
     let gameKey = 0;
@@ -36,7 +37,10 @@ const GameExchanging = ({gameArray, reduceNameLength, gameFromListToExchange}) =
             )
         })
     }
-    return null;
+    return  <Heading 
+             text="No Games Found" 
+             className="users-games-no-results"
+             type="h1" />;
 }
 
 export default GameExchanging;

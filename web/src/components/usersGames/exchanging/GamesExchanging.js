@@ -52,6 +52,7 @@ const GamesExchanging = ({games, reduceNameLength}) => {
             const nickName = gameArray[0].nickName;
             const gameId = parseInt(gameArray[0].id);
             const userId = parseInt(gameArray[0].list_id);
+            const picture = gameArray[0].picture;
             let game2 = gameArray[0].game_2;
 
             let data = {
@@ -75,6 +76,7 @@ const GamesExchanging = ({games, reduceNameLength}) => {
             return (
                 <div className="users-exchanging-game" key={gameKey}>
                     <BasicUserInfo 
+                        imageUrl={picture}
                         userId={userId}
                         nickName={nickName} />
                     <GamesListSearch

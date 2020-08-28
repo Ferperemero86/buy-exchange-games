@@ -3,6 +3,7 @@ import React from "react";
 import BasicUserInfo from "../BasicUserInfo";
 import Game from "../../games/Game";
 import GameInfo from "../GameInfo";
+import Heading from "../../Heading";
 
 const GamesSelling = ({games, reduceNameLength}) => {
     let uniqueKey = 0;
@@ -11,15 +12,15 @@ const GamesSelling = ({games, reduceNameLength}) => {
         if (Array.isArray(games[0])) { return null }
 
         return games.map(game => {
-            const {name, cover, price, platform, currency, game_id, id, nickName} = game;
+            const {name, cover, price, platform, currency, game_id, id, nickName, picture} = game;
             const capitalPlatform = platform.toUpperCase();
-            uniqueKey++;
-            console.log("TITLE", name);
             const shortName = reduceNameLength(name);
-           
+            uniqueKey++;
+            
             return (
                 <div className="users-selling-game" key={uniqueKey}>
-                    <BasicUserInfo 
+                    <BasicUserInfo
+                        imageUrl={picture}
                         nickName={nickName} 
                         userId={id} />
                     <Game 
@@ -36,7 +37,10 @@ const GamesSelling = ({games, reduceNameLength}) => {
             )
         })
     }
-    return null;
+    return <Heading 
+            text="No Games Found" 
+            className="users-games-no-results"
+            type="h1" />;
 };
 
 export default GamesSelling;

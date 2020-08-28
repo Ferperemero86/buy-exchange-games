@@ -16,7 +16,6 @@ export async function getServerSideProps(ctx) {
 
     const countriesResult = await getLocalData(countriesUrl);
     const data = await sendLocalData(Url, {userId});
-   
     const {countryName} = await data;
     const {countries, countryNames} = await countriesResult;
     let countryCode = "";

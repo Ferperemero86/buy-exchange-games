@@ -92,7 +92,7 @@ router.post("/usersgames",
                
                 if (type === "exchanging") {
                     query = knex("user_profile")
-                                .select("user_profile.country", "user_profile.id", "user_profile.nickName", "games_content.name", "games_content.cover", 
+                                .select("user_profile.country", "user_profile.id", "user_profile.nickName", "user_profile.picture", "games_content.name", "games_content.cover", 
                                         "games_content.platform", "games_exchanging.id", "games_exchanging.list_id", 
                                         "games_exchanging.game_1", "games_exchanging.game_2")
                                 .join("games_exchanging", "games_exchanging.list_id", "=", "user_profile.id")
@@ -104,7 +104,7 @@ router.post("/usersgames",
                     });
                 } else {
                     query = knex("user_profile")
-                                .select("user_profile.country", "user_profile.id", "user_profile.nickName", "games_content.name", "games_content.cover", 
+                                .select("user_profile.country", "user_profile.id", "user_profile.nickName", "user_profile.picture", "games_content.name", "games_content.cover", 
                                         "games_content.platform", "games_selling.game_id", 
                                         "games_selling.price", "games_selling.currency", "games_selling.condition", 
                                         "games_selling.description")
