@@ -278,4 +278,10 @@
     }
 }
 
+.sell-game-gameslist-empty-message {
+    text-align: center;
+    color: #fff;
+    margin-top: 100px;
+}
+
 

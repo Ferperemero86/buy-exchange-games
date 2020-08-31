@@ -39,11 +39,11 @@
 
 .basic-user-info {
     padding: 3px 0;
+    width: 100%;
 }
 
 .users-selling-game .basic-user-info {
     position: relative;
-    width: 50%;
     border: 1px solid;
     overflow: hidden;
 }
@@ -126,7 +126,7 @@
 }
 
 .users-selling-game .basic-user-info {
-    top: -55px;
+    top: -60px;
 }
 
 .users-exchanging-game .basic-user-info {
@@ -145,13 +145,14 @@
 
 .basic-user-info .name {
     font-size: .7em;
-    float: right;
+    float: left;
     margin: 10px;
 }
 
 .basic-user-info .image {
     width: 30px;
     height: 30px;
+    margin-left: 1%;
     border-radius: 100%;
     border: 1px solid #fff;
     display: block;
