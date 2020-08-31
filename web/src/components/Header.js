@@ -31,13 +31,9 @@ const HeaderMainNav = () => (
             <Link href="/games/users-exchanging">
                 <li>Exchange</li>
             </Link>
-            <Link href="/account/gameslist">
+            <Link href={{pathname: "/account/gameslist", query: {sellgame: true} }}>
                 <li>Sell</li>
             </Link>
-            <Link href="/games/users-lists">
-                <li>Lists</li>
-            </Link>
-            
         </ul>
     </nav>
 );
@@ -128,12 +124,14 @@ const HeaderSearch = () => {
         <div className="header-search">
             <Span className="search-icon">
                 <FontAwesomeIcon
-                    icon={faSearch}
-                    className="icon" />
+                 icon={faSearch}
+                 className="icon" />
             </ Span>
-            <Input 
-             type="search" 
-             onChange={searchGames} />
+            <form autoComplete="off">
+                <Input 
+                 type="search"
+                 onChange={searchGames} />
+            </form>
         </div>
     )
 };
