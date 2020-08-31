@@ -10,10 +10,12 @@ import DeleteListQuestion from "../../components/messages/DeleteListQuestion";
 import GamesSection from "../../components/games/GamesSection";
 import ListInput from "../../components/gameslist/ListInput";
 import EditList from "../../components/gameslist/EditList";
+import Heading from "../../components/Heading";
 
 
 export async function getServerSideProps(ctx) {
     let userLogged = ctx.req.user ? ctx.req.user.id : null;
+    const sellGame = ctx.query.sellGame ? ctx.query.sellgame : null;
     const userId = ctx.query.id ? ctx.query.id : null;
     const URLBase = ctx.req.headers.host;
     const Url = new URL("/api/gameslist", `http://${URLBase}`).href;
@@ -34,7 +36,8 @@ export async function getServerSideProps(ctx) {
                      page, 
                      login: true, 
                      userId,
-                     userLogged
+                     userLogged,
+                     sellGame
                    } 
         };
     }
@@ -42,7 +45,7 @@ export async function getServerSideProps(ctx) {
     return { props: {login: false} };
 }
 
-const GamesList = ({gamesInList, userId}) => {
+const GamesList = ({gamesInList, userId, sellGame}) => {
     const {gamesList, dispatchGamesList, closeDeleteQuestion} = useContext(GamesListContext);
     const {login, listExists, editListName, listName, elementToDelete} = gamesList;
     const router = useRouter();
@@ -95,6 +98,12 @@ const GamesList = ({gamesInList, userId}) => {
 
     }, [listExists]);
    
+    if (sellGame && gamesInList.length < 1) {
+        return <Heading 
+                type="h1"
+                className="sell-game-gameslist-empty-message"
+                text="Please add games in the list first" />
+    }
 
     return (
         <div className="user-list">
