@@ -262,6 +262,9 @@ module.exports = {
             case "UPDATE_COUNTRY" :
                 return {...state, country: action.payload}
 
+            case "UPDATE_COUNTRY_CODE" :
+                return {...state, countryCode: action.payload}
+
             case "UPDATE_NICKNAME" :
                 return {...state, nickName: action.payload}
 
