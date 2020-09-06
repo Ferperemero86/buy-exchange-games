@@ -47,6 +47,14 @@ input:focus {
     background-color: blue;
 }
 
+/* Not Authorised Message */
+
+.not-authorised-message {
+    text-align: center;
+    margin-top: 100px;
+    color: #fff;
+}
+
 
 
 
