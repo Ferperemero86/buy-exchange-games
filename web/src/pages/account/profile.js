@@ -12,6 +12,8 @@ export async function getServerSideProps(ctx) {
     const Url = new URL("/api/user/profile", `http://${URLBase}`).href;
 
     const profile = await sendLocalData(Url, {userId});
+
+    if (!userId) { return { props: {login: false} } }
     
     return  {props: profile}
 }
