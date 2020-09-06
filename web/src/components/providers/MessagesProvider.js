@@ -6,17 +6,16 @@ export const MessagesContext = createContext();
 
 
 const MessagesProvider = ({children}) => {
-   
     const initialValues = {
        confirmQuestion: false,
        confirmMessage: ""
-    }
+    };
     
     const [messagesState, dispatchMessages] = useReducer(messagesReducer, initialValues);
 
     const messages = useMemo(() => {
         return messagesState
-    }, [messagesState])
+    }, [messagesState]);
        
     return <MessagesContext.Provider value={{messages, dispatchMessages}}>{children}</MessagesContext.Provider>
 
