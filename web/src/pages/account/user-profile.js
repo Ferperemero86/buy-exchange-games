@@ -1,10 +1,10 @@
 import React, {useContext, useEffect} from "react";
 import Link from "next/link";
 
-import {UserContext} from "../../components/providers/UserProvider";
 import {UserProfileContext} from "../../components/providers/UserProfileProvider";
+import {UserContext} from "../../components/providers/UserProvider";
 import SendMessageForm from "../../components/forms/MessageForm";
-import {getLocalData, sendLocalData, sendDataFromClient, uploadFile} from "../../utils/API";
+import {getLocalData, sendLocalData, uploadFile, sendDataFromClient} from "../../utils/API";
 
 import Paragraph from "../../components/Paragraph";
 import Span from "../../components/Span";
@@ -19,96 +19,79 @@ import CitiesSearch from "../../components/forms/CitiesSearch";
 
 
 export async function getServerSideProps(ctx) {
-    const {userId} = ctx.query;
+    const userQueryId = parseInt(ctx.query.userId);
+    const userId = await ctx.req.user ? ctx.req.user.id : null;
     const URLBase = await ctx.req.headers.host;
     const profileUrl = new URL("/api/user/profile", `http://${URLBase}`).href;
     const countriesUrl = new URL("/api/countries", `http://${URLBase}`).href;
     const citiesUrl = new URL("/api/cities", `http://${URLBase}`).href;
 
-    const profile = await sendLocalData(profileUrl, {userId});
-    const {country} = profile.profile;
+    const profile = await sendLocalData(profileUrl, {userId: userQueryId});
+    const {country} = profile.profile 
     const countriesList = await getLocalData(countriesUrl);
     const countryCode = countriesList.countries[country];
-    const citiesList = await sendLocalData(citiesUrl, {selectedCountryCode: countryCode});
+    const cities = await sendLocalData(citiesUrl, {selectedCountryCode: countryCode});
    
-    return { props: {profile, countriesList, citiesList} }
+    if (!userId) { return { props: {login: false} } }
+   
+    return { props: {userQueryId, profile, countriesList, cities, userId, countryCode} }
 }
 
 const EditButton = ({field}) => {
-    const {dispatchUserProfile} = useContext(UserProfileContext);
-
-    const showButtons = () => {
-        dispatchUserProfile({type: "SHOW_EDIT_PROFILE_FIELD", payload: field});
-    }
+    const {showButtons} = useContext(UserProfileContext);
 
     return (
         <Button
          className="edition-field-button"
+         data={field}
          onClick={showButtons}
          text="Edit" />
     )
-}
+};
 
 const OptionButtons = ({field}) => {
-    const {user} = useContext(UserContext);
-    const {userProfile, dispatchUserProfile, saveFieldValue} = useContext(UserProfileContext);
+    const {userProfile, cancelEdit, updateField} = useContext(UserProfileContext);
     const {editProfileField, fieldValue} = userProfile;
-    const {userId} = user;
 
-    const hideButtons = (e) => {
-        const fieldName = e.currentTarget.getAttribute("data");
-    
-        dispatchUserProfile({type: "SHOW_EDIT_PROFILE_FIELD", payload: false});
-
-        const updatedField = saveFieldValue(fieldValue, userId, fieldName);
-
-        updatedField.then(result=> {
-            if (result.fieldName === "Nickname") {
-                dispatchUserProfile({type: "UPDATE_NICKNAME", payload: result.fieldValue});
-            }
-            if (result.fieldName === "Country") {
-                dispatchUserProfile({type: "UPDATE_COUNTRY", payload: result.fieldValue});
-            }
-        })
-    }
-   
     if (editProfileField === field) {
         return (
             <div className="cancel-save-buttons">
                 <Button
                  className="save-button"
-                 data={field}
-                 onClick={hideButtons}
+                 data={[field, fieldValue]}
+                 onClick={updateField}
                  text="Save" />
                 <Button
                  className="cancel-button"
-                 onClick={hideButtons}
+                 onClick={cancelEdit}
                  text="Cancel" />
             </div>
         )
     }
     return null;
-}
+};
 
-const SelectField = ({countriesList, labelClass, labelText, updateLocationAction, citiesList}) => {
-    const {dispatchUserProfile} = useContext(UserProfileContext);
+const SelectField = ({countriesList, labelClass, labelText, updateLocationAction}) => {
+    const {userProfile, dispatchUserProfile} = useContext(UserProfileContext);
     const countries = countriesList ? countriesList.countries : null;
     const countryNames = countriesList ? countriesList.countryNames : null;
-    const cities = citiesList ? citiesList.cities : null;
+    const {cities} = userProfile;
     let location;
-    
+   
     const updateLocation = (e) => {
         if (labelText === "Country") {
             const countryCode = e.currentTarget.value;
             const countryName = Object.keys(countries).filter((index) => countries[index] === countryCode);
             location = countryName[0];
+
+            dispatchUserProfile({type: "UPDATE_COUNTRY_CODE", payload: countryCode});
         }
         if (labelText === "City") {
             location = e.currentTarget.value;
         }
         dispatchUserProfile({type: "UPDATE_FIELD_VALUE", payload: location});
         dispatchUserProfile({type: updateLocationAction, payload: location});
-    }
+    };
 
     return (
         <div>
@@ -129,7 +112,7 @@ const SelectField = ({countriesList, labelClass, labelText, updateLocationAction
             <OptionButtons field={labelText} />
         </div>
     )
-} 
+}; 
 
 const Field = ({parClass, parText, spanClass, spanText}) => {
     const valueArray = parText.split(" ");
@@ -148,17 +131,10 @@ const Field = ({parClass, parText, spanClass, spanText}) => {
             <EditButton field={spanText} />
         </div>
     )
-}
+};
 
 const TextField = ({labelClass, labelText}) => {
-    const {dispatchUserProfile} = useContext(UserProfileContext);
-    
-    const updateFieldValue = (e) => {
-        const value = e.currentTarget.value;
-        
-        dispatchUserProfile({type: "UPDATE_FIELD_VALUE", payload: value});
-        dispatchUserProfile({type: "UPDATE_NICKNAME", payload: value});
-    }
+    const {updateFieldValue} = useContext(UserProfileContext);
 
     return (
         <div>
@@ -169,23 +145,18 @@ const TextField = ({labelClass, labelText}) => {
             <OptionButtons field={labelText} />
         </div>
     )
-}
+};
 
 const PictureField = () => {
     const {user} = useContext(UserContext);
     const {userId} = user;
-    const {userProfile, dispatchUserProfile} = useContext(UserProfileContext);
+    const {userProfile, updateImage, dispatchUserProfile} = useContext(UserProfileContext);
     const {profileImage, profileImageUrl} = userProfile;
+    
+    const saveProfileImage = async (e) => {
+        e.preventDefault();
 
-    const updateImage = (e) => {
-        const image = e.currentTarget.files[0];
-
-        dispatchUserProfile({type: "UPDATE_PROFILE_IMAGE", payload: image});
-    }
-
-    const saveProfileImage = async () => {
         const formData = new FormData();
-
         formData.append("file", profileImage);
         formData.append("upload_preset", "tuikewob");
 
@@ -197,10 +168,10 @@ const PictureField = () => {
             fieldName: "Picture"
         })
     
-        await dispatchUserProfile({type: "UPDATE_PROFILE_IMAGE_URL", payload: imageSaved.fieldValue});
-        await dispatchUserProfile({type: "UPDATE_PROFILE_IMAGE", payload: false});
-    }
-   
+        dispatchUserProfile({type: "UPDATE_PROFILE_IMAGE_URL", payload: imageSaved.fieldValue});
+        dispatchUserProfile({type: "UPDATE_PROFILE_IMAGE", payload: false});
+    };
+
     return(
         <div className="picture">
             <div className="picture-image">
@@ -213,7 +184,8 @@ const PictureField = () => {
              type="file"
              className="picture-update-image-input"
              text="Update Image" />
-            {profileImage && <Button 
+            {profileImage && <Button
+             data={profileImage} 
              className="picture-save-image-button" 
              onClick={saveProfileImage}
              text="Save" />}
@@ -222,19 +194,11 @@ const PictureField = () => {
              text="Cancel" />}
         </div>
     )
-}
+};
 
 const Message = ({recipient}) => {
-    const {userProfile, dispatchUserProfile} = useContext(UserProfileContext);
+    const {userProfile, closeMessageForm, showMessageForm} = useContext(UserProfileContext);
     const {messageForm} = userProfile;
-
-    const showMessageForm = () => {
-        dispatchUserProfile({type: "SHOW_MESSAGE_FORM", payload: true});
-    }
-
-    const closeMessageForm = () => {
-        dispatchUserProfile({type: "SHOW_MESSAGE_FORM", payload: false})
-    }
 
     if(messageForm) {
         return (
@@ -249,13 +213,13 @@ const Message = ({recipient}) => {
     return <Button className="send-message button"
                    text="Send Message"
                    onClick={showMessageForm} />
-}
+};
 
 
-const UserInfo = ({countriesList, citiesList}) => {
+const UserInfo = ({countriesList}) => {
     const {userProfile} = useContext(UserProfileContext);
-    const {editProfileField, country, nickName, city} = userProfile;
-    
+    const {editProfileField, country, nickName, city, cities} = userProfile;
+   
     return (
         <div className="user-profile-info">
             <PictureField />
@@ -289,7 +253,7 @@ const UserInfo = ({countriesList, citiesList}) => {
                  spanText="City" />}
             {editProfileField === "City" 
              && <SelectField
-                 citiesList={citiesList} 
+                 citiesList={cities} 
                  labelClass="span"
                  labelText="City"
                  updateLocationAction="UPDATE_CITY" />}
@@ -297,29 +261,33 @@ const UserInfo = ({countriesList, citiesList}) => {
     )
 }
 
-const UserProfile = ({profile, countriesList, citiesList}) => {
+const UserProfile = ({countriesList}) => {
+    const {user} = useContext(UserContext);
+    const userLogged = user.userId;
     const {userProfile, dispatchUserProfile} = useContext(UserProfileContext);
-    const {country} = userProfile;
-    const {id} = profile.profile;
+    const {country, countryCode, userId, userQueryId} = userProfile;
    
     useEffect(() => {
-        const cities = sendDataFromClient("/api/cities", {selectedCountryCode: country});
+        const cities = sendDataFromClient("/api/cities", {selectedCountryCode: countryCode});
+        
         cities.then(result => { 
-            dispatchUserProfile({type: "UPDATE_CITIES", cities: result.cities});
+            const citiesList = result.cities;
+            dispatchUserProfile({type: "UPDATE_CITIES", payload: citiesList});
         });
-    }, [country])
-
+    }, [country]);
+    
     return (
         <div className="user-profile">
             <UserInfo 
-             countriesList={countriesList} 
-             citiesList={citiesList} />
-            <Link href={{ pathname: "/account/gameslist", query: {id} }}>
+             countriesList={countriesList} />
+            {userLogged !== userQueryId &&
+            <Link href={{ pathname: "/account/gameslist", query: {id: userId} }}>
                 <a className="user-profile-list">See games list</a>
-            </Link>
-            <Message recipient={id}/>
+            </Link>}
+            {userLogged !== userQueryId
+            && <Message recipient={userId}/>}
         </div>
     )
-}
+};
 
 export default UserProfile;
