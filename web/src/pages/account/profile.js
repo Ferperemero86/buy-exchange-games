@@ -27,8 +27,8 @@ const UserProfile = ({profile}) => {
              type="h1"
              text="Profile" />
             <BasicUserInfo
-                userId={userId}
-                nickName={nickName} />
+             userId={userId}
+             nickName={nickName} />
         </Div>
     )
 }

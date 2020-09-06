@@ -16,9 +16,22 @@ const LoginProvider = ({children}) => {
 
     const form = useMemo(() => {
         return LoginState
-    }, [LoginState])
+    }, [LoginState]);
 
-    return <LoginContext.Provider value={{login: form, dispatchLogin}}>{children}</LoginContext.Provider>
+    const updateUsernameValue = (e) => {
+        dispatchLogin({ type:"ADD_USERNAMEINPUT_VALUE", payload: e.target.value });
+    };
+
+    const updatePassValue = (e) => {
+       dispatchLogin({ type: "ADD_PASSWORDINPUT_VALUE", payload: e.target.value });
+    };
+
+    return <LoginContext.Provider 
+            value={{
+                login: form, 
+                dispatchLogin,
+                updateUsernameValue,
+                updatePassValue}}>{children}</LoginContext.Provider>
 
 }
 

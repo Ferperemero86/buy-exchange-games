@@ -25,9 +25,13 @@ const FormsProvider = ({children, pageProps}) => {
 
     const form = useMemo(() => {
         return FormsState
-    }, [FormsState])
+    }, [FormsState]);
 
-    return <FormsContext.Provider value={{forms: form, dispatchForms}}>{children}</FormsContext.Provider>
+    return <FormsContext.Provider 
+            value={{
+                forms: form, 
+                dispatchForms
+            }}>{children}</FormsContext.Provider>
 
 }
 

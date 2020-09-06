@@ -1,6 +1,4 @@
 import React, {useContext, useEffect} from "react";
-
-import axios from "axios";
 import {useRouter} from "next/router";
 
 import {GamesListContext} from "../../components/providers/GamesListProvider";
@@ -46,34 +44,10 @@ export async function getServerSideProps(ctx) {
 }
 
 const GamesList = ({gamesInList, userId, sellGame}) => {
-    const {gamesList, dispatchGamesList, closeDeleteQuestion} = useContext(GamesListContext);
+    const {gamesList, dispatchGamesList, closeDeleteQuestion, deleteList} = useContext(GamesListContext);
     const {login, listExists, editListName, listName, elementToDelete} = gamesList;
     const router = useRouter();
     
-    const deleteList = async () => {
-
-        dispatchGamesList({type: "SET_ELEMENT_TO_DELETE", payload: "list"});
-
-        await axios({ 
-            url: "/api/gameslist/deletedlist", 
-            method: "POST" 
-        })
-            .then(result=> {
-                const games = result.data.gamesList;
-
-                dispatchGamesList({type: "UPDATE_GAMES", payload: games});
-                dispatchGamesList({type: "UPDATE_LIST_EXISTS", payload: false});
-                dispatchGamesList({type: "SHOW_DELETE_LIST_QUESTION", payload: false});
-                dispatchGamesList({type: "HIDE_EDIT_LIST"});
-            })
-            .catch(()=> {
-                dispatchGamesList({type: "HIDE_DELETE_QUESTION"});
-                dispatchGamesList({type: "HIDE_EDIT_LIST"});
-            });
-    };
-
-    
-
     useEffect(() => {
 
         //If user is not logged send to Login page
@@ -112,7 +86,10 @@ const GamesList = ({gamesInList, userId, sellGame}) => {
                 cancelDelete={closeDeleteQuestion}
                 element={elementToDelete} />
             <ListInput />
-            <h3 className="gameslist-heading">{listName}</h3>
+            <Heading 
+             className="gameslist-heading"
+             type="h3"
+             text={listName} />
             <EditList />
             <GamesSection 
                 gamesInList={gamesInList}
@@ -120,7 +97,7 @@ const GamesList = ({gamesInList, userId, sellGame}) => {
         </div>
     )
 
-}
+};
 
 export default GamesList;
 

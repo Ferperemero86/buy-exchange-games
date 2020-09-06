@@ -15,7 +15,6 @@ export async function getServerSideProps ({query}) {
     return { props: {query} };
 }
 
-
 const GameToExchange = () => {
     return (
         <div className="exchange-a-game">

@@ -16,8 +16,21 @@ const MessagesProvider = ({children}) => {
     const messages = useMemo(() => {
         return messagesState
     }, [messagesState]);
+
+    const askConfirmation = (e) => {
+        const gameId = parseInt(e.currentTarget.getAttribute("data"));
+        const message = "Send Proposal?";
+
+        dispatchMessages({type: "SHOW_CONFIRM_QUESTION", payload: gameId})
+        dispatchMessages({type: "UPDATE_CONFIRMATION_MESSAGE", payload: message})
+    }
        
-    return <MessagesContext.Provider value={{messages, dispatchMessages}}>{children}</MessagesContext.Provider>
+    return <MessagesContext.Provider 
+            value={{
+                messages, 
+                dispatchMessages,
+                askConfirmation
+            }}>{children}</MessagesContext.Provider>
 
 }
 

@@ -1,7 +1,8 @@
 import React, {useContext, useEffect} from "react";
-import axios from "axios";
+import {sendDataFromClient} from "../../utils/API";
 
 import {UsersSellingContext} from "../providers/UsersSellingProvider";
+import Option from "../../components/Option";
 
 
 const Locations = ({locations, type}) => {
@@ -25,12 +26,12 @@ const Locations = ({locations, type}) => {
                 name = location.city;
             }
            
-            return <option value={code} 
-                           key={name}>{name}</option>
+            return <Option value={code} 
+                           key={name}>{name}</Option>
         })
     }
-    return <option>{locations}</option>
-}
+    return <Option>{locations}</Option>
+};
 
 const Countries = ({showCountries}) => {
     const {usersSelling} = useContext(UsersSellingContext);
@@ -44,7 +45,7 @@ const Countries = ({showCountries}) => {
     return <Locations 
                 locations={countries}
                 type="country" />
-}
+};
 
 const States = ({fetchLocation}) => {
     const {usersSelling} = useContext(UsersSellingContext);
@@ -60,7 +61,7 @@ const States = ({fetchLocation}) => {
     return <Locations 
                 locations={states}
                 type="state" />
-}
+};
 
 const Cities = ({fetchLocation}) => {
     const {usersSelling} = useContext(UsersSellingContext);
@@ -76,13 +77,13 @@ const Cities = ({fetchLocation}) => {
     return <Locations 
                 locations={cities}
                 type="city" />
-}
+};
 
 const UserLocationForm = ({searchGames}) => {
     const {dispatchUsersSelling} = useContext(UsersSellingContext);
 
     const fetchLocation = async (Url, locationUrl, type) => {
-        await axios.post(Url, {locationUrl})
+        await sendDataFromClient(Url, {locationUrl})
                 .then(result => {
                     const locations = result.data.locations.error ? [] :  result.data.locations;
     
@@ -99,12 +100,12 @@ const UserLocationForm = ({searchGames}) => {
                 .catch(err => {
                     console.log(err);
                 })
-    }
+    };
 
     const showCountries = () => {
         const locationUrl = `http://battuta.medunes.net/api/country/all/?`;
         fetchLocation("/api/getlocations", locationUrl, "country");
-    }
+    };
 
     const updateLocation = (e) => {
         const location = e.target.value;
@@ -119,7 +120,7 @@ const UserLocationForm = ({searchGames}) => {
         if (locationType === "city") {
             searchGames("/api/usersselling/search", location);
         }
-    }
+    };
 
     return (
         <form className="user-location-form">

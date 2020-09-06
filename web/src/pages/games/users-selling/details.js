@@ -5,6 +5,7 @@ import {sendLocalData} from "../../../utils/API";
 
 import Game from "../../../components/games/Game";
 import Button from "../../../components/forms/Button";
+import Paragraph from "../../../components/Paragraph";
 
 import ConfirmQuestion from "../../../components/messages/ConfirmQuestion";
 import NewOfferForm from "../../../components/forms/NewOfferForm";
@@ -23,25 +24,13 @@ export async function getServerSideProps(ctx) {
 
 
 const SellingLinks = ({gameId}) => {
-    const {dispatchUsersGames} = useContext(UsersGamesContext);
-    const {dispatchMessages} = useContext(MessagesContext);
+    const {askConfirmation} = useContext(MessagesContext);
+    const {showNewOfferForm} = useContext(UsersGamesContext);
     const router = useRouter();
    
     const goToPreviousPage = () => {
         router.push("/games/users-selling");
-    }
-
-    const askConfirmation = (e) => {
-        const gameId = parseInt(e.currentTarget.getAttribute("data"));
-        const message = "Send Proposal?";
-
-        dispatchMessages({type: "SHOW_CONFIRM_QUESTION", payload: gameId})
-        dispatchMessages({type: "UPDATE_CONFIRMATION_MESSAGE", payload: message})
-    }
-
-    const showNewOfferForm = () => {
-        dispatchUsersGames({type: "SHOW_NEW_OFFER_FORM", payload: true});
-    }
+    };
 
     return (
         <div className="selling-links">
@@ -60,18 +49,13 @@ const SellingLinks = ({gameId}) => {
                 onClick={goToPreviousPage} />
         </div>
     )
-}
+};
 
 const SellingDetails = ({gameDetails}) => {
-    const {usersGames, dispatchUsersGames} = useContext(UsersGamesContext);
+    const {usersGames, updatePrice} = useContext(UsersGamesContext);
     const {gameSellingPrice, newOfferForm} = usersGames;
     const {condition, description, currency} = gameDetails;
     const {platform} = gameDetails.content;
-
-    const updatePrice = (e) => {
-        const price = e.target.value;
-        dispatchUsersGames({type: "UPDATE_GAME_SELLING_PRICE", payload: price});
-    }
 
     return (
         <div className="selling-details">
@@ -81,9 +65,9 @@ const SellingDetails = ({gameDetails}) => {
                 value={gameSellingPrice}
                 currency={currency}
                 price={gameSellingPrice} />
-            <p>Condition: {condition}</p>
-            <p>Platform: {platform.toUpperCase()}</p>
-            <p>Description: {description}</p>
+            <Paragraph>Condition: {condition}</Paragraph>
+            <Paragraph>Platform: {platform.toUpperCase()}</Paragraph>
+            <Paragraph>Description: {description}</Paragraph>
         </div>
     )
 }
@@ -115,7 +99,7 @@ const UsersSellingDetails = ({gameDetails}) => {
     const sendGamesData = (Url, data, redUrl) => {
         sendLocalData(Url, data);
         router.push(redUrl);
-    }
+    };
 
     return (
         <div className="users-selling-game-details">

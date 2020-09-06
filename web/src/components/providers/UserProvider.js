@@ -11,15 +11,21 @@ const UserProvider = ({children}) => {
         userId: false,
         userLogged: false,
         hasMounted: false
-    }
+    };
 
     const [userState, dispatchUser] = useReducer(userReducer, initialValues);
 
     const user = useMemo(() => {
         return userState
-    }, [userState])
+    }, [userState]);
+
+    
        
-    return <UserContext.Provider value={{user, dispatchUser}}>{children}</UserContext.Provider>
+    return <UserContext.Provider 
+            value={{
+                user, 
+                dispatchUser,
+            }}>{children}</UserContext.Provider>
 
 }
 

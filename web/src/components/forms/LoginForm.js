@@ -1,28 +1,24 @@
 import React, {useContext, useEffect} from "react";
-import axios from "axios";
+import {sendDataFromClient} from "../../utils/API";
 
 import {useRouter} from "next/router";
 
 import {LoginContext} from "../providers/forms/LoginProvider";
 import {UserContext} from "../providers/UserProvider";
 
+import Label from "../Label";
+import Input from "../forms/Input";
+import Button from "../forms/Button";
 import handleMessages from "../../controllers/messagesHandler";
 import Message from "../messages/Message";
+import Heading from "../Heading";
 
 
 const LoginForm = () => {
     const {user, dispatchUser} = useContext(UserContext);
-    const {login, dispatchLogin} = useContext(LoginContext);
+    const {login, dispatchLogin, updateUsernameValue, updatePassValue} = useContext(LoginContext);
     const {usernameInputValue, passwordInputValue, messages} = login;
     const router = useRouter();
-
-    const updateUsernameValue = (e) => {
-        dispatchLogin({ type:"ADD_USERNAMEINPUT_VALUE", payload: e.target.value });
-    }
-
-    const updatePassValue = (e) => {
-       dispatchLogin({ type: "ADD_PASSWORDINPUT_VALUE", payload: e.target.value });
-    }
 
     const sendData = (e) => {
         e.preventDefault();
@@ -33,7 +29,7 @@ const LoginForm = () => {
      };
        
         
-    axios.post(`/api/session`, userData)
+    sendDataFromClient(`/api/session`, userData)
         .then((result) => {
             const success = result.data;
           
@@ -51,7 +47,8 @@ const LoginForm = () => {
                 dispatchLogin({type: "UPDATE_MESSAGE", payload: messages});
             }
         });
-    }
+    };
+
 
     useEffect(() => {
         if (user.userLogged) {
@@ -61,24 +58,27 @@ const LoginForm = () => {
 
     return (
         <form id="user-form">
-            <h1>Login</h1>
+            <Heading
+             type="h1"
+             text="Loogin" />
             <Message messages={messages} />
             <div className="form-section">
-                <label>Name</label>
-                <input
-                    type="text"
-                    value={usernameInputValue}
-                    onChange={updateUsernameValue} />
+                <Label text="Name" />
+                <Input
+                 type="text"
+                 value={usernameInputValue}
+                 onChange={updateUsernameValue} />
             </div>
             <div className="form-section">
-                <label>Password</label>
-                <input
-                    type="password"
-                    value={passwordInputValue}
-                    onChange={updatePassValue} />
+                <Label text="Password" />
+                <Input
+                 type="password"
+                 value={passwordInputValue}
+                 onChange={updatePassValue} />
             </div>
-            <button 
-                onClick={sendData}>Send</button>
+            <Button 
+             onClick={sendData}
+             text="Send" />
         </form>
     )
 }

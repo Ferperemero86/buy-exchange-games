@@ -67,7 +67,7 @@ const UsersGamesProvider = ({children, pageProps}) => {
     const selectCountry = (e) => {
         const countryCode = e.target.value;
         let countryName;
-
+    
         if (messages.length > 0) {
             dispatchUsersGames({type: "UPDATE_MESSAGES", payload: ""});
         }
@@ -106,6 +106,15 @@ const UsersGamesProvider = ({children, pageProps}) => {
         })
     };
 
+    const showNewOfferForm = () => {
+        dispatchUsersGames({type: "SHOW_NEW_OFFER_FORM", payload: true});
+    };
+
+    const updatePrice = (e) => {
+        const price = e.target.value;
+        dispatchUsersGames({type: "UPDATE_GAME_SELLING_PRICE", payload: price});
+    };
+
     return <UsersGamesContext.Provider 
             value={{
                 usersGames, 
@@ -113,7 +122,9 @@ const UsersGamesProvider = ({children, pageProps}) => {
                 getUserGames,
                 selectCountry,
                 selectCity,
-                addSelectedAttribute
+                addSelectedAttribute,
+                showNewOfferForm,
+                updatePrice
             }}>{children}</UsersGamesContext.Provider>
 
 }
