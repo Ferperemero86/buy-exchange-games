@@ -78,7 +78,7 @@ const Games = () => {
     if (index > 0) {
         index--;
     }
-    console.log("INDEX", index);
+    
     if (exploreGames.games[index]) {
         return exploreGames.games[index].map(game=> {
             return <Game game={game} key={game.id}/>
