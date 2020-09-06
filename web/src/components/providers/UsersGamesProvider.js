@@ -36,14 +36,15 @@ const UsersGamesProvider = ({children, pageProps}) => {
         messageForm: false,
         newOfferForm: false,
         gameSellingPrice
-    }
+    };
     
     const [usersGamesState, dispatchUsersGames] = useReducer(usersGamesReducer, initialValues);
 
     const usersGames = useMemo(() => {
         return usersGamesState
-    }, [usersGamesState])
-       
+    }, [usersGamesState]);
+
+
     return <UsersGamesContext.Provider value={{usersGames, dispatchUsersGames}}>{children}</UsersGamesContext.Provider>
 
 }
