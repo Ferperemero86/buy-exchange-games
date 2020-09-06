@@ -11,10 +11,13 @@ const acl = require("../controllers/acl");
 const userAuthentication = require("../authentication");
 
 const User = require("../db/models/user");
+const AdminUser = require("../db/models/admin-user");
 const UserProfile = require("../db/models/user-profile");
 const UsersConversations = require("../db/models/users-conversations");
 const Conversations = require("../db/models/conversations");
 const UsersMessages = require("../db/models/users-messages");
+const authenticateUser = require("../authentication");
+
 
 const getUsers = (res) => {
   return User
@@ -37,12 +40,10 @@ router.post("/user",
                 .where({id: userId})
                 .fetch({require: false})
                 .then(user => {
-                  console.log("USER IN USER", user);
                   if (!user) { return res.json({userDoesNotExist: true})}
                   return res.json({user})
                 })
-                .catch(err => {
-                  console.log("ERROR", JSON.stringify(err));
+                .catch(() => {
                   return res.json({internalError: true})
                 })
 });
@@ -137,6 +138,7 @@ router.post("/user/new",
 router.post("/user/delete",
             jsonParser,
             userAuthentication,
+            acl(AdminUser, User, "manage"),
             (req, res) => {
             const {userId} = req.body;
 
@@ -215,7 +217,6 @@ router.post("/user/message/save",
                             .collection(usersConv)
                             .invokeThen("save", null, {method: "insert"})
                             .then(() => {
-                              console.log("saved!!!", convId); 
                               return resolve(convId)                                              
                             })
                         })
@@ -236,7 +237,6 @@ router.post("/user/message/save",
                     })    
                 })
                 .catch(err => {
-                  console.log("ERR", err);
                   if (err.login === false) { return res.status(401).json(err) }
                   return res.status(500).json({internalError: true})
                 })
@@ -247,7 +247,7 @@ router.post("/user/messages",
             (req, res) => {
               const userId = req.body ? req.body.userId : req.user.id; 
               
-                UsersConversations
+                return UsersConversations
                   .where({user_id: userId})
                   .fetchAll({
                     withRelated: ["users", "messages"]
@@ -312,10 +312,14 @@ router.post("/user/profile",
 
 router.post("/user/profile/save",
             jsonParser,
+            authenticateUser,
+            acl(User, User, "edit"),
             (req, res) => {
-              const {userId, fieldName} = req.body;
+              const {userId, fieldName, userQueryId} = req.body;
               let {fieldValue} = req.body;
               let field;
+          
+              if (userQueryId && userId !== userQueryId) { return res.status(403).json({authError: true})}
             
               switch(fieldName) {
                 case "Nickname" :
@@ -356,7 +360,7 @@ router.post(
   "/editpass",
   jsonParser,
   userAuthentication,
-  acl(User, "edit"),
+  acl(User, User, "edit"),
   (req, res) => {
     const password = req.body.password;
     const salt = bcrypt.genSaltSync(10);
@@ -388,8 +392,8 @@ router.post("/cities",
             jsonParser,
             (req, res) => {
               const {selectedCountryCode} = req.body;
-              const cityNames = cities.filter(city => city.country === selectedCountryCode && city.population > 30000)
-                                     .map(city => {return city.name});
+              const cityNames = cities.filter(city => city.country === selectedCountryCode)
+                                      .map(city => { return city.name } );
 
               cityNames.sort();
         
