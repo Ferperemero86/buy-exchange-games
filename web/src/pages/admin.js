@@ -1,5 +1,4 @@
-import React, {useContext, useEffect} from "react";
-import {useRouter} from "next/router";
+import React, {useContext} from "react";
 import {AdminContext} from "../components/providers/AdminProvider";
 import {getLocalData} from "../utils/API";
 
@@ -16,14 +15,17 @@ export async function getServerSideProps(ctx) {
     const isAdmin = ctx.req.user ? ctx.req.user.isAdmin : null;
     const URLBase = ctx.req.headers.host;
     const usersUrl = new URL("/api/users", `http://${URLBase}`).href;
+    let users = [];
 
-    const users = await getLocalData(usersUrl);
+    if (isAdmin) {
+        users = await getLocalData(usersUrl);
+    }
 
     if (!userId) { 
         return { props: {login: false} } 
     }
 
-    return { props: {users,isAdmin} }
+    return { props: {users, isAdmin} }
 }
 
 const Headers = () => {
@@ -85,7 +87,7 @@ const Users = () => {
     const {users} = admin;
     const usersList = users.users;
     
-    if (usersList.length > 0) {
+    if (usersList && usersList.length > 0) {
         return usersList.map(user => {
             return <UserField 
                     user={user} 
@@ -104,19 +106,11 @@ const UsersTable = () => {
     )
 }
 
-const Admin = ({login, isAdmin}) => {
+const Admin = () => {
     const {admin} = useContext(AdminContext);
-    const {users} = admin;
-    const router = useRouter();
-    
-    useEffect(() => {
-        if (login === false) {
-            router.push("/account/login");
-        }
-        if (login !== false && !isAdmin) {
-            router.push("/");
-        }
-    }, []);
+    const {users, isAdmin} = admin;
+
+    if (!isAdmin) { return null }
 
     return (
         <div className="admin-area">
