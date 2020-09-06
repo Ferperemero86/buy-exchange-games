@@ -13,6 +13,11 @@
     }
 }
 
+.details-buy-link {
+    color: #fff;
+    text-decoration: none;
+}
+
 .game-details .header {
     width: 100%;
     overflow: hidden;
