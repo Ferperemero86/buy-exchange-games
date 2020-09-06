@@ -1,9 +1,14 @@
-import React from "react";
+import React, {forwardRef} from "react";
 
-const Select = ({className, children, onChange, data}) => (
-    <select className={className}
-            data={data}
-            onChange={onChange}>{children}</select>
-)
+const Select = forwardRef((props, ref) => {
+    const {className, children, onChange, data} = props;
+
+    return (
+        <select className={className}
+                data={data}
+                ref={ref}
+                onChange={onChange}>{children}</select>
+    );
+});
 
 export default Select;
