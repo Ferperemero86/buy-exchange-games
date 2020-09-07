@@ -158,8 +158,7 @@ router.post('/session',
             userAuthentication, 
             (req, res) => {
               const userId = req.user.id;
-              //const isAdmin = req.user.get("isAdmin");
-              console.log("USERID", userId);
+        
               return res.json({login: true, userId});
 });
 
