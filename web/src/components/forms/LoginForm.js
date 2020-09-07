@@ -20,33 +20,26 @@ const LoginForm = () => {
     const {usernameInputValue, passwordInputValue, messages} = login;
     const router = useRouter();
 
-    const sendData = (e) => {
+    const sendData = async (e) => {
         e.preventDefault();
 
-    const userData = {
-        email: usernameInputValue,
-        password: passwordInputValue,
-     };
-       
-        
-    sendDataFromClient(`/api/session`, userData)
-        .then((result) => {
-            const success = result.data;
-          
-            if (success && success.login) {
-                const userId = success.userId;
-               
-                dispatchUser({type: "USER_LOGGED_IN"});
-                dispatchUser({type: "UPDATE_USER_ID", payload: userId})
-            }
-        })
-        .catch(err => {
-            if (err.response) {
-                const messages = handleMessages(err.response.data);
+        const userData = {
+            email: usernameInputValue,
+            password: passwordInputValue,
+         };
+  
+        const loginResult = await sendDataFromClient(`/api/session`, userData);
 
-                dispatchLogin({type: "UPDATE_MESSAGE", payload: messages});
-            }
-        });
+        if (loginResult.login === false) {
+            const messages = handleMessages(loginResult);
+            dispatchLogin({type: "UPDATE_MESSAGE", payload: messages});
+        } else {
+            const userId = loginResult.data ? loginResult.data.userId : null;
+
+            dispatchUser({type: "USER_LOGGED_IN"});
+            dispatchUser({type: "UPDATE_USER_ID", payload: userId})
+        }
+
     };
 
 
@@ -60,7 +53,7 @@ const LoginForm = () => {
         <form id="user-form">
             <Heading
              type="h1"
-             text="Loogin" />
+             text="Login" />
             <Message messages={messages} />
             <div className="form-section">
                 <Label text="Name" />

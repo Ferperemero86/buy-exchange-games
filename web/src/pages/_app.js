@@ -24,7 +24,8 @@ import MainSearch from "../components/MainSearch";
 import AdminProvider from "../components/providers/AdminProvider";
 
 const Page = ({pageProps, Component, router}) => {
-    const path = router.pathname;
+    console.log("ROUTER", router);
+    const asPath = router.asPath;
     const {dispatchUser} = useContext(UserContext);
     const {mainSearch} = useContext(MainSearchContext);
     const {textSearchInput, games} = mainSearch;
@@ -47,64 +48,62 @@ const Page = ({pageProps, Component, router}) => {
         return <MainSearch games={games} />
     }
 
-    if (path.includes("account/proposals")) {
-        return (
-            <ProposalsProvider pageProps={pageProps}>
-                <Component {...pageProps} />
-            </ProposalsProvider>
-        )
-    }
+    console.log("PATH", asPath);
+    switch (asPath) {
 
-    if (path.includes("account/user-profile")) {
-        return (
-            <UserProfileProvider pageProps={pageProps}>
-                <Component {...pageProps} />
-            </UserProfileProvider>
-        )
-    }
+        case `/account/user-profile?userId=${router.query.userId}` :
+            //case "account/user-profile" :
+                return (
+                    <UserProfileProvider pageProps={pageProps}>
+                        <Component {...pageProps} />
+                    </UserProfileProvider>
+                )
+    
+        case "account/proposals" :
+            return (
+                <ProposalsProvider pageProps={pageProps}>
+                    <Component {...pageProps} />
+                </ProposalsProvider>
+            )
 
-    if (path.includes("/explore/") ) {
-        return (
-            <ExploreGamesProvider pageProps={pageProps}>
-                 <Component {...pageProps} />
-            </ExploreGamesProvider>
-        )
-    }
+        case `/explore/ps4?page=${router.query.page}` : 
+        case `/explore/xbox?page=${router.query.page}` : 
+        case `/explore/pc?page=${router.query.page}` :
+            return (
+                <ExploreGamesProvider pageProps={pageProps}>
+                     <Component {...pageProps} />
+                </ExploreGamesProvider>
+            )
+            
+        case "/account/messages" :
+            return (
+                <UserMessagesProvider pageProps={pageProps}>
+                     <Component {...pageProps} />
+                </UserMessagesProvider>
+            )
 
-    if (path.includes("/account/messages") ) {
-        return (
-            <UserMessagesProvider pageProps={pageProps}>
-                 <Component {...pageProps} />
-            </UserMessagesProvider>
-        )
-    }
+        case "/account/exchange-a-game" :
+            return (
+                <TransactionsProvider pageProps={pageProps}>
+                    <Component {...pageProps} />   
+                </TransactionsProvider>
+            )
+    
 
+        case "/account/sell-a-game" :
+            return (
+                <SellGameProvider pageProps={pageProps}>
+                    <Component {...pageProps} />   
+                </SellGameProvider>
+            )
 
-    if (path.includes("/account/exchange-a-game") ) {
-        return (
-            <TransactionsProvider pageProps={pageProps}>
-                <Component {...pageProps} />   
-            </TransactionsProvider>
-        )
-    }
-
-    if (path.includes("/account/sell-a-game") ) {
-        return (
-            <SellGameProvider pageProps={pageProps}>
-                <Component {...pageProps} />   
-            </SellGameProvider>
-        )
-    }
-
-    if (path.includes("/users-selling/details")) {
-        return (
-            <UsersGamesProvider pageProps={pageProps}>
-                <Component {...pageProps} />  
-            </UsersGamesProvider>
-        )
-    }
-
-    switch (path) {
+        case "/users-selling/details" :
+            return (
+                <UsersGamesProvider pageProps={pageProps}>
+                    <Component {...pageProps} />  
+                </UsersGamesProvider>
+            )
+       
         case "/admin" :
             return(
                 <AdminProvider pageProps={pageProps}>
@@ -134,6 +133,7 @@ const Page = ({pageProps, Component, router}) => {
             )
 
         case "/account/gameslist" :
+        case "/account/gameslist?sellgame=true" :
             return (
                 <GamesListProvider pageProps={pageProps}>
                     <Component {...pageProps} />
@@ -154,9 +154,13 @@ const Page = ({pageProps, Component, router}) => {
                 </UsersGamesProvider>
             )
 
-    }
-    return <Component {...pageProps} />
-}
+        case "/" :
+            return <Component {...pageProps} />
+        
+        default : 
+            return null;
+        }
+};
 
 const MyApp = ({Component, pageProps, router}) => {
     return (

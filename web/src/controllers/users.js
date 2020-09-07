@@ -16,7 +16,6 @@ const UserProfile = require("../db/models/user-profile");
 const UsersConversations = require("../db/models/users-conversations");
 const Conversations = require("../db/models/conversations");
 const UsersMessages = require("../db/models/users-messages");
-const authenticateUser = require("../authentication");
 
 
 const getUsers = (res) => {
@@ -159,9 +158,9 @@ router.post('/session',
             userAuthentication, 
             (req, res) => {
               const userId = req.user.id;
-              const isAdmin = req.user.get("isAdmin");
-              
-              return res.json({login: true, userId, isAdmin});
+              //const isAdmin = req.user.get("isAdmin");
+              console.log("USERID", userId);
+              return res.json({login: true, userId});
 });
 
 router.get('/session', 
@@ -312,7 +311,7 @@ router.post("/user/profile",
 
 router.post("/user/profile/save",
             jsonParser,
-            authenticateUser,
+            userAuthentication,
             acl(User, User, "edit"),
             (req, res) => {
               const {userId, fieldName, userQueryId} = req.body;

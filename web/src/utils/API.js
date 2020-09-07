@@ -44,6 +44,7 @@ module.exports = {
         return result.data
       })
       .catch(err => {
+        console.log("API ERROR LOGIN", err.response);
         if (err.response) {
           return err.response.data;
         }
