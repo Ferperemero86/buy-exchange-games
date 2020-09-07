@@ -12,7 +12,7 @@ export async function getServerSideProps(ctx) {
     const Url = new URL("/api/user/messages", `http://${URLBase}`).href;
 
     const data = await sendLocalData(Url, {userId});
-
+    console.log("USERID", userId);
     if (!userId) { return { props: { login: false} } }
    
     return { props: {data, userId} }

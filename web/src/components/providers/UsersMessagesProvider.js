@@ -41,7 +41,7 @@ const UsersMessagesProvider = ({children, pageProps}) => {
     }, [usersMessagesState]);
 
     useEffect(() => {
-        if (!login) {
+        if (login === false) {
             router.push("/account/login");
         }
     })
