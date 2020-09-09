@@ -107,25 +107,20 @@ const GameMenu = ({game, hideGameMenu}) => {
     const {gamesList, dispatchGamesList} = useContext(GamesListContext)
     const {showGameMenu} = gamesList;
     let gameId = game.id;
-    let id;
+    const platform = game.platform;
+    let id = game.game_id;
     const router = useRouter();
     
     const goToNextPage = (Url, status) => {
         dispatchGamesList({type: "SHOW_GAME_MENU"})
        
         router.push({pathname: `/account/${Url}`, 
-                     query: {id, 
-                             status,
-                             name: game.name, 
-                             platform: game.platform, 
-                             cover: game.cover}})
+                     query: {id, status, platform}})
     }
     const goToSellaGame = () => {
-        id = game.game_id;
         goToNextPage("sell-a-game", "selling");
     }
     const goToExchangeaGame = () => {
-         id = game.id;
         goToNextPage("exchange-a-game", "exchanging")
     }
 
@@ -165,24 +160,22 @@ const DeleteGameIcon = ({game, askForListDelete}) => {
     }
 
     return (
-        <Div 
-         className="delete-icon"
-         onClick={askForListDelete}
-         data={game.id}>
+        <div className="delete-icon"
+             onClick={askForListDelete}
+             data={game.id}>
             <Span 
              className="icon"
              text="X" />
-
-        </Div>
+        </div>
     )
 }
 
 const Cover = ({Url}) => (
-    <Div className="cover-container">
+    <div className="cover-container">
         <Image
          className="cover"
          Url={`${Url}`} />
-    </Div>
+    </div>
 )
 
 const Title = ({title}) => (
@@ -200,7 +193,9 @@ const Game = ({games}) => {
     return games.map(game => {
         if (game.cover) {
             const gameCoverString = game.cover;
-            coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
+            const gameCover = JSON.parse(gameCoverString);
+            
+            coverURL = gameCover.url.replace("t_thumb", "t_cover_big");
         }
         const id = gameId + 1;
         gameId++;
@@ -247,7 +242,7 @@ const Game = ({games}) => {
         }
 
         return (
-            <Div className="game" key={id}>
+            <div className="game" key={id}>
                 <DeleteGameQuestion gameId={game.id}
                                     action={deleteGame} 
                                     element={elementToDelete} /> 
@@ -255,7 +250,7 @@ const Game = ({games}) => {
                             gameId={game.id} />
                 <GameMenu hideGameMenu={hideGameMenu} 
                           game={game} /> 
-                <Div className="game-header">
+                <div className="game-header">
                     <DeleteGameIcon game={game} 
                                     data-key-game-id={game.id}
                                     askForListDelete={askForListDelete} />
@@ -263,21 +258,21 @@ const Game = ({games}) => {
                                   data-game-id={game.id}
                                   gameId={game.id}
                                   status={game.status} />
-                </Div>
-                <Div className="game-info">
+                </div>
+                <div className="game-info">
                     <Cover Url={coverURL} />
                     <Title title={game.name}/>
-                </Div>
-            </Div> 
+                </div>
+            </div> 
         )
     })
 }
 
 const Games = ({games}) => {
    return (
-       <Div className="gameslist">
+       <div className="gameslist">
            <Game games={games} />
-       </Div>
+       </div>
    )
 };
 

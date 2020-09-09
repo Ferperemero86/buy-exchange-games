@@ -55,6 +55,14 @@ input:focus {
     color: #fff;
 }
 
+.page-not-found,
+.game-not-found,
+.games-no-available {
+    color: #fff;
+    text-align: center;
+    margin-top: 100px;
+}
+
 
 
 

@@ -299,9 +299,10 @@ router.post("/user/profile",
       
               return UserProfile
                 .where({id: userId})
-                .fetch()
+                .fetch({require: false})
                 .then(profile => {
-                  res.json({profile})
+                  if (!profile) { return res.json({userDoesNotExist: true})}
+                  return res.json({profile})
                 })
                 .catch(() => {
                   return res.json({internalError: true});

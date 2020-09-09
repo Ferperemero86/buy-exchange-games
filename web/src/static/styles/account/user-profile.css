@@ -73,3 +73,9 @@
 .user-profile .send-message.button {
     margin-top: 70px;
 }
+
+.user-profile-does-not-exist {
+    color: #fff;
+    text-align: center;
+    margin-top: 100px;
+}

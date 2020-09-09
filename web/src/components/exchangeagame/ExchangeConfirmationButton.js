@@ -12,7 +12,7 @@ const ExchangeConfirmationButton = () => {
     const game2 = gameToExchange && gameToExchange.length > 0 ? gameToExchange[0].id : null;
     const game2Data = gameToExchange && gameToExchange.length > 0 ? gameToExchange[0] : null;
     const router = useRouter();
-    console.log("GAME2 CONTENT", gameToExchange);
+    
     if (gameFromListToExchange) {
         if (Array.isArray(gameFromListToExchange) && gameFromListToExchange.length > 0) {
             game1 = gameFromListToExchange[0].id;

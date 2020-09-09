@@ -7,9 +7,9 @@ import Game from "../../components/games/Game";
 
 const FirstGame = () => {
     const {transactions, dispatchTransactions} = useContext(TransactionsContext);
-    const {gameFromListToExchange} = transactions;
+    const {gameFromListToExchange, platformQuery} = transactions;
     let name, cover, platform;
-   
+    
     const openSearchWindow = () => {
         dispatchTransactions({type: "SHOW_EXCHANGE_SEARCH_WINDOW", payload: true});
         dispatchTransactions({type: "SET_GAME_TO_FIND", payload: "game1"});
@@ -20,9 +20,10 @@ const FirstGame = () => {
         
         if (Object.keys(gameFromListToExchange).length > 0 ) {
             name = gameFromListToExchange.name;
-            cover = gameFromListToExchange.cover;
-            platform = gameFromListToExchange.platform.toUpperCase();
+            cover = gameFromListToExchange.cover.url;
+            platform = platformQuery.toUpperCase();
         }
+
         if (Array.isArray(gameFromListToExchange) && gameFromListToExchange.length > 0 ) {
             name = gameFromListToExchange[0].name;
             cover = gameFromListToExchange[0].cover;

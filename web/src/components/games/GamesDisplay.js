@@ -92,13 +92,12 @@ const Pagination = () => {
 };
 
 const GamesDisplay = ({ platform, platformTitle, platformId }) => {
-
     const { games, setGames } = useContext(StoreContext);
     const { recentGamesLink, setRecentGamesLink } = useContext(StoreContext);
     const { allGamesLink, setAllGamesLink } = useContext(StoreContext);
     const { gameDetails, setGameDetails } = useContext(StoreContext);
     const { setGamesIndex } = useContext(StoreContext);
-
+    
     const displayAllGames = () => {
         setAllGamesLink("recent-games-link-styles");
         setRecentGamesLink("");

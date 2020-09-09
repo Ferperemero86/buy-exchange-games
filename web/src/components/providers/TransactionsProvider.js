@@ -5,21 +5,21 @@ import {transactionsReducer} from "../../utils/reducers";
 export const TransactionsContext = createContext(null);
 
 const TransactionsProvider =({children, pageProps}) => {
-    console.log("EXCHANGE A GAME", pageProps);
-    const game = pageProps.query;
-    const name = pageProps.query.name;
-    const cover = pageProps.query.cover;
-
+    const name = pageProps.query ? pageProps.query.name : "";
+    const cover = pageProps.query ? pageProps.query.cover : "";
+    const platform = pageProps.query ? pageProps.query.platform : "";
+    
     const initialValues = {
         name,
         cover,
-        gameFromListToExchange: game,
+        gameFromListToExchange: pageProps.query,
         gameToExchange: [],
         gameToFind: [],
         showGameExchangeWindow: false,
         exchangeGamesSearch: [],
         searchGameToExchangeInputValue: "",
-        platformSelected: 48
+        platformSelected: 48,
+        platformQuery: platform
     };
 
     const [exploreGamesState, dispatchTransactions] = useReducer(transactionsReducer, initialValues);

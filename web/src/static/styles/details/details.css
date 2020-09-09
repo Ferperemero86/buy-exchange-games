@@ -105,6 +105,13 @@
     margin: 0 5px 0 0;
 }
 
-.no-game-selected .go-back-link {
+.no-game-selected .go-back-link,
+.details-no-image-available {
     color: #fff;
+}
+
+.details-games-does-not-exist {
+    color: #fff;
+    margin-top: 100px;
+    text-align: center;
 }

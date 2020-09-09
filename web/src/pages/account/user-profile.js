@@ -13,6 +13,8 @@ import Button from "../../components/forms/Button";
 import Label from "../../components/forms/Label";
 import Select from "../../components/Select";
 import Image from "../../components/Image";
+import Heading from "../../components/Heading";
+import Option from "../../components/Option";
 
 import CountriesSearch from "../../components/forms/CountriesSearch";
 import CitiesSearch from "../../components/forms/CitiesSearch";
@@ -27,12 +29,14 @@ export async function getServerSideProps(ctx) {
     const citiesUrl = new URL("/api/cities", `http://${URLBase}`).href;
 
     const profile = await sendLocalData(profileUrl, {userId: userQueryId});
-    const {country} = profile.profile 
+    const country = profile.profile ? profile.profile.country : ""; 
     const countriesList = await getLocalData(countriesUrl);
     const countryCode = countriesList.countries[country];
     const cities = await sendLocalData(citiesUrl, {selectedCountryCode: countryCode});
    
     if (!userId) { return { props: {login: false} } }
+
+    if(profile.userDoesNotExist) { return { props: {profileExists: false} } }
    
     return { props: {userQueryId, profile, countriesList, cities, userId, countryCode} }
 }
@@ -52,7 +56,7 @@ const EditButton = ({field}) => {
 const OptionButtons = ({field}) => {
     const {userProfile, cancelEdit, updateField} = useContext(UserProfileContext);
     const {editProfileField, fieldValue} = userProfile;
-
+    
     if (editProfileField === field) {
         return (
             <div className="cancel-save-buttons">
@@ -89,6 +93,7 @@ const SelectField = ({countriesList, labelClass, labelText, updateLocationAction
         if (labelText === "City") {
             location = e.currentTarget.value;
         }
+
         dispatchUserProfile({type: "UPDATE_FIELD_VALUE", payload: location});
         dispatchUserProfile({type: updateLocationAction, payload: location});
     };
@@ -106,6 +111,10 @@ const SelectField = ({countriesList, labelClass, labelText, updateLocationAction
                 </Select>}
             {labelText === "City" 
              && <Select onChange={updateLocation}>
+                    <Option 
+                     value="">Select city</Option>
+                    <Option 
+                     value="not selected">All cities</Option>
                     <CitiesSearch
                      cities={cities} />
                 </Select>}
@@ -219,6 +228,11 @@ const Message = ({recipient}) => {
 const UserInfo = ({countriesList}) => {
     const {userProfile} = useContext(UserProfileContext);
     const {editProfileField, country, nickName, city, cities} = userProfile;
+    let cityName = city;
+
+    if (city === "not selected") {
+        cityName = "All cities";
+    }
    
     return (
         <div className="user-profile-info">
@@ -248,7 +262,7 @@ const UserInfo = ({countriesList}) => {
             {editProfileField !== "City" 
              && <Field 
                  parClass="city parag"
-                 parText={city}
+                 parText={cityName}
                  spanClass="span"
                  spanText="City" />}
             {editProfileField === "City" 
@@ -261,7 +275,7 @@ const UserInfo = ({countriesList}) => {
     )
 }
 
-const UserProfile = ({countriesList}) => {
+const UserProfile = ({countriesList, profileExists}) => {
     const {user} = useContext(UserContext);
     const userLogged = user.userId;
     const {userProfile, dispatchUserProfile} = useContext(UserProfileContext);
@@ -275,6 +289,13 @@ const UserProfile = ({countriesList}) => {
             dispatchUserProfile({type: "UPDATE_CITIES", payload: citiesList});
         });
     }, [country]);
+
+    if (profileExists === false) {
+        return <Heading
+                text="Profile does not exists" 
+                type="h1" 
+                className="user-profile-does-not-exist" />
+    }
     
     return (
         <div className="user-profile">

@@ -1,4 +1,5 @@
 import React from "react";
+import {fetchApiData} from "../../utils/API";
 
 import {faArrowsAltH} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -12,10 +13,36 @@ import SearchWindow from "../../components/exchangeagame/SearchWindow";
 
 
 export async function getServerSideProps ({query}) {
-    return { props: {query} };
+    const platform = query ? query.platform : null;
+    const status = query ? query.status : null;
+    let platformQuery;
+
+    switch(platform) {
+        case "ps4" :
+            platformQuery = 38;
+        break;
+
+        case "xbox" :
+            platformQuery = 39;
+        break;
+
+        case "pc" :
+            platformQuery = 6;
+        break;
+    }
+
+    const game = await fetchApiData("games", "POST", `fields name, summary, cover.url; where id = ${query.id} & platforms = ${platformQuery};`);
+
+    if (game.length === 0 || game.length > 0 && game.status === 400 || status !== "exchange") {
+        return { props: {gameNotFound: true} }
+    }
+
+    return { props: {query: game[0], platform} };
 }
 
-const GameToExchange = () => {
+const GameToExchange = ({gameNotFound}) => {
+    if (gameNotFound) { return <h1 className="game-not-found">Game Not Found</h1>}
+
     return (
         <div className="exchange-a-game">
             <SearchWindow />
@@ -38,6 +65,6 @@ const GameToExchange = () => {
             </div>
         </div>
     )
-}
+};
 
 export default GameToExchange;

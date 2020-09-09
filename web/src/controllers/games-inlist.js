@@ -22,7 +22,7 @@ router.post("/gamesinlist/game/add",
     async (req, res) => {
         const gameDetails = req.body.game;
         const userId = req.user.id;
-        const nameString = gameDetails.title;
+        const nameString = gameDetails.name;
         const {cover, id, summary, platform} = gameDetails;
         const name = nameString.replace("'", "").toLowerCase();
         
@@ -182,7 +182,6 @@ router.post("/gamesinlist/game/sell",
                                     .where({game_id: gameId, list_id: userId, status: "inList"})
                                     .fetch({require: false})
                                     .then(Game => {
-                                        console.log("GAME", Game)
                                         if (Game) { return resolve(Game) }
                                         return reject({gameUpdated: false});                            
                                     })
@@ -251,7 +250,6 @@ router.post("/gamesinlist/game/stopselling",
                             });
                         })
                     .then(id => {
-                        console.log("2 then");
                         //return new Promise((resolve, reject) => {
                             //Deletes Game from games selling table (games_selling)
                             return GamesSelling
@@ -260,7 +258,6 @@ router.post("/gamesinlist/game/stopselling",
                                 .then(Game => {
                                     return new Promise((resolve, reject) => {
                                         if (Game) { 
-                                            console.log("GAME", Game);
                                             return Game
                                                 .destroy({transacting: t})
                                                 .then(() => {  
@@ -301,7 +298,6 @@ router.post("/gamesinlist/game/search",
             async (req, res) => {
                 const {game, gameSelected, platformSelected} = req.body;
                 const userId = req.user.id;
-                console.log("PLATFORM SELECTED", platformSelected);
                 let query;
                 
                 if (typeof game === "string") {
@@ -404,12 +400,12 @@ router.post("/gamesinlist/game/exchange",
                 const user1 = req.user.id;
                 const user2 = req.body.user2 ? req.body.user2 : null;
                 const time = new Date().getTime();
-
+               
                 await Bookshelf.transaction(t => {
                     return new Promise((resolve, reject) => {
                         //Check if the game is available to exchange
                         return GamesInList
-                            .where({list_id: user1, id: game1, status: "inList"})
+                            .where({list_id: user1, game_id: game1, status: "inList"})
                             .fetch({require:false})
                             .then(Game => {
                                 if (Game) {
@@ -465,7 +461,7 @@ router.post("/gamesinlist/game/exchange",
                             .then(Game2 => {
                                 return new Promise((resolve, reject) => {
                                     const {id, name, cover, summary} = game2Data;
-                                    console.log("COVER", cover);
+                                
                                     //If game content is not stored in Games content it saves in content table
                                     if (!Game2) {
                                         return GamesContent
@@ -488,8 +484,7 @@ router.post("/gamesinlist/game/exchange",
                 .then(() => {
                     return res.json({gameSetToExchange: true})
                 })
-                .catch(err => {
-                    console.log("ERROR", err);
+                .catch(() => {
                     return res.status(500).json({internalError: true})
                 })
 

@@ -1,5 +1,7 @@
 import React from "react";
 
+import Paragrapgh from "../Paragraph";
+
 
 const Image = ({Url}) => {
     if (Url) {
@@ -16,7 +18,7 @@ const Game = ({Url, title, page, gameId, platform}) => {
     if (title && title.length > 20 ) {
         name = title.slice(0, 20) + "...";
     }
-    
+
     if (typeof Url === "string" && Url.indexOf("t_thumb") !== -1) {
         coverUrl = Url.replace("t_thumb", "t_cover_big");
     } else {
@@ -28,8 +30,8 @@ const Game = ({Url, title, page, gameId, platform}) => {
             <div className="cover-container">
                 <Image Url={coverUrl} />
             </div>
-            <p className="title">{name}</p>
-            <p className="platform">{platformName}</p>
+            <Paragrapgh className="title">{name}</Paragrapgh>
+            <Paragrapgh className="platform">{platformName}</Paragrapgh>
         </div>
     )
   

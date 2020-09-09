@@ -42,7 +42,7 @@ const HeaderAccountNav = () => {
     const {user, dispatchUser} = useContext(UserContext);
     const {userLogged, userId, hasMounted} = user;
     const router = useRouter();
-   
+    
     const logOut = () => {
         cookie.remove("user_id", { path: "/" });
         router.push("/");

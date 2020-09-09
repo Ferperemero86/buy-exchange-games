@@ -29,12 +29,12 @@ const LoginForm = () => {
          };
   
         const loginResult = await sendDataFromClient(`/api/session`, userData);
-
+    
         if (loginResult.login === false) {
             const messages = handleMessages(loginResult);
             dispatchLogin({type: "UPDATE_MESSAGE", payload: messages});
         } else {
-            const userId = loginResult.data ? loginResult.data.userId : null;
+            const userId = loginResult.userId;
 
             dispatchUser({type: "USER_LOGGED_IN"});
             dispatchUser({type: "UPDATE_USER_ID", payload: userId})

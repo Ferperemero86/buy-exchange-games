@@ -20,11 +20,11 @@ import UserMessagesProvider from "../components/providers/UsersMessagesProvider"
 import ProposalsProvider from "../components/providers/ProposalsProvider";
 import SettingsProvider from "../components/providers/SettingsProvider";
 import Header from "../components/Header";
+import Heading from "../components/Heading";
 import MainSearch from "../components/MainSearch";
 import AdminProvider from "../components/providers/AdminProvider";
 
 const Page = ({pageProps, Component, router}) => {
-    console.log("ROUTER", router);
     const asPath = router.asPath;
     const {dispatchUser} = useContext(UserContext);
     const {mainSearch} = useContext(MainSearchContext);
@@ -42,24 +42,22 @@ const Page = ({pageProps, Component, router}) => {
             } 
             
         });
-    }, [])
+    }, []);
     
     if (textSearchInput !== "") { 
         return <MainSearch games={games} />
     }
 
-    console.log("PATH", asPath);
     switch (asPath) {
 
         case `/account/user-profile?userId=${router.query.userId}` :
-            //case "account/user-profile" :
-                return (
-                    <UserProfileProvider pageProps={pageProps}>
-                        <Component {...pageProps} />
-                    </UserProfileProvider>
-                )
+            return (
+                <UserProfileProvider pageProps={pageProps}>
+                    <Component {...pageProps} />
+                </UserProfileProvider>
+            )
     
-        case "account/proposals" :
+        case "/account/proposals" :
             return (
                 <ProposalsProvider pageProps={pageProps}>
                     <Component {...pageProps} />
@@ -82,7 +80,7 @@ const Page = ({pageProps, Component, router}) => {
                 </UserMessagesProvider>
             )
 
-        case "/account/exchange-a-game" :
+        case `/account/exchange-a-game?id=${router.query.id}&status=${router.query.status}&platform=${router.query.platform}` :
             return (
                 <TransactionsProvider pageProps={pageProps}>
                     <Component {...pageProps} />   
@@ -154,11 +152,19 @@ const Page = ({pageProps, Component, router}) => {
                 </UsersGamesProvider>
             )
 
+        case `/explore/details?id=${router.query.id}&platform=${router.query.platform}` :
+            return (
+                <Component {...pageProps} />
+            )
+
         case "/" :
             return <Component {...pageProps} />
         
         default : 
-            return null;
+            return <Heading 
+                    className="page-not-found"
+                    type="h1"
+                    text="Page not found" />
         }
 };
 

@@ -49,7 +49,6 @@ const GamesList = ({gamesInList, userId, sellGame}) => {
     const router = useRouter();
     
     useEffect(() => {
-
         //If user is not logged send to Login page
         if (login === false) {
             router.push("/account/login")
@@ -82,9 +81,9 @@ const GamesList = ({gamesInList, userId, sellGame}) => {
     return (
         <div className="user-list">
             <DeleteListQuestion 
-                action={deleteList} 
-                cancelDelete={closeDeleteQuestion}
-                element={elementToDelete} />
+             action={deleteList} 
+             cancelDelete={closeDeleteQuestion}
+             element={elementToDelete} />
             <ListInput />
             <Heading 
              className="gameslist-heading"
@@ -92,8 +91,8 @@ const GamesList = ({gamesInList, userId, sellGame}) => {
              text={listName} />
             <EditList />
             <GamesSection 
-                gamesInList={gamesInList}
-                userId={userId} />
+             gamesInList={gamesInList}
+             userId={userId} />
         </div>
     )
 

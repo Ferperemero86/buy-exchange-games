@@ -4,27 +4,29 @@ import {useRouter} from "next/router";
 
 import disableScroll from 'disable-scroll';
 
+import Paragraph from "../Paragraph";
+import Button from "../forms/Button";
+
 import {ExploreGamesContext} from "../providers/ExploreGamesProvider";
+import Heading from "../Heading";
 
 
 const Cover = ({cover}) => {
     if(cover) {
         return <img src={`${cover}`} />
     } else {
-        return <p>Image no available</p>
+        return <Paragraph>Image no available</Paragraph>
     }
 };
 
 const Game = ({game}) => {
     const {exploreGames} = useContext(ExploreGamesContext);
-    const {page, platform} = exploreGames;
+    const {platform} = exploreGames;
     const gameId = game.id;
-    const summary = game.summary;
-    const longName = game.name; 
     let nameString;
     let cover;
     const router = useRouter();
-    
+   
     if (game.name) {
         nameString = game.name;
     } else {
@@ -47,22 +49,19 @@ const Game = ({game}) => {
 
     const goToDetails = () => {
         router.push({pathname: "/explore/details", 
-        query: {id: gameId, 
-                title: longName, 
-                platform, 
-                cover, 
-                summary,
-                page } })
+                     query: {id: gameId, platform}})
     }
-
 
     return (
         <div className="game">
-            <p className="title">{name}</p>
+            <Paragraph className="title">{name}</Paragraph>
             <div className="cover">
                  <Cover cover={cover} />
             </div>
-            <button className="button" onClick={goToDetails}>Details</button>
+            <Button 
+             className="button" 
+             text="Details"
+             onClick={goToDetails} />
         </div>
     )
     
@@ -130,6 +129,13 @@ const Pagination = () => {
 
         changeStyle(e);
     }
+    
+    if (exploreGames.games.length < parseInt(exploreGames.page) || isNaN(exploreGames.page)) {
+        return <Heading
+                className="games-no-available"
+                type="h1"
+                text="Games no available" />
+    }
 
     if(exploreGames.games.length > 0) {
 
@@ -185,7 +191,9 @@ const organizeGames = (games) => {
 
 const GamesDisplay = () => {
     const {exploreGames, dispatchExploreGames} = useContext(ExploreGamesContext);
-    const result = organizeGames(exploreGames.games);
+    const {games} = exploreGames;
+
+    const result = organizeGames(games);
 
     useEffect(() => {
         dispatchExploreGames({type: "UPDATE_GAMES", payload: result});
