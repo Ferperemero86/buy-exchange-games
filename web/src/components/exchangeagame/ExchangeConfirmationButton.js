@@ -15,7 +15,7 @@ const ExchangeConfirmationButton = () => {
     
     if (gameFromListToExchange) {
         if (Array.isArray(gameFromListToExchange) && gameFromListToExchange.length > 0) {
-            game1 = gameFromListToExchange[0].id;
+            game1 = gameFromListToExchange[0].game_id;
         } else {
             game1 = parseInt(gameFromListToExchange.id);
         }

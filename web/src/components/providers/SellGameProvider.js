@@ -5,13 +5,16 @@ import {sellGameReducer} from "../../utils/reducers";
 export const SellGameContext = createContext(null);
 
 const SellGameProvider =({children, pageProps}) => {
-    console.log("EXCHANGE A GAME", pageProps);
+    const title = pageProps.query ? pageProps.query.name : "";
+    const cover = pageProps.query && pageProps.query.cover ? pageProps.query.cover.url : "";
+    const gameId = pageProps.query ? pageProps.query.id : null;
+    const status = pageProps.query ? pageProps.query.status : "";
     
     const initialValues = {
-        title: pageProps.query.name,
-        cover: pageProps.query.cover,
-        gameId: pageProps.query.id,
-        status: pageProps.query.status,
+        title,
+        cover,
+        gameId,
+        status,
         gameCondition: "Grade A",
         gamePrice: "",
         gameDescription: "",

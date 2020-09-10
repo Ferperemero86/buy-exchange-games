@@ -23,7 +23,8 @@ router.post("/gamesinlist/game/add",
         const gameDetails = req.body.game;
         const userId = req.user.id;
         const nameString = gameDetails.name;
-        const {cover, id, summary, platform} = gameDetails;
+        const cover = gameDetails.cover.url;
+        const {id, summary, platform} = gameDetails;
         const name = nameString.replace("'", "").toLowerCase();
         
         await Bookshelf.transaction(t => {
@@ -416,7 +417,7 @@ router.post("/gamesinlist/game/exchange",
                     })
                     .then(Game => {
                         const game1Id = Game.get("game_id");
-            
+                        
                         return new Promise((resolve) => {
                             //Saves game in exchanging table (games_exchanging)
                             return GamesExchanging
@@ -445,8 +446,7 @@ router.post("/gamesinlist/game/exchange",
                                     if (Game) {
                                         return Game
                                             .save({status: "exchanging"}, {patch: true, transacting: t})
-                                            .then(() => {
-                                               //return res.json({gameSetToExchange: true})
+                                            .then(() => {   
                                                return resolve();
                                             })
                                     }
@@ -459,7 +459,7 @@ router.post("/gamesinlist/game/exchange",
                             .where({id: game2})
                             .fetch({require: false})
                             .then(Game2 => {
-                                return new Promise((resolve, reject) => {
+                                return new Promise((resolve) => {
                                     const {id, name, cover, summary} = game2Data;
                                 
                                     //If game content is not stored in Games content it saves in content table
@@ -475,8 +475,7 @@ router.post("/gamesinlist/game/exchange",
                                             .save(null, {method: "insert", transacting: t})
                                             .then(() => { return resolve() })
                                     }
-                                    return reject()
-
+                                    return resolve()
                                 })
                             })
                     })

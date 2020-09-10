@@ -14,7 +14,7 @@ const Game = ({Url, title, page, gameId, platform}) => {
     let coverUrl;
     const platformName = platform ? platform.toUpperCase() : "";
     let name = title;
-
+    
     if (title && title.length > 20 ) {
         name = title.slice(0, 20) + "...";
     }

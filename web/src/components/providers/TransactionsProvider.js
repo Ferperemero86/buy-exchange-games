@@ -7,7 +7,7 @@ export const TransactionsContext = createContext(null);
 const TransactionsProvider =({children, pageProps}) => {
     const name = pageProps.query ? pageProps.query.name : "";
     const cover = pageProps.query ? pageProps.query.cover : "";
-    const platform = pageProps.query ? pageProps.query.platform : "";
+    const platform = pageProps.platform;
     
     const initialValues = {
         name,
@@ -19,7 +19,7 @@ const TransactionsProvider =({children, pageProps}) => {
         exchangeGamesSearch: [],
         searchGameToExchangeInputValue: "",
         platformSelected: 48,
-        platformQuery: platform
+        platform
     };
 
     const [exploreGamesState, dispatchTransactions] = useReducer(transactionsReducer, initialValues);

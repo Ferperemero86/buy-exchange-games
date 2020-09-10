@@ -65,7 +65,7 @@ router.post("/gameslist",
 router.post("/gameslist/newlist",
     jsonParser,
     userAuthentication,
-    acl(User, "create"),
+    acl(User, GamesLists, "create"),
     async (req, res) => {
         const listName = req.body.listName;
         const userId = req.user.id;
@@ -118,6 +118,7 @@ router.post("/gameslist/newlist",
 router.post("/gameslist/deletedlist",
     jsonParser,
     userAuthentication,
+    acl(User, GamesLists, "delete"),
     async (req, res) => {
         const userId = req.user.id;
 

@@ -88,7 +88,7 @@ const Page = ({pageProps, Component, router}) => {
             )
     
 
-        case "/account/sell-a-game" :
+        case `/account/sell-a-game?id=${router.query.id}&status=${router.query.status}&platform=${router.query.platform}` :
             return (
                 <SellGameProvider pageProps={pageProps}>
                     <Component {...pageProps} />   

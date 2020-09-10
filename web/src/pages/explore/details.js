@@ -97,7 +97,7 @@ const Details = ({game, platform}) => {
                          text="Game Does not exist"
                          className="details-games-does-not-exist"
                          type="h1" />}
-   
+    
     if (game.cover) {
         const coverString = game.cover.url;
         cover = coverString.replace("t_thumb", "t_screenshot_med");
@@ -108,7 +108,7 @@ const Details = ({game, platform}) => {
     const addToList = () => {
         const gameData = game;
         gameData["platform"] = platform;
-        
+       
         sendDataFromClient("/api/gamesinlist/game/add", {game: gameData})
             .then(result => {
                 console.log("GAME ADDED", result)

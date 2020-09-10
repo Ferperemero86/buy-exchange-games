@@ -19,11 +19,11 @@ export async function getServerSideProps ({query}) {
 
     switch(platform) {
         case "ps4" :
-            platformQuery = 38;
+            platformQuery = 48;
         break;
 
         case "xbox" :
-            platformQuery = 39;
+            platformQuery = 49;
         break;
 
         case "pc" :
@@ -32,8 +32,8 @@ export async function getServerSideProps ({query}) {
     }
 
     const game = await fetchApiData("games", "POST", `fields name, summary, cover.url; where id = ${query.id} & platforms = ${platformQuery};`);
-
-    if (game.length === 0 || game.length > 0 && game.status === 400 || status !== "exchange") {
+   
+    if (game.length === 0 || game.length > 0 && game.status === 400 || status !== "exchanging" || !platform) {
         return { props: {gameNotFound: true} }
     }
 

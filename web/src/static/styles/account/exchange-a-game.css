@@ -57,6 +57,15 @@
     border: 1px solid;
 }
 
+.second-game .platforms-select {
+    margin-top: 20px;
+}
+
+.second-game .platforms-select .label {
+    color: #fff;
+    margin-right: 2%;
+}
+
 .exchange-a-game .exchange-a-game .game {
     max-width: 30%;
     overflow: visible;
@@ -218,6 +227,8 @@
 
 .window-game-search .game {
     width: 100%;
+    color: #fff;
+    text-align: center;
 }
 
 .window-game-search .game .image-no-available {

@@ -54,11 +54,11 @@
     width: 100%;
     height: 300px;
     overflow: hidden;
+    border: 1px solid;
 }
 
 .game-details .cover-container .cover {
     margin: 0 2% 0 0;
-    border: 1px solid;
     max-width: 100%;
     height: auto;
 }

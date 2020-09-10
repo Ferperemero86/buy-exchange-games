@@ -7,21 +7,26 @@ import Game from "../../components/games/Game";
 
 const FirstGame = () => {
     const {transactions, dispatchTransactions} = useContext(TransactionsContext);
-    const {gameFromListToExchange, platformQuery} = transactions;
-    let name, cover, platform;
+    const {gameFromListToExchange, platform} = transactions;
+    let name, cover, platformName;
     
     const openSearchWindow = () => {
         dispatchTransactions({type: "SHOW_EXCHANGE_SEARCH_WINDOW", payload: true});
         dispatchTransactions({type: "SET_GAME_TO_FIND", payload: "game1"});
         dispatchTransactions({type: "SET_EXCHANGE_GAMES_SEARCH", payload: []});
     }
-
-    if (gameFromListToExchange) {
-        
+    
+    if (gameFromListToExchange && !gameFromListToExchange.status) {
         if (Object.keys(gameFromListToExchange).length > 0 ) {
             name = gameFromListToExchange.name;
-            cover = gameFromListToExchange.cover.url;
-            platform = platformQuery.toUpperCase();
+
+            if (gameFromListToExchange.cover && gameFromListToExchange.cover.url) {
+                cover = gameFromListToExchange.cover.url;
+            } else {
+                cover = gameFromListToExchange.cover;
+            }
+
+            platformName = platform.toUpperCase();
         }
 
         if (Array.isArray(gameFromListToExchange) && gameFromListToExchange.length > 0 ) {
@@ -36,7 +41,7 @@ const FirstGame = () => {
                  title={name} 
                  gameToRemove="game1"
                  page="exchange-a-game" />
-                <p className="game-1-text">{platform}</p>
+                <p className="game-1-text">{platformName}</p>
             </div>
         )
     }

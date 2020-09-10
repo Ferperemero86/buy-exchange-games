@@ -53,7 +53,7 @@ const GamesListProvider =({children, pageProps}) => {
                 dispatchGamesList({type: "HIDE_EDIT_LIST"});
             })
             .catch(()=> {
-                dispatchGamesList({type: "HIDE_DELETE_QUESTION"});
+                dispatchGamesList({type: "SHOW_DELETE_LIST_QUESTION", payload: false});
                 dispatchGamesList({type: "HIDE_EDIT_LIST"});
             });
     };

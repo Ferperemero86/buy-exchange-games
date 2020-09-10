@@ -4,6 +4,7 @@ function middleware(Model, TargetModel, action) { //{TargetModel, action}
   const { allow, can } = cancan;
   const User = require("../db/models/user");
   const AdminUser = require("../db/models/admin-user");
+  const GamesLists = require("../db/models/games-lists");
 
   return function (req, res, next) {
     const modelInstance = new Model(req.user);
@@ -23,6 +24,16 @@ function middleware(Model, TargetModel, action) { //{TargetModel, action}
         return false;
       }
     });
+
+    allow (User, ["create", "save", "delete", "edit"], GamesLists, (user, target) => {
+      if (user.id === target.id) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    allow (User, "read", GamesLists);
 
     console.log("CAN USER?", can(modelInstance, action, targetModelInstance));
 

@@ -9,7 +9,6 @@ import DeleteQuestion from "../../components/messages/DeleteQuestion";
 import Heading from "../../components/Heading";
 
 export async function getServerSideProps(ctx) {
-    //const {userId} = ctx.query;
     const userId = ctx.query.id ? ctx.query.id : null;
     const userLogged = ctx.req.user ? ctx.req.user.id : null;
     

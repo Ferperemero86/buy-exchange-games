@@ -5,7 +5,7 @@ import Button from "../../components/forms/Button";
 
 const DeleteQuestion = ({action, element, gameId, userId, cancelDelete}) => {
     let title;
-
+    
     if (element === "list") {
         title = "Delete List?";
     }
@@ -33,10 +33,11 @@ const DeleteQuestion = ({action, element, gameId, userId, cancelDelete}) => {
             return action(userId);
         }
     }
-
+    
     return (
         <div className={`delete-question ${element}`}>
-            <Heading 
+            <Heading
+             type="h3" 
              className="heading"
              text={title} />
             <Button 

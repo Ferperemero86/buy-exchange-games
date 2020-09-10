@@ -3,6 +3,10 @@ import React, {useContext} from "react";
 import {TransactionsContext} from "../providers/TransactionsProvider";
 
 import Game from "../../components/games/Game";
+import Button from "../forms/Button";
+import Select from "../Select";
+import Option from "../Option";
+import Label from "../Label";
 
 const PlatformsOptions = () => {
     const platforms = [{name: "PS4", code: 48}, 
@@ -11,8 +15,9 @@ const PlatformsOptions = () => {
 
     if (platforms && Array.isArray(platforms)) {
         return platforms.map(platform => {
-            return <option value={platform.code}
-                           key={platform.code}>{platform.name}</option>
+            return <Option value={platform.code}
+                           className="platform-options"
+                           key={platform.code}>{platform.name}</Option>
         })
     }
     return null;
@@ -29,9 +34,11 @@ const PlatformSelect = () => {
 
     return (
         <div className="platforms-select">
-            <label className="label">Platforms</label>
-                <select onChange={getPlatformValue}
-                        className="select"><PlatformsOptions /></select>
+            <Label
+             text="Platforms" 
+             className="label" />
+            <Select onChange={getPlatformValue}
+                    className="select"><PlatformsOptions /></Select>
         </div>
     )
 }
@@ -66,9 +73,10 @@ const SecondGame = () => {
     return (
         <div>
             <div className="find-a-game2">
-                <button className="button" 
+                <Button className="button" 
                         game="game2"
-                        onClick={openSearchWindow}>Find Game</button>
+                        text="Find Game"
+                        onClick={openSearchWindow} />
             </div>
             <PlatformSelect />
         </div>

@@ -189,13 +189,11 @@ const Game = ({games}) => {
    const {elementToDelete} = gamesList;
    let coverURL;
    let gameId = 0;
-
+    
     return games.map(game => {
         if (game.cover) {
             const gameCoverString = game.cover;
-            const gameCover = JSON.parse(gameCoverString);
-            
-            coverURL = gameCover.url.replace("t_thumb", "t_cover_big");
+            coverURL = gameCoverString.replace("t_thumb", "t_cover_big");
         }
         const id = gameId + 1;
         gameId++;
