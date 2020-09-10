@@ -1,7 +1,6 @@
 import React, {useContext} from "react";
 import Link from "next/link";
 import {SettingsContext} from "../../components/providers/SettingsProvider";
-//import {MainSearchContext} from "../../components/providers/MainSearchProvider";
 
 import Label from "../../components/Label";
 import Input from "../../components/forms/Input";
@@ -10,12 +9,13 @@ import DeleteQuestion from "../../components/messages/DeleteQuestion";
 import Heading from "../../components/Heading";
 
 export async function getServerSideProps(ctx) {
-    const {userId} = ctx.query;
+    //const {userId} = ctx.query;
+    const userId = ctx.query.id ? ctx.query.id : null;
     const userLogged = ctx.req.user ? ctx.req.user.id : null;
     
     if (!userLogged) { return { props: {login: false} } }
 
-    return { props: {userId} }
+    return { props: {userId, userLogged} }
 }
 
 const PasswordField = () => {
@@ -50,9 +50,11 @@ const DeleteAccountLink = () => {
     )
 }
 
-const Settings = () => {
+const Settings = ({userLogged}) => {
     const {settings, deleteAccount, hideDeleteQuestion} = useContext(SettingsContext);
     const {deleteQuestion} = settings;
+
+    if (!userLogged) { return null }
 
     return (
         <div className="settings">

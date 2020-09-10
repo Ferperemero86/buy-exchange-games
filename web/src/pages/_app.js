@@ -109,7 +109,7 @@ const Page = ({pageProps, Component, router}) => {
                 </AdminProvider>
             )
 
-        case `/account/settings?userId=${router.query.userId}` :
+        case `/account/settings` :
             return (
                 <SettingsProvider pageProps={pageProps}>
                     <Component {...pageProps} />

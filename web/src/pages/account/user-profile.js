@@ -292,7 +292,7 @@ const UserProfile = ({countriesList, profileExists}) => {
 
     if (profileExists === false) {
         return <Heading
-                text="Profile does not exists" 
+                text="Profile does not exist" 
                 type="h1" 
                 className="user-profile-does-not-exist" />
     }

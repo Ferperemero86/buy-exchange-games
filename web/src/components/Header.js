@@ -101,10 +101,7 @@ const HeaderAccountNav = () => {
                 </Link>
             </li>
             <li className="list-element">
-                <Link href={{ 
-                        pathname: "/account/settings", 
-                        query: {userId: userId} 
-                }}>
+                <Link href="/account/settings">
                     <a>Settings</a>
                 </Link>
             </li>
