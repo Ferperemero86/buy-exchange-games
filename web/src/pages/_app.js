@@ -95,6 +95,8 @@ const Page = ({pageProps, Component, router}) => {
                 </SellGameProvider>
             )
 
+        case `/games/users-selling?id=${router.query.id}` :
+        case "/games/users-selling" :
         case "/users-selling/details" :
             return (
                 <UsersGamesProvider pageProps={pageProps}>
@@ -138,12 +140,12 @@ const Page = ({pageProps, Component, router}) => {
                 </GamesListProvider>
             )
 
-        case "/games/users-selling" :
-            return (
-                <UsersGamesProvider pageProps={pageProps}>
-                    <Component {...pageProps} />   
-                </UsersGamesProvider>
-            )
+        //case "/games/users-selling" :
+        //    return (
+        //        <UsersGamesProvider pageProps={pageProps}>
+        //            <Component {...pageProps} />   
+        //        </UsersGamesProvider>
+        //    )
 
         case "/games/users-exchanging" :
             return (

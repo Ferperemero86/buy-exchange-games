@@ -14,11 +14,13 @@ const BasicUserInfo = ({nickName, userId, imageUrl}) => {
             query: {userId} 
         });
     };
-    
+
     return (
         <div className="basic-user-info" 
              onClick={goToUserProfile}>
             <div className="picture-name">
+                {imageUrl === "not selected" 
+                 &&<div className="empty-profile-image"></div>}
                 <Image 
                  className="image" 
                  Url={imageUrl} />

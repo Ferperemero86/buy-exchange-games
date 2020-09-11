@@ -1,7 +1,7 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
+import {useRouter} from "next/router";
 
 import {sendLocalData} from "../../utils/API";
-
 import {ProposalsContext} from "../../components/providers/ProposalsProvider";
 
 import Game from "../../components/games/Game";
@@ -9,12 +9,13 @@ import BasicUserInfo from "../../components/usersGames/BasicUserInfo";
 import CloseIcon from "../../components/CloseIcon";
 import Heading from "../../components/Heading";
 
+
 export async function getServerSideProps(ctx) {
     let userLogged = ctx.req.user ? ctx.req.user.id : null;
     const URLBase = ctx.req.headers.host;
     const Url = new URL("/api/proposals", `http://${URLBase}`).href;
 
-    if (!userLogged) { return {login: false} }
+    if (!userLogged) { return { props: {login: false} } }
 
     const proposals = await sendLocalData(Url, {userId: userLogged});
     
@@ -69,7 +70,7 @@ const ExchangingGames = ({proposals, userLogged}) => {
         dispatchProposals({type: "UPDATE_PROPOSALS", payload: proposalsData})
     
     };
-
+    
     if (Array.isArray(proposals) && proposals.length > 0) {
         return proposals.map((proposal, index) => {
                 const game1 = proposal.proposals.gameContent1;
@@ -82,12 +83,13 @@ const ExchangingGames = ({proposals, userLogged}) => {
                         <div className="proposal-game">
                             {userLogged !== profile1.id 
                             && <BasicUserInfo
+                                imageUrl={profile1.picture}
                                 nickName={profile1.nickName}
                                 userId={profile1.id} />}
                             <CloseIcon 
                              data={proposal.id}
-                             text="Clear"
-                             className="clear-exchanging-game-icon"
+                             text="X"
+                             className="clear-exchanging-game-icon close-icon"
                              dispatchFunc={dispatchProposals}
                              onClick={clearGame} />
                             <Game
@@ -97,6 +99,7 @@ const ExchangingGames = ({proposals, userLogged}) => {
                         <div className="proposal-game">
                             {userLogged !== profile2.id 
                              && <BasicUserInfo
+                                 imageUrl={profile2.picture}
                                  nickName={profile2.nickName}
                                  userId={profile2.id} />}
                             <Game
@@ -111,35 +114,48 @@ const ExchangingGames = ({proposals, userLogged}) => {
 };
 
 const ExchangingProposals = ({proposals, heading, userLogged}) => {
-    return (
-        <div className="exchanging-proposals">
-            {proposals.length > 0 && <ProposalsHeading title={heading} />}
-            <ExchangingGames 
-                proposals={proposals} 
-                userLogged={userLogged} />
-        </div>
-    )
+    if (proposals && proposals.length > 0) {
+        return (
+            <div className="exchanging-proposals">
+                {proposals.length > 0 && <ProposalsHeading title={heading} />}
+                <ExchangingGames 
+                    proposals={proposals} 
+                    userLogged={userLogged} />
+            </div>
+        )
+    }
+    return null;
 }
 
 const SellingProposals = ({proposals, heading}) => {
-    return (
-        <div className="selling-proposals">
-            {proposals.length > 0 && <ProposalsHeading title={heading} />}
-            <SellingGames 
-                heading={heading}
-                proposals={proposals} />
-        </div>
-    )
+    if (proposals && proposals.length > 0) {
+        return (
+            <div className="selling-proposals">
+                {proposals.length > 0 && <ProposalsHeading title={heading} />}
+                <SellingGames 
+                    heading={heading}
+                    proposals={proposals} />
+            </div>
+        )
+    }
+    return null;
 };
 
 
 const Proposals = ({userLogged}) => {
     const {proposals, organizeProposals} = useContext(ProposalsContext);
     const {proposalsData} = proposals;
+    const router = useRouter();
 
-    const organizedProposals = organizeProposals(proposalsData, userLogged);
+    const organizedProposals = userLogged ? organizeProposals(proposalsData, userLogged) : [];
     const {exchangeProposalsSent, exchangeProposalsReceived, 
            sellingProposalsSent, sellingProposalsReceived} = organizedProposals;
+
+    useEffect(() => {
+        if (!userLogged) {
+            router.push("/account/login");
+        }
+    })
     
     return (
         <div className="proposals">

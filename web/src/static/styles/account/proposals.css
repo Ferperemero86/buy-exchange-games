@@ -1,6 +1,7 @@
 .proposals {
     width: 90%;
     margin: 50px auto;
+    overflow: hidden;
 }
 
 .proposals-main-heading {
@@ -11,13 +12,14 @@
 
 .proposals-heading {
     font-size: 1.2em;
+    color: #8c92ac;
     margin: 60px 0;
 }
 
 .exchanging-proposal {
    margin: 30px 0;
    padding: 30px 0 0 0;
-   overflow: hidden;
+   float: left;
 }
 
 .exchanging-proposal .proposal-game {
@@ -29,12 +31,18 @@
     max-height: 150px;
 }
 
+.exchanging-proposal .proposal-game .basic-user-info {
+    top: -5px;
+}
+
 .proposal-game .basic-user-info {
     position: absolute;
     text-align: left;
     z-index: 1;
     border: 1px solid #fff;
+    top: -20px;
     overflow: hidden;
+    color: #fff;
 }
 
 .clear-selling-game-icon {
@@ -43,7 +51,7 @@
 }
 
 .clear-exchanging-game-icon {
-    top: -30px;
+    top: -35px;
     z-index: 99999;
     position: absolute;
 }
@@ -58,6 +66,7 @@
 
 .exchanging-proposal .game .title {
     margin-top: 5px;
+    font-size: 0.8em;
 }
 
 .selling-proposals {

@@ -72,8 +72,7 @@ const Links = ({query, addToList}) => (
             <ListElement className="link">
                 <Link href={{ pathname: `/games/users-selling`, 
                               query: { id: query.id} }}>
-                       <a href=""
-                          className="details-buy-link">Buy</a>
+                       <a className="details-buy-link">Buy</a>
                 </Link>
             </ListElement>
             <ListElement className="link">Exchange</ListElement>
